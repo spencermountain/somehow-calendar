@@ -1,5 +1,7 @@
 <div align="center">
+  <div>sometime</div>
   <div>WIP</div>
+  <div><a href="https://spencermounta.in/sometime/">demo</a></div>
   <a href="https://npmjs.org/package/sometime">
     <img src="https://img.shields.io/npm/v/sometime.svg?style=flat-square" />
   </a>
@@ -17,16 +19,16 @@ renders html calendars using [spacetime](https://github.com/spencermountain/spac
 ```js
 const sometime = require('sometime')
 
-let c = sometime.year.leftAlign('2019')
+let c = sometime.year.weekAlign('2019')
 c.color('june 5th 2019', 'june 8th 2019', 'red')
 document.querySelector('body').innerHTML = c.build()
 ```
 
-by default, it produces html strings, but...
+by default, it returns html strings, but...
 
 output is handled with Jason Miller's [htm](https://github.com/developit/htm) package, so it can output to a React template, or anything:
 ```js
-const Calendar = require('sometime')
+const sometime = require('sometime')
 const react = require('react')
 
 let c = sometime.year.leftAlign('2019')
