@@ -1,24 +1,38 @@
 {
-  "name": "frowwn-out",
-  "description": "",
+  "name": "part-time",
   "version": "0.0.1",
-  "author": "Spencer Kelly (spencermountain)",
-  "homepage": "https://github.com/spencermountain/frown#readme",
+  "description": "html calendars for dataviz",
+  "main": "index.js",
   "scripts": {
-    "start": "budo scratch.js:assets/_bundle.js --live -- -t [ babelify --presets [ @babel/preset-env ] ]",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "new": "node ./scripts/new.js",
     "watch": "npm run start",
-    "build": "browserify scratch.js -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs -m -c > ./assets/_bundle.js"
+    "start": "budo index.js:assets/bundle.js --live",
+    "build": "browserify index.js -t [ babelify --presets [ @babel/preset-env ] ] | derequire > ./assets/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spencermountain/frown.git"
+  },
+  "author": "Spencer Kelly (spencermountain)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spencermountain/frown/issues"
+  },
+  "homepage": "https://github.com/spencermountain/frown#readme",
+  "devDependencies": {
+    "shelljs": "0.8.3",
+    "@babel/core": "7.2.2",
+    "@babel/preset-env": "7.2.3",
+    "babelify": "10.0.0",
+    "budo": "11.5.0",
+    "derequire": "2.0.6"
   },
   "dependencies": {
-    "@babel/preset-es2015": "^7.0.0-beta.53",
-    "htm": "^1.0.1",
-    "vhtml": "^2.1.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
-    "babelify": "^10.0.0",
-    "budo": "^11.5.0",
-    "uglify-js": "^3.4.9"
+    "htm": "2.0.0",
+    "spacetime": "^5.1.0",
+    "spencer-color": "0.0.5",
+    "spencer-css": "0.0.6",
+    "vhtml": "2.1.0"
   }
 }

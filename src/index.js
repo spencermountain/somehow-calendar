@@ -1,22 +1,11 @@
-//which output to we render to?
-import htm from 'htm';
-import vhtml from 'vhtml';
+const LeftAlign = require('./calendars/year/LeftAlign')
+const WeekAlign = require('./calendars/year/WeekAlign')
 
-import month from './month'
-
-const calendar = function() {
-  this.render = htm.bind(vhtml) //by default
-  this.bind = (r) => {
-    this.render = htm.bind(r)
+const api = {
+  year: {
+    leftAlign: (a, b) => new LeftAlign(a, b),
+    weekAlign: (a, b) => new WeekAlign(a, b),
   }
 }
 
-calendar.prototype.year = () => {
-}
-calendar.prototype.month = month
-calendar.prototype.week = () => {
-}
-calendar.prototype.day = () => {
-}
-
-export default calendar
+module.exports = api
