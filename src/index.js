@@ -1,10 +1,15 @@
-const LeftAlign = require('./calendars/year/LeftAlign')
-const WeekAlign = require('./calendars/year/WeekAlign')
+const LeftAlignYear = require('./calendars/year/LeftAlign')
+const WeekAlignYear = require('./calendars/year/WeekAlign')
+
+const WeekAlignMonth = require('./calendars/month/WeekAlign')
 
 const api = {
   year: {
-    leftAlign: (a, b) => new LeftAlign(a, b),
-    weekAlign: (a, b) => new WeekAlign(a, b),
+    leftAlign: (a, b) => new LeftAlignYear(a, b),
+    weekAlign: (a, b) => new WeekAlignYear(a, b),
+  },
+  month: {
+    weekAlign: (a, b) => new WeekAlignMonth(a, b),
   }
 }
 

@@ -1,29 +1,36 @@
-# spacetime-calendar
+<div align="center">
+  <div>WIP</div>
+  <a href="https://npmjs.org/package/sometime">
+    <img src="https://img.shields.io/npm/v/sometime.svg?style=flat-square" />
+  </a>
+  <a href="https://unpkg.com/sometime">
+    <img src="https://badge-size.herokuapp.com/spencermountain/sometime/master/builds/sometime.min.js" />
+  </a>
+</div>
+
+**work-in-progress**
+
 renders html calendars using [spacetime](https://github.com/spencermountain/spacetime) date library
 
+![image](https://user-images.githubusercontent.com/399657/50604609-81a89f00-0e8d-11e9-926d-5ffa4b39f4d3.png)
+
 ```js
-import Calendar from 'spacetime-calendar'
-import spacetime from 'spacetime'
+const sometime = require('sometime')
 
-let d = spacetime.now()
-let c = new Calendar(d)
-let html = c.month()
-
-document.querySelector('#stage').innerHTML = html
+let c = sometime.year.leftAlign('2019')
+c.color('june 5th 2019', 'june 8th 2019', 'red')
+document.querySelector('body').innerHTML = c.build()
 ```
 
 by default, it produces html strings, but...
 
 output is handled with Jason Miller's [htm](https://github.com/developit/htm) package, so it can output to a React template, or anything:
 ```js
-const Calendar = require('spacetime-calendar')
+const Calendar = require('sometime')
 const react = require('react')
 
-let c = new Calendar()
+let c = sometime.year.leftAlign('2019')
 c.bind(react.createElement) // anything
-c.month()
-
 ```
-
 
 MIT

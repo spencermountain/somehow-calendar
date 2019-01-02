@@ -1,14 +1,15 @@
 {
-  "name": "part-time",
-  "version": "0.0.1",
-  "description": "html calendars for dataviz",
-  "main": "index.js",
+  "name": "sometime",
+  "version": "0.0.4",
+  "description": "create calendar-based dataviz easily",
+  "main": "builds/sometime.js",
+  "unpkg": "builds/sometime.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "new": "node ./scripts/new.js",
     "watch": "npm run start",
     "start": "budo index.js:assets/bundle.js --live",
-    "build": "browserify index.js -t [ babelify --presets [ @babel/preset-env ] ] | derequire > ./assets/bundle.js"
+    "build:demo": "browserify index.js -t [ babelify --presets [ @babel/preset-env ] ] | derequire > ./assets/bundle.js",
+    "build": "node ./scripts/build.js"
   },
   "repository": {
     "type": "git",
@@ -20,19 +21,20 @@
     "url": "https://github.com/spencermountain/frown/issues"
   },
   "homepage": "https://github.com/spencermountain/frown#readme",
-  "devDependencies": {
-    "shelljs": "0.8.3",
-    "@babel/core": "7.2.2",
-    "@babel/preset-env": "7.2.3",
-    "babelify": "10.0.0",
-    "budo": "11.5.0",
-    "derequire": "2.0.6"
-  },
   "dependencies": {
     "htm": "2.0.0",
     "spacetime": "^5.1.0",
     "spencer-color": "0.0.5",
     "spencer-css": "0.0.6",
     "vhtml": "2.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.2.2",
+    "@babel/preset-env": "7.2.3",
+    "babelify": "10.0.0",
+    "budo": "11.5.0",
+    "derequire": "2.0.6",
+    "shelljs": "^0.8.3",
+    "terser": "^3.14.0"
   }
 }
