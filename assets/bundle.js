@@ -7,18 +7,14 @@ var calendars = _dereq_('./src'); // const spacetime = require('spacetime')
 var c = calendars.year.leftAlign('2019');
 c.color('june 5th 2019', 'june 8th 2019', 'red');
 document.querySelector('#leftAlign').innerHTML = c.build();
-var c2 = calendars.year.weekAlign('2019', {
-  numbers: true
-});
+var c2 = calendars.year.weekAlign('2019', {});
 c2.color('june 5th 2019', 'june 8th 2019', 'red');
 document.querySelector('#weekAlign').innerHTML = c2.build();
-var c3 = calendars.month.weekAlign('2019', {
-  numbers: true
-});
+var c3 = calendars.quarter.byMonth('june 9th 2019', {});
 c3.color('june 5th 2019', 'june 8th 2019', 'red');
-document.querySelector('#monthAlign').innerHTML = c3.build();
+document.querySelector('#byWeek').innerHTML = c3.build();
 
-},{"./src":10}],2:[function(_dereq_,module,exports){
+},{"./src":13}],2:[function(_dereq_,module,exports){
 !function(){var n={},e=JSON.stringify;function t(e){for(var t=".",c=0;c<e.length;c++)t+=e[c].length+","+e[c];return(n[t]||(n[t]=i(e)))(this,arguments)}var i=function(n){for(var t,i,c,r,s,o=0,u="return ",a="",f="",h=0,l="",g="",d="",v=0,m=function(){c?9===o?(h++&&(u+=","),u+="h("+(f||e(a)),o=0):13===o||0===o&&"..."===a?(0===o?(d||(d=")",l=l?"Object.assign("+l:"Object.assign({}"),l+=g+","+f,g=""):r&&(l+=l?","+(g?"":"{"):"{",g="}",l+=e(r)+":",l+=f||(s||a)&&e(a)||"true",r=""),s=!1):0===o&&(o=13,r=a,a=f="",m(),o=0):(f||(a=a.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))&&(h++&&(u+=","),u+=f||e(a)),a=f=""},p=0;p<n.length;p++){p>0&&(c||m(),f="$["+p+"]",m());for(var O=0;O<n[p].length;O++){if(i=n[p].charCodeAt(O),c){if(39===i||34===i){if(v===i){v=0;continue}if(0===v){v=i;continue}}if(0===v)switch(i){case 62:m(),47!==o&&(u+=l?","+l+g+d:",null"),t&&(u+=")"),c=0,l="",o=1;continue;case 61:o=13,s=!0,r=a,a="";continue;case 47:t||(t=!0,9!==o||a.trim()||(a=f="",o=47));continue;case 9:case 10:case 13:case 32:m(),o=0;continue}}else if(60===i){m(),c=1,d=g=l="",t=s=!1,o=9;continue}a+=n[p].charAt(O)}}return m(),Function("h","$",u)};"undefined"!=typeof module?module.exports=t:self.htm=t}();
 
 },{}],3:[function(_dereq_,module,exports){
@@ -4103,6 +4099,7 @@ function () {
     this.options = options;
     this.h = htm.bind(vhtml);
     this.styles = [];
+    this.squareDay = false;
   }
 
   _createClass(Calendar, [{
@@ -4121,10 +4118,18 @@ function () {
         overflow: 'hidden',
         color: _color.lighter,
         margin: 'auto',
+        // 'min-width': '10px',
         'min-height': '1rem',
+        height: 0,
         'font-size': '8px',
         'border': "1px solid ".concat(_color.lighter)
       };
+
+      if (this.squareDay === true) {
+        style['padding-bottom'] = '10%';
+        style['min-height'] = '0px';
+      }
+
       this.styles.forEach(function (c) {
         if (d.isBefore(c.end) && d.isAfter(c.start)) {
           if (c.color !== undefined) {
@@ -4146,7 +4151,7 @@ function () {
       var style = this.findStyle(d);
       var num = '';
 
-      if (this.options.numbers) {
+      if (this.options.numbers !== false) {
         num = d.date();
       }
 
@@ -4211,8 +4216,59 @@ module.exports = Calendar;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Calendar = _dereq_('../Calendar');
+
+var drawMonth = _dereq_('./_draw');
+
+var Month =
+/*#__PURE__*/
+function (_Calendar) {
+  _inherits(Month, _Calendar);
+
+  function Month(d, options) {
+    var _this;
+
+    _classCallCheck(this, Month);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Month).call(this, d, options));
+    _this.d = _this.d.startOf('month');
+    _this.squareDay = true;
+    return _this;
+  }
+
+  _createClass(Month, [{
+    key: "build",
+    value: function build() {
+      return drawMonth(this.d, this);
+    }
+  }]);
+
+  return Month;
+}(Calendar);
+
+module.exports = Month;
+
+},{"../Calendar":6,"./_draw":8}],8:[function(_dereq_,module,exports){
+"use strict";
+
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div class=\"goleft row\">\n      <div style=\"flex-basis:2rem;\" class=\"lightgrey f08 right pr05\">", "</div>\n      ", "\n    </div>"]);
+  var data = _taggedTemplateLiteral(["<div class=\"goleft col\">\n    ", "\n  </div>"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -4222,7 +4278,72 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div style=\"width:3px; border-left:1px solid red;\"></div>"]);
+  var data = _taggedTemplateLiteral(["<div class=\"row\" style=\"flex-wrap:nowrap;\">\n  ", "\n  </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var buildWeek = function buildWeek(d, self, month) {
+  var h = self.h;
+  var days = [];
+  var last = 1;
+
+  for (var i = 0; i < 7; i += 1) {
+    var stub = d.format('month') !== month;
+    days.push(self.buildDay(d, stub));
+    d = d.add(1, 'day');
+
+    if (d.date() === last) {
+      console.log(d.format('nice'));
+    }
+
+    last = d.date();
+  }
+
+  return h(_templateObject(), days);
+}; //
+
+
+var drawMonth = function drawMonth(d, self) {
+  var month = d.format('month');
+  var h = self.h;
+  d = d.startOf('week'); //.add(2, 'hours')
+
+  var weeks = [];
+
+  for (var i = 0; i < 6; i += 1) {
+    weeks.push(buildWeek(d, self, month));
+    d = d.add(1, 'week');
+  }
+
+  return h(_templateObject2(), weeks);
+};
+
+module.exports = drawMonth;
+
+},{}],9:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["<div class=\"col mw12\">\n      <div class=\"goright grey f08\">", "</div>\n      ", "\n    </div>"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"w100p row\">\n        <div class=\"grey f09\">", "</div>\n        <div class=\"w8 f06\">", "</div>\n      </div>"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -4251,52 +4372,137 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 var Calendar = _dereq_('../Calendar');
 
-var WeekAlign =
+var drawMonth = _dereq_('../month/_draw');
+
+var ByMonth =
 /*#__PURE__*/
 function (_Calendar) {
-  _inherits(WeekAlign, _Calendar);
+  _inherits(ByMonth, _Calendar);
 
-  function WeekAlign(d, options) {
+  function ByMonth(d, options) {
     var _this;
 
-    _classCallCheck(this, WeekAlign);
+    _classCallCheck(this, ByMonth);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(WeekAlign).call(this, d, options));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ByMonth).call(this, d, options));
     _this.d = _this.d.startOf('month');
     return _this;
   }
 
-  _createClass(WeekAlign, [{
+  _createClass(ByMonth, [{
     key: "build",
-    value: function build(d) {
+    value: function build() {
       var h = this.h;
-      var month = d.month();
-      var name = d.format('month-short').toLowerCase();
-      d = d.startOf('week');
-      var days = [];
+      var d = this.d;
+      var year = d.year();
+      d = d.startOf('quarter');
+      var months = [];
 
-      for (var i = 0; i < 37; i += 1) {
-        d = d.startOf('day');
-
-        if (d.dayName() === 'monday') {
-          days.push(h(_templateObject()));
-        }
-
-        var stub = d.month() !== month;
-        days.push(this.buildDay(d, stub));
-        d = d.add(1, 'day');
+      for (var i = 0; i < 3; i += 1) {
+        var month = drawMonth(d, this);
+        month = h(_templateObject(), d.format('month-short'), month);
+        months.push(month);
+        d = d.add(1, 'month');
       }
 
-      return h(_templateObject2(), name, days);
+      return h(_templateObject2(), year, months);
     }
   }]);
 
-  return WeekAlign;
+  return ByMonth;
 }(Calendar);
 
-module.exports = WeekAlign;
+module.exports = ByMonth;
 
-},{"../Calendar":6}],8:[function(_dereq_,module,exports){
+},{"../Calendar":6,"../month/_draw":8}],10:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["<div class=\"col mw12\">\n      <div class=\"goright grey f08\">", "</div>\n      ", "\n    </div>"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"w100p row\">\n        <div class=\"grey f09\">", "</div>\n        <div class=\"w8 f06\">", "</div>\n      </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Calendar = _dereq_('../Calendar');
+
+var drawMonth = _dereq_('../month/_draw');
+
+var ByMonth =
+/*#__PURE__*/
+function (_Calendar) {
+  _inherits(ByMonth, _Calendar);
+
+  function ByMonth(d, options) {
+    var _this;
+
+    _classCallCheck(this, ByMonth);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ByMonth).call(this, d, options));
+    _this.d = _this.d.startOf('year');
+    _this.squareDay = true;
+    return _this;
+  }
+
+  _createClass(ByMonth, [{
+    key: "build",
+    value: function build() {
+      var h = this.h;
+      var d = this.d;
+      var year = d.year();
+      d = d.startOf('year');
+      var months = [];
+
+      for (var i = 0; i < 12; i += 1) {
+        var month = drawMonth(d, this);
+        month = h(_templateObject(), d.format('month-short'), month);
+        months.push(month);
+        d = d.add(1, 'month');
+      }
+
+      return h(_templateObject2(), year, months);
+    }
+  }]);
+
+  return ByMonth;
+}(Calendar);
+
+module.exports = ByMonth;
+
+},{"../Calendar":6,"../month/_draw":8}],11:[function(_dereq_,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -4395,7 +4601,7 @@ function (_Calendar) {
 
 module.exports = LeftAlign;
 
-},{"../Calendar":6}],9:[function(_dereq_,module,exports){
+},{"../Calendar":6}],12:[function(_dereq_,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -4510,14 +4716,18 @@ function (_Calendar) {
 
 module.exports = WeekAlign;
 
-},{"../Calendar":6}],10:[function(_dereq_,module,exports){
+},{"../Calendar":6}],13:[function(_dereq_,module,exports){
 "use strict";
 
 var LeftAlignYear = _dereq_('./calendars/year/LeftAlign');
 
 var WeekAlignYear = _dereq_('./calendars/year/WeekAlign');
 
-var WeekAlignMonth = _dereq_('./calendars/month/WeekAlign');
+var ByMonth = _dereq_('./calendars/year/ByMonth');
+
+var Month = _dereq_('./calendars/month/Month');
+
+var Quarter = _dereq_('./calendars/quarter/ByMonth');
 
 var api = {
   year: {
@@ -4526,14 +4736,22 @@ var api = {
     },
     weekAlign: function weekAlign(a, b) {
       return new WeekAlignYear(a, b);
+    },
+    byMonth: function byMonth(a, b) {
+      return new ByMonth(a, b);
     }
   },
   month: {
-    weekAlign: function weekAlign(a, b) {
-      return new WeekAlignMonth(a, b);
+    month: function month(a, b) {
+      return new Month(a, b);
+    }
+  },
+  quarter: {
+    byMonth: function byMonth(a, b) {
+      return new Quarter(a, b);
     }
   }
 };
 module.exports = api;
 
-},{"./calendars/month/WeekAlign":7,"./calendars/year/LeftAlign":8,"./calendars/year/WeekAlign":9}]},{},[1]);
+},{"./calendars/month/Month":7,"./calendars/quarter/ByMonth":9,"./calendars/year/ByMonth":10,"./calendars/year/LeftAlign":11,"./calendars/year/WeekAlign":12}]},{},[1]);

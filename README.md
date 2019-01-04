@@ -18,12 +18,23 @@ renders html calendars using [spacetime](https://github.com/spencermountain/spac
 
 ```js
 const sometime = require('sometime')
+let el = document.querySelector('body')
 
-let c = sometime.year.weekAlign('2019')
-c.color('june 5th 2019', 'june 8th 2019', 'red')
-document.querySelector('body').innerHTML = c.build()
+let cal = sometime.year.weekAlign('2019')
+cal.color('june 5th 2019', 'june 8th 2019', 'red')
+el.innerHTML = cal.build()
 ```
 
+**byMonth()** renders a typical calendar-representation:
+```js
+let cal = sometime.quarter.byMonth('june 1 2019')
+cal.color('june 5th 2019', 'june 8th 2019', 'red')
+el.innerHTML = cal.build()
+```
+
+![image](https://user-images.githubusercontent.com/399657/50697138-682f6080-100f-11e9-8b17-cd80640a86ee.png)
+
+### Output
 by default, it returns html strings, but...
 
 output is handled with Jason Miller's [htm](https://github.com/developit/htm) package, so it can output to a React template, or anything:
@@ -35,4 +46,9 @@ let c = sometime.year.leftAlign('2019')
 c.bind(react.createElement) // anything
 ```
 
+
+
+### See also:
+* [somehow](https://github.com/spencermountain/somehow) - partner svg dataviz
+* [d3-time](https://github.com/d3/d3-time)
 MIT

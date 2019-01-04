@@ -9,6 +9,7 @@ class Calendar {
     this.options = options
     this.h = htm.bind(vhtml)
     this.styles = []
+    this.squareDay = false
   }
   buildStyle(obj) {
     return Object.keys(obj).reduce((str, k) => {
@@ -22,9 +23,15 @@ class Calendar {
       overflow: 'hidden',
       color: color.lighter,
       margin: 'auto',
+      // 'min-width': '10px',
       'min-height': '1rem',
+      height: 0,
       'font-size': '8px',
-      'border': `1px solid ${color.lighter}`
+      'border': `1px solid ${color.lighter}`,
+    }
+    if (this.squareDay === true) {
+      style['padding-bottom'] = '10%'
+      style['min-height'] = '0px'
     }
     this.styles.forEach((c) => {
       if (d.isBefore(c.end) && d.isAfter(c.start)) {
@@ -43,7 +50,7 @@ class Calendar {
     let h = this.h
     let style = this.findStyle(d)
     let num = ''
-    if (this.options.numbers) {
+    if (this.options.numbers !== false) {
       num = d.date()
     }
     let title = d.format('{month-short} {date}')

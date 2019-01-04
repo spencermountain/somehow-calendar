@@ -1,15 +1,21 @@
 const LeftAlignYear = require('./calendars/year/LeftAlign')
 const WeekAlignYear = require('./calendars/year/WeekAlign')
+const ByMonth = require('./calendars/year/ByMonth')
 
-const WeekAlignMonth = require('./calendars/month/WeekAlign')
+const Month = require('./calendars/month/Month')
+const Quarter = require('./calendars/quarter/ByMonth')
 
 const api = {
   year: {
     leftAlign: (a, b) => new LeftAlignYear(a, b),
     weekAlign: (a, b) => new WeekAlignYear(a, b),
+    byMonth: (a, b) => new ByMonth(a, b),
   },
   month: {
-    weekAlign: (a, b) => new WeekAlignMonth(a, b),
+    month: (a, b) => new Month(a, b),
+  },
+  quarter: {
+    byMonth: (a, b) => new Quarter(a, b),
   }
 }
 

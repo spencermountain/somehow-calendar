@@ -1,6 +1,6 @@
 {
   "name": "sometime",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "create calendar-based dataviz easily",
   "main": "builds/sometime.js",
   "unpkg": "builds/sometime.min.js",
