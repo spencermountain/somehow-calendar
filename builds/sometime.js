@@ -1,4 +1,4 @@
-/* sometime v0.0.5
+/* sometime v0.0.6
    github.com/spencermountain/sometime
    MIT
 */
