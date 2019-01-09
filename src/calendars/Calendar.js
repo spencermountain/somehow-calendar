@@ -2,7 +2,7 @@ const htm = require('htm')
 const vhtml = require('vhtml')
 const spacetime = require('spacetime')
 const color = require('spencer-color').colors
-
+console.log(spacetime.version)
 class Calendar {
   constructor(d, options = {}) {
     this.d = spacetime(d, options.timezone)

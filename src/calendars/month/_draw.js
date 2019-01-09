@@ -1,15 +1,12 @@
 const buildWeek = function(d, self, month) {
   let h = self.h
   let days = []
-  let last = 1
+  // console.log(d.format('iso'))
   for (let i = 0; i < 7; i += 1) {
     let stub = d.format('month') !== month
+    // console.log(d.format('date'))
     days.push(self.buildDay(d, stub))
     d = d.add(1, 'day')
-    if (d.date() === last) {
-      console.log(d.format('nice'))
-    }
-    last = d.date()
   }
   return h`<div class="row" style="flex-wrap:nowrap;">
   ${days}

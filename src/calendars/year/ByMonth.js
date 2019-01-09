@@ -15,7 +15,7 @@ class ByMonth extends Calendar {
     let months = []
     for (let i = 0; i < 12; i += 1) {
       let month = drawMonth(d, this)
-      month = h`<div class="w100p row">
+      month = h`<div class="w100p row mt05">
         <div class="grey f09">${d.format('month-short')}</div>
         <div class="w8 f06">${month}</div>
       </div>`

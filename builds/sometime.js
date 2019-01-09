@@ -8,7 +8,7 @@
 
 },{}],2:[function(_dereq_,module,exports){
 (function (global){
-/* spacetime v5.1.0
+/* spacetime v5.2.1
    github.com/spencermountain/spacetime
    MIT
 */
@@ -16,7 +16,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.spacetime = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof _dereq_&&_dereq_;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof _dereq_&&_dereq_,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
 "use strict";
 
-module.exports = '5.1.0';
+module.exports = '5.2.1';
 
 },{}],2:[function(_dereq_,module,exports){
 'use strict';
@@ -211,6 +211,8 @@ exports.toCardinal = function (str) {
 
 exports.normalize = function (str) {
   str = str.toLowerCase();
+  str = str.replace(/ies$/, 'y'); //'centuries'
+
   str = str.replace(/s$/, '');
 
   if (str === 'day') {
@@ -369,12 +371,19 @@ var handleObject = function handleObject(s, obj) {
   var keys = Object.keys(obj);
 
   for (var i = 0; i < keys.length; i++) {
-    var unit = keys[i];
+    var unit = keys[i]; //make sure we have this method
 
-    if (s[unit] !== undefined) {
-      var num = obj[unit] || 0;
-      s = s[unit](num);
+    if (s[unit] === undefined || typeof s[unit] !== 'function') {
+      continue;
+    } //make sure the value is a number
+
+
+    if (obj[unit] === null || obj[unit] === undefined || obj[unit] === '') {
+      continue;
     }
+
+    var num = obj[unit] || 0;
+    s = s[unit](num);
   }
 
   return s;
@@ -887,6 +896,15 @@ var methods = {
 
     return _since(this, d);
   },
+  next: function next(unit) {
+    var s = this.add(1, unit);
+    return s.startOf(unit);
+  },
+  //the start of the previous year/week/century
+  last: function last(unit) {
+    var s = this.subtract(1, unit);
+    return s.startOf(unit);
+  },
   isValid: function isValid() {
     //null/undefined epochs
     if (!this.epoch && this.epoch !== 0) {
@@ -959,7 +977,9 @@ var keep = {
   month: order.slice(0, 4),
   quarter: order.slice(0, 4),
   season: order.slice(0, 4),
-  year: order
+  year: order,
+  decade: order,
+  century: order
 };
 keep.week = keep.date;
 keep.season = keep.date;
@@ -999,6 +1019,11 @@ var rollMonth = function rollMonth(want, old) {
 var addMethods = function addMethods(SpaceTime) {
   SpaceTime.prototype.add = function (num, unit) {
     var s = this.clone();
+
+    if (!unit) {
+      return s; //don't bother
+    }
+
     var old = this.clone();
     unit = fns.normalize(unit); //move forward by the estimated milliseconds (rough)
 
@@ -1028,13 +1053,35 @@ var addMethods = function addMethods(SpaceTime) {
       want.month = old.month() + num; //month is the one unit we 'model' directly
 
       want = rollMonth(want, old);
+    } //support coercing a week, too
+
+
+    if (unit === 'week') {
+      var sum = old.date() + num * 7;
+
+      if (sum <= 28 && sum > 1) {
+        want.date = sum;
+      }
     } //support 25-hour day-changes on dst-changes
-    else if (unit === 'date' && num !== 0 && old.isSame(s, 'day')) {
-        want.date = old.date() + num;
+    else if (unit === 'date') {
+        //specify a naive date number, if it's easy to do...
+        var _sum = old.date() + num;
+
+        if (_sum <= 28 && _sum > 1) {
+          want.date = _sum;
+        } //or if we haven't moved at all..
+        else if (num !== 0 && old.isSame(s, 'day')) {
+            want.date = old.date() + num;
+          }
       } //ensure year has changed (leap-years)
       else if (unit === 'year' && s.year() === old.year()) {
           s.epoch += ms.week;
-        } //keep current date, unless the month doesn't have it.
+        } //these are easier
+        else if (unit === 'decade') {
+            want.year = s.year() + 10;
+          } else if (unit === 'century') {
+            want.year = s.year() + 100;
+          } //keep current date, unless the month doesn't have it.
 
 
     if (keepDate[unit]) {
@@ -1430,7 +1477,8 @@ var aliases = {
   'mm/dd/yyyy': 'numeric-us',
   'dd/mm/yyyy': 'numeric-us',
   'little-endian': 'numeric-uk',
-  'big-endian': 'numeric'
+  'big-endian': 'numeric',
+  'day-nice': 'nice-day'
 };
 Object.keys(aliases).forEach(function (k) {
   return format[k] = format[aliases[k]];
@@ -2349,6 +2397,10 @@ var addMethods = function addMethods(SpaceTime) {
   SpaceTime.prototype.isSame = function (b, unit) {
     var a = this;
 
+    if (!unit) {
+      return null;
+    }
+
     if (typeof b === 'string' || typeof b === 'number') {
       b = new SpaceTime(b, this.timezone.name);
     } //support 'seconds' aswell as 'second'
@@ -2527,7 +2579,6 @@ var ms = _dereq_('../../data/milliseconds'); //basically, step-forward/backward 
 
 
 var walk = function walk(s, n, fn, unit, previous) {
-  // console.log(unit, s.d.getDate())
   var current = s.d[fn]();
 
   if (current === n) {
@@ -2538,10 +2589,13 @@ var walk = function walk(s, n, fn, unit, previous) {
   var original = s.epoch; //try to get it as close as we can
 
   var diff = n - current;
-  s.epoch += ms[unit] * diff; //edge case, if we are going many days, be a little conservative
+  s.epoch += ms[unit] * diff; //DST edge-case: if we are going many days, be a little conservative
 
   if (unit === 'day' && Math.abs(diff) > 28) {
-    s.epoch += ms.hour;
+    //but don't push it over a month
+    if (n < 28) {
+      s.epoch += ms.hour;
+    }
   } //repair it if we've gone too far or something
   //(go by half-steps, just in case)
 
@@ -2678,8 +2732,7 @@ var walkTo = function walkTo(s, wants) {
     } // console.log(k, n)
 
 
-    units[k].walkTo(s, n); // console.log(s.monthName())
-    // console.log(s.format())
+    units[k].walkTo(s, n);
   }
 
   return;
@@ -2977,6 +3030,20 @@ var units = {
       millisecond: 0
     });
     return s;
+  },
+  decade: function decade(s) {
+    s = s.startOf('year');
+    var year = s.year();
+    var decade = parseInt(year / 10, 10) * 10;
+    s = s.year(decade);
+    return s;
+  },
+  century: function century(s) {
+    s = s.startOf('year');
+    var year = s.year();
+    var decade = parseInt(year / 100, 10) * 100;
+    s = s.year(decade);
+    return s;
   }
 };
 units.date = units.day;
@@ -3202,9 +3269,7 @@ var informal = _dereq_('../../zonefile/informal').lookup;
 
 var guessTz = _dereq_('./guessTz');
 
-var local = guessTz(); // console.log(informal)
-// const isNum = /^(etc\/gmt|etc|gmt|utc|h)([+\-0-9 ]+)$/i
-
+var local = guessTz();
 var isOffset = /(\-?[0-9]+)h(rs)?/; //add all the city names by themselves
 
 var cities = Object.keys(tzs).reduce(function (h, k) {
@@ -3446,13 +3511,11 @@ var quickOffset = function quickOffset(s) {
   }
 
   var split = obj.dst.split('->');
-  var inSummer = isSummer(s.epoch, split[0], split[1], jul); // console.log(s.epoch, inSummer)
-  // console.log(new Date(s.epoch), inSummer)
+  var inSummer = isSummer(s.epoch, split[0], split[1], jul);
 
   if (inSummer === true) {
     return jul;
-  } // console.log(jul)
-
+  }
 
   return dec;
 };
@@ -3978,7 +4041,7 @@ module.exports = all;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(_dereq_,module,exports){
 (function (global){
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).spencerColor=e()}}(function(){return function u(i,a,c){function f(r,e){if(!a[r]){if(!i[r]){var o="function"==typeof _dereq_&&_dereq_;if(!e&&o)return o(r,!0);if(s)return s(r,!0);var n=new Error("Cannot find module '"+r+"'");throw n.code="MODULE_NOT_FOUND",n}var t=a[r]={exports:{}};i[r][0].call(t.exports,function(e){return f(i[r][1][e]||e)},t,t.exports,u,i,a,c)}return a[r].exports}for(var s="function"==typeof _dereq_&&_dereq_,e=0;e<c.length;e++)f(c[e]);return f}({1:[function(e,r,o){"use strict";r.exports={blue:"#6699cc",green:"#6accb2",yellow:"#e1e6b3",red:"#cc7066",pink:"#F2C0BB",brown:"#705E5C",orange:"#cc8a66",purple:"#d8b3e6",navy:"#335799",olive:"#7f9c6c",fuscia:"#735873",beige:"#e6d7b3",slate:"#8C8C88",suede:"#9c896c",burnt:"#603a39",sea:"#50617A",sky:"#2D85A8",night:"#303b50",rouge:"#914045",grey:"#838B91",mud:"#C4ABAB",royal:"#275291",cherry:"#cc6966",tulip:"#e6b3bc",rose:"#D68881",fire:"#AB5850",greyblue:"#72697D",greygreen:"#8BA3A2",greypurple:"#978BA3",burn:"#6D5685",slategrey:"#bfb0b3",light:"#a3a5a5",lighter:"#d7d5d2",fudge:"#4d4d4d",lightgrey:"#949a9e",white:"#fbfbfb",dimgrey:"#606c74",softblack:"#463D4F",dark:"#443d3d",black:"#333333"}},{}],2:[function(e,r,o){"use strict";var n=e("./colors"),t={juno:["blue","mud","navy","slate","pink","burn"],barrow:["rouge","red","orange","burnt","brown","greygreen"],roma:["#8a849a","#b5b0bf","rose","lighter","greygreen","mud"],palmer:["red","navy","olive","pink","suede","sky"],mark:["#848f9a","#9aa4ac","slate","#b0b8bf","mud","grey"],salmon:["sky","sea","fuscia","slate","mud","fudge"],dupont:["green","brown","orange","red","olive","blue"],bloor:["night","navy","beige","rouge","mud","grey"],yukon:["mud","slate","brown","sky","beige","red"],david:["blue","green","yellow","red","pink","light"],neste:["mud","cherry","royal","rouge","greygreen","greypurple"],ken:["red","sky","#c67a53","greygreen","#dfb59f","mud"]};Object.keys(t).forEach(function(e){t[e]=t[e].map(function(e){return n[e]||e})}),r.exports=t},{"./colors":1}],3:[function(e,r,o){"use strict";var n=e("./colors"),t=e("./combos"),u={colors:n,list:Object.keys(n).map(function(e){return[e,n[e]]}),combos:t};u=Object.assign(u,t),r.exports=u},{"./colors":1,"./combos":2}]},{},[3])(3)});
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).spencerColor=e()}}(function(){return function u(i,a,c){function f(r,e){if(!a[r]){if(!i[r]){var o="function"==typeof _dereq_&&_dereq_;if(!e&&o)return o(r,!0);if(d)return d(r,!0);var n=new Error("Cannot find module '"+r+"'");throw n.code="MODULE_NOT_FOUND",n}var t=a[r]={exports:{}};i[r][0].call(t.exports,function(e){return f(i[r][1][e]||e)},t,t.exports,u,i,a,c)}return a[r].exports}for(var d="function"==typeof _dereq_&&_dereq_,e=0;e<c.length;e++)f(c[e]);return f}({1:[function(e,r,o){"use strict";r.exports={blue:"#6699cc",green:"#6accb2",yellow:"#e1e6b3",red:"#cc7066",pink:"#F2C0BB",brown:"#705E5C",orange:"#cc8a66",purple:"#d8b3e6",navy:"#335799",olive:"#7f9c6c",fuscia:"#735873",beige:"#e6d7b3",slate:"#8C8C88",suede:"#9c896c",burnt:"#603a39",sea:"#50617A",sky:"#2D85A8",night:"#303b50",rouge:"#914045",grey:"#838B91",mud:"#C4ABAB",royal:"#275291",cherry:"#cc6966",tulip:"#e6b3bc",rose:"#D68881",fire:"#AB5850",greyblue:"#72697D",greygreen:"#8BA3A2",greypurple:"#978BA3",burn:"#6D5685",slategrey:"#bfb0b3",light:"#a3a5a5",lighter:"#d7d5d2",fudge:"#4d4d4d",lightgrey:"#949a9e",white:"#fbfbfb",dimgrey:"#606c74",softblack:"#463D4F",dark:"#443d3d",black:"#333333"}},{}],2:[function(e,r,o){"use strict";var n=e("./colors"),t={juno:["blue","mud","navy","slate","pink","burn"],barrow:["rouge","red","orange","burnt","brown","greygreen"],roma:["#8a849a","#b5b0bf","rose","lighter","greygreen","mud"],palmer:["red","navy","olive","pink","suede","sky"],mark:["#848f9a","#9aa4ac","slate","#b0b8bf","mud","grey"],salmon:["sky","sea","fuscia","slate","mud","fudge"],dupont:["green","brown","orange","red","olive","blue"],bloor:["night","navy","beige","rouge","mud","grey"],yukon:["mud","slate","brown","sky","beige","red"],david:["blue","green","yellow","red","pink","light"],neste:["mud","cherry","royal","rouge","greygreen","greypurple"],ken:["red","sky","#c67a53","greygreen","#dfb59f","mud"]};Object.keys(t).forEach(function(e){t[e]=t[e].map(function(e){return n[e]||e})}),r.exports=t},{"./colors":1}],3:[function(e,r,o){"use strict";var n=e("./colors"),t=e("./combos"),u={colors:n,list:Object.keys(n).map(function(e){return n[e]}),combos:t};r.exports=u},{"./colors":1,"./combos":2}]},{},[3])(3)});
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(_dereq_,module,exports){
@@ -4075,6 +4138,8 @@ var vhtml = _dereq_('vhtml');
 var spacetime = _dereq_('spacetime');
 
 var _color = _dereq_('spencer-color').colors;
+
+console.log(spacetime.version);
 
 var Calendar =
 /*#__PURE__*/
@@ -4280,19 +4345,13 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 var buildWeek = function buildWeek(d, self, month) {
   var h = self.h;
-  var days = [];
-  var last = 1;
+  var days = []; // console.log(d.format('iso'))
 
   for (var i = 0; i < 7; i += 1) {
-    var stub = d.format('month') !== month;
+    var stub = d.format('month') !== month; // console.log(d.format('date'))
+
     days.push(self.buildDay(d, stub));
     d = d.add(1, 'day');
-
-    if (d.date() === last) {
-      console.log(d.format('nice'));
-    }
-
-    last = d.date();
   }
 
   return h(_templateObject(), days);
@@ -4419,7 +4478,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div class=\"w100p row\">\n        <div class=\"grey f09\">", "</div>\n        <div class=\"w8 f06\">", "</div>\n      </div>"]);
+  var data = _taggedTemplateLiteral(["<div class=\"w100p row mt05\">\n        <div class=\"grey f09\">", "</div>\n        <div class=\"w8 f06\">", "</div>\n      </div>"]);
 
   _templateObject = function _templateObject() {
     return data;

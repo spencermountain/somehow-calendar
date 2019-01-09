@@ -23,8 +23,8 @@
   "homepage": "https://github.com/spencermountain/frown#readme",
   "dependencies": {
     "htm": "2.0.0",
-    "spacetime": "^5.1.0",
-    "spencer-color": "0.0.5",
+    "spacetime": "5.2.1",
+    "spencer-color": "0.1.0",
     "spencer-css": "0.0.6",
     "vhtml": "2.1.0"
   },
@@ -34,7 +34,7 @@
     "babelify": "10.0.0",
     "budo": "11.5.0",
     "derequire": "2.0.6",
-    "shelljs": "^0.8.3",
-    "terser": "^3.14.0"
+    "shelljs": "0.8.3",
+    "terser": "3.14.1"
   }
 }
