@@ -1,4 +1,5 @@
 const calendars = require('./src')
+require('./demo/duration')
 
 let c = calendars.year.leftAlign('2019')
 c.color('june 5th 2019', 'june 8th 2019', 'red')

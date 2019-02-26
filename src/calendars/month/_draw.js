@@ -1,3 +1,6 @@
+const htm = require('htm')
+const vhtml = require('vhtml')
+
 const buildWeek = function(d, self, month) {
   let h = self.h
   let days = []
@@ -13,9 +16,9 @@ const buildWeek = function(d, self, month) {
   </div>`
 }
 //
-const drawMonth = function(d, self) {
+const drawMonth = function(d, self = {}) {
   let month = d.format('month')
-  let h = self.h
+  let h = self.h || htm.bind(vhtml)
   d = d.startOf('week') //.add(2, 'hours')
   let weeks = []
   for (let i = 0; i < 6; i += 1) {

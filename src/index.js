@@ -5,6 +5,7 @@ const ByQuarter = require('./calendars/year/ByQuarter')
 
 const Month = require('./calendars/month/Month')
 const Quarter = require('./calendars/quarter/ByMonth')
+const show = require('./dynamic')
 
 const api = {
   year: {
@@ -18,7 +19,8 @@ const api = {
   },
   quarter: {
     byMonth: (a, b) => new Quarter(a, b),
-  }
+  },
+  show: show
 }
 
 module.exports = api

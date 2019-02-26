@@ -1,14 +1,14 @@
-/* sometime v0.0.7
+/* sometime v0.0.8
    github.com/spencermountain/sometime
    MIT
 */
 
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sometime = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
-!function(){var n={},e=JSON.stringify;function t(e){for(var t=".",c=0;c<e.length;c++)t+=e[c].length+","+e[c];return(n[t]||(n[t]=i(e)))(this,arguments)}var i=function(n){for(var t,i,c,r,s,o=0,u="return ",a="",f="",h=0,l="",g="",d="",v=0,m=function(){c?9===o?(h++&&(u+=","),u+="h("+(f||e(a)),o=0):13===o||0===o&&"..."===a?(0===o?(d||(d=")",l=l?"Object.assign("+l:"Object.assign({}"),l+=g+","+f,g=""):r&&(l+=l?","+(g?"":"{"):"{",g="}",l+=e(r)+":",l+=f||(s||a)&&e(a)||"true",r=""),s=!1):0===o&&(o=13,r=a,a=f="",m(),o=0):(f||(a=a.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))&&(h++&&(u+=","),u+=f||e(a)),a=f=""},p=0;p<n.length;p++){p>0&&(c||m(),f="$["+p+"]",m());for(var O=0;O<n[p].length;O++){if(i=n[p].charCodeAt(O),c){if(39===i||34===i){if(v===i){v=0;continue}if(0===v){v=i;continue}}if(0===v)switch(i){case 62:m(),47!==o&&(u+=l?","+l+g+d:",null"),t&&(u+=")"),c=0,l="",o=1;continue;case 61:o=13,s=!0,r=a,a="";continue;case 47:t||(t=!0,9!==o||a.trim()||(a=f="",o=47));continue;case 9:case 10:case 13:case 32:m(),o=0;continue}}else if(60===i){m(),c=1,d=g=l="",t=s=!1,o=9;continue}a+=n[p].charAt(O)}}return m(),Function("h","$",u)};"undefined"!=typeof module?module.exports=t:self.htm=t}();
+!function(){var n=function(t,e,r,u){for(var o=1;o<e.length;o++){var f=e[o++],s="number"==typeof f?r[f]:f;1===e[o]?u[0]=s:2===e[o]?(u[1]=u[1]||{})[e[++o]]=s:3===e[o]?u[1]=Object.assign(u[1]||{},s):u.push(e[o]?t.apply(null,n(t,s,r,["",null])):s)}return u},t=function(n){for(var t,e,r=1,u="",o="",f=[0],s=function(n){1===r&&(n||(u=u.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))?f.push(n||u,0):3===r&&(n||u)?(f.push(n||u,1),r=2):2===r&&"..."===u&&n?f.push(n,3):2===r&&u&&!n?f.push(!0,2,u):4===r&&e&&(f.push(n||u,2,e),e=""),u=""},p=0;p<n.length;p++){p&&(1===r&&s(),s(p));for(var h=0;h<n[p].length;h++)t=n[p][h],1===r?"<"===t?(s(),f=[f],r=3):u+=t:o?t===o?o="":u+=t:'"'===t||"'"===t?o=t:">"===t?(s(),r=1):r&&("="===t?(r=4,e=u,u=""):"/"===t?(s(),3===r&&(f=f[0]),r=f,(f=f[0]).push(r,4),r=0):" "===t||"\t"===t||"\n"===t||"\r"===t?(s(),r=2):u+=t)}return s(),f},e="function"==typeof Map,r=e?new Map:{},u=e?function(n){var e=r.get(n);return e||r.set(n,e=t(n)),e}:function(n){for(var e="",u=0;u<n.length;u++)e+=n[u].length+"-"+n[u];return r[e]||(r[e]=t(n))},o=function(t){var e=n(this,u(t),arguments,[]);return e.length>1?e:e[0]};"undefined"!=typeof module?module.exports=o:self.htm=o}();
 
 },{}],2:[function(_dereq_,module,exports){
 (function (global){
-/* spacetime v5.2.1
+/* spacetime v5.3.0
    github.com/spencermountain/spacetime
    MIT
 */
@@ -16,7 +16,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.spacetime = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof _dereq_&&_dereq_;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof _dereq_&&_dereq_,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
 "use strict";
 
-module.exports = '5.2.1';
+module.exports = '5.3.0';
 
 },{}],2:[function(_dereq_,module,exports){
 'use strict';
@@ -249,6 +249,13 @@ exports.beADate = function (d, s) {
   return d;
 };
 
+exports.formatTimezone = function (offset, delimiter) {
+  delimiter = delimiter || '';
+  var absOffset = Math.abs(offset);
+  var sign = offset > 0 ? '+' : '-';
+  return "".concat(sign).concat(exports.zeroPad(absOffset)).concat(delimiter, "00");
+};
+
 },{}],9:[function(_dereq_,module,exports){
 'use strict';
 
@@ -358,7 +365,7 @@ var minimumEpoch = 2500000000; //support [2016, 03, 01] format
 var handleArray = function handleArray(s, arr) {
   var order = ['year', 'month', 'date', 'hour', 'minute', 'second', 'millisecond'];
 
-  for (var i = 0; i < arr.length; i++) {
+  for (var i = 0; i < order.length; i++) {
     var num = arr[i] || 0;
     s = s[order[i]](num);
   }
@@ -523,19 +530,30 @@ var parseOffset = function parseOffset(s, offset) {
 
   if (offset === 'Z') {
     offset = '+0000';
-  } //support "+01:00"
+  } // according to ISO8601, tz could be hh:mm, hhmm or hh
+  // so need few more steps before the calculation.
 
 
-  if (/:00/.test(offset) === true) {
-    offset = offset.replace(/:00/, '');
-  } //support "+01:30"
+  var num = 0; // for (+-)hh:mm
+
+  if (/^[\+-]?[0-9]{2}:[0-9]{2}$/.test(offset)) {
+    //support "+01:00"
+    if (/:00/.test(offset) === true) {
+      offset = offset.replace(/:00/, '');
+    } //support "+01:30"
 
 
-  if (/:00/.test(offset) === true) {
-    offset = offset.replace(/:00/, '.5');
+    if (/:30/.test(offset) === true) {
+      offset = offset.replace(/:30/, '.5');
+    }
+  } // for (+-)hhmm
+
+
+  if (/^[\+-]?[0-9]{4}$/.test(offset)) {
+    offset = offset.replace(/30$/, '.5');
   }
 
-  var num = parseInt(offset, 10); //divide by 100 or 10 - , "+0100", "+01"
+  num = parseFloat(offset); //divide by 100 or 10 - , "+0100", "+01"
 
   if (Math.abs(num) > 100) {
     num = num / 100;
@@ -594,24 +612,15 @@ var hasDate = _dereq_('./hasDate');
 var fns = _dereq_('../fns'); // const zones = require('../../data');
 
 
-var parseHour = function parseHour(s, str) {
+var parseHour = function parseHour(s) {
+  var str = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
   str = str.replace(/^\s+/, ''); //trim
 
-  var arr = str.match(/([0-9]{1,2}):([0-9]{1,2}):?([0-9]{1,2})?[:\.]?([0-9]{1,4})?/);
-
-  if (arr) {
-    s = s.hour(arr[1]);
-    s = s.minute(arr[2]);
-
-    if (arr[3]) {
-      s = s.seconds(arr[3]);
-    }
-
-    if (arr[4]) {
-      s = s.millisecond(arr[4]);
-    }
-  }
-
+  var arr = str.match(/([0-9]{1,2}):([0-9]{1,2}):?([0-9]{1,2})?[:\.]?([0-9]{1,4})?/) || [];
+  s = s.hour(arr[1] || 0);
+  s = s.minute(arr[2] || 0);
+  s = s.seconds(arr[3] || 0);
+  s = s.millisecond(arr[4] || 0);
   return s;
 };
 
@@ -668,6 +677,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseHour(s);
     return s;
   }
 }, //short - uk "03/25/2015"  //0-based-months!
@@ -696,6 +706,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseHour(s);
     return s;
   }
 }, //Long "Mar 25 2015"
@@ -717,11 +728,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
-
-    if (arr[4]) {
-      s = parseHour(s, arr[4]);
-    }
-
+    s = parseHour(s, arr[4]);
     return s;
   }
 }, //February 2017 (implied date)
@@ -742,11 +749,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
-
-    if (arr[4]) {
-      s = parseHour(s, arr[4]);
-    }
-
+    s = parseHour(s, arr[4]);
     return s;
   }
 }, //Long "25 Mar 2015"
@@ -767,6 +770,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseHour(s);
     return s;
   }
 }, {
@@ -787,6 +791,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseHour(s);
     return s;
   }
 }, {
@@ -812,6 +817,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseHour(s);
     return s;
   }
 }];
@@ -981,9 +987,18 @@ var keep = {
   decade: order,
   century: order
 };
-keep.week = keep.date;
+keep.week = keep.hour;
 keep.season = keep.date;
-keep.quarter = keep.date;
+keep.quarter = keep.date; // Units need to be dst adjuested
+
+var dstAwareUnits = {
+  year: true,
+  quarter: true,
+  season: true,
+  month: true,
+  week: true,
+  day: true
+};
 var keepDate = {
   month: true,
   quarter: true,
@@ -1046,6 +1061,11 @@ var addMethods = function addMethods(SpaceTime) {
       keep[unit].forEach(function (u) {
         want[u] = old[u]();
       });
+    }
+
+    if (dstAwareUnits[unit]) {
+      var diff = old.timezone().current.offset - s.timezone().current.offset;
+      s.epoch += diff * 3600 * 1000;
     } //ensure month/year has ticked-over
 
 
@@ -1526,7 +1546,9 @@ module.exports = printFormat;
 },{"../../data/days":2,"../../data/months":5,"../../fns":8,"./_offset":19}],21:[function(_dereq_,module,exports){
 'use strict';
 
-var pad = _dereq_('../../fns').zeroPad; //parse this insane unix-time-templating thing, from the 19th century
+var pad = _dereq_('../../fns').zeroPad;
+
+var formatTimezone = _dereq_('../../fns').formatTimezone; //parse this insane unix-time-templating thing, from the 19th century
 //http://unicode.org/reports/tr35/tr35-25.html#Date_Format_Patterns
 //time-symbols we support
 
@@ -1704,16 +1726,16 @@ var mapping = {
     return s.timezone().name;
   },
   Z: function Z(s) {
-    return s.timezone().current.offset + '00';
+    return formatTimezone(s.timezone().current.offset);
   },
   ZZ: function ZZ(s) {
-    return s.timezone().current.offset + '00';
+    return formatTimezone(s.timezone().current.offset);
   },
   ZZZ: function ZZZ(s) {
-    return s.timezone().current.offset + '00';
+    return formatTimezone(s.timezone().current.offset);
   },
   ZZZZ: function ZZZZ(s) {
-    return s.timezone().current.offset + ':00';
+    return formatTimezone(s.timezone().current.offset, ':');
   }
 };
 
@@ -2612,7 +2634,7 @@ var walk = function walk(s, n, fn, unit, previous) {
 
 
   if (previous !== null && startUnit !== s.d[previous]()) {
-    console.warn('spacetime warning: missed setting ' + unit);
+    // console.warn('spacetime warning: missed setting ' + unit)
     s.epoch = original;
   }
 }; //find the desired date by a increment/check while loop
@@ -2789,13 +2811,23 @@ function getDiff(a, b) {
       return;
     }
 
-    var max = earlier.diff(later, unit);
-    earlier = earlier.add(max, unit); //did we go one too far?
+    var max = earlier.diff(later, unit); // use a temp object to do the 'gone too far' math, then
+    // only adds actual difference to 'earlier' which prevents
+    // situation like 31 Jan adds 1 month to Feb end up with date 28 and
+    // only goes back to day 28 Jan when subtract 1 month after that
+    // 
+    // issue: https://github.com/spencermountain/spacetime/issues/89
 
-    if (earlier.epoch > later.epoch + 10) {
+    var temp = earlier.clone().add(max, unit); //did we go one too far?
+
+    if (temp.epoch > later.epoch + 10) {
       //(fudge this calc by 10 milliseconds)
-      earlier = earlier.subtract(1, unit);
       max -= 1;
+    } // add 0 year can also change epoch
+
+
+    if (max !== 0) {
+      earlier = earlier.add(max, unit);
     }
 
     diff[unit] = max;
@@ -3617,7 +3649,7 @@ module.exports={
   "8|n": "2/brunei,2/choibalsan,2/chongqing,2/chungking,2/harbin,2/hong_kong,2/irkutsk,2/kuching,2/macao,2/macau,2/manila,2/shanghai,2/taipei,2/ujung_pandang,2/ulaanbaatar",
   "8.75|s": "4/eucla",
   "7|s": "12/davis,2/jakarta,9/christmas",
-  "7|n": "2/bangkok,2/barnaul,2/ho_chi_minh,2/hovd,2/krasnoyarsk,2/novokuznetsk,2/novosibirsk,2/phnom_penh,2/pontianak,2/saigon,2/vientiane",
+  "7|n": "2/bangkok,2/barnaul,2/ho_chi_minh,2/hovd,2/krasnoyarsk,2/novokuznetsk,2/novosibirsk,2/phnom_penh,2/pontianak,2/saigon,2/tomsk,2/vientiane",
   "6|s": "12/vostok",
   "6|n": "2/almaty,2/bishkek,2/dacca,2/dhaka,2/kashgar,2/omsk,2/qyzylorda,2/thimbu,2/thimphu,2/urumqi,9/chagos",
   "6.5|n": "2/rangoon,9/cocos",
@@ -3626,7 +3658,7 @@ module.exports={
   "5.75|n": "2/kathmandu,2/katmandu",
   "5.5|n": "2/calcutta,2/colombo,2/kolkata",
   "4|s": "9/reunion",
-  "4|n": "2/dubai,2/muscat,2/tbilisi,2/yerevan,8/astrakhan,8/samara,8/saratov,8/ulyanovsk,9/mahe,9/mauritius",
+  "4|n": "2/dubai,2/muscat,2/tbilisi,2/yerevan,8/astrakhan,8/samara,8/saratov,8/ulyanovsk,8/volgograd,2/volgograd,9/mahe,9/mauritius",
   "4.5|n|03/22:00->09/21:24": "2/tehran",
   "4.5|n": "2/kabul",
   "3|s": "12/syowa,9/antananarivo",
@@ -3637,7 +3669,7 @@ module.exports={
   "3|n|03/25:00->10/27:24": "2/beirut",
   "3|n|03/24:01->10/27:01": "2/gaza,2/hebron",
   "3|n|03/23:02->10/28:02": "2/jerusalem,2/tel_aviv",
-  "3|n": "0/addis_ababa,0/asmara,0/asmera,0/dar_es_salaam,0/djibouti,0/juba,0/kampala,0/mogadishu,0/nairobi,2/aden,2/baghdad,2/bahrain,2/istanbul,2/kuwait,2/qatar,2/riyadh,8/istanbul,8/kirov,8/minsk,8/moscow,8/simferopol,8/volgograd,9/comoro,9/mayotte",
+  "3|n": "0/addis_ababa,0/asmara,0/asmera,0/dar_es_salaam,0/djibouti,0/juba,0/kampala,0/mogadishu,0/nairobi,2/aden,2/baghdad,2/bahrain,2/istanbul,2/kuwait,2/qatar,2/riyadh,8/istanbul,8/kirov,8/minsk,8/moscow,8/simferopol,9/comoro,9/mayotte",
   "2|s|03/25:02->10/28:02": "12/troll",
   "2|s": "0/gaborone,0/harare,0/johannesburg,0/lubumbashi,0/lusaka,0/maputo,0/maseru,0/mbabane",
   "2|n|03/25:02->10/28:03": "0/ceuta,arctic/longyearbyen,3/jan_mayen,8/amsterdam,8/andorra,8/belgrade,8/berlin,8/bratislava,8/brussels,8/budapest,8/busingen,8/copenhagen,8/gibraltar,8/ljubljana,8/luxembourg,8/madrid,8/malta,8/monaco,8/oslo,8/paris,8/podgorica,8/prague,8/rome,8/san_marino,8/sarajevo,8/skopje,8/stockholm,8/tirane,8/vaduz,8/vatican,8/vienna,8/warsaw,8/zagreb,8/zurich",
@@ -4009,7 +4041,7 @@ Object.keys(data).forEach(function (k) {
   });
 }); //add etc/gmt+n
 
-for (var i = -12; i < 13; i += 1) {
+for (var i = -13; i <= 13; i += 0.5) {
   var num = i;
 
   if (num > 0) {
@@ -4268,6 +4300,161 @@ module.exports = Calendar;
 },{"htm":1,"spacetime":2,"spencer-color":3,"vhtml":4}],6:[function(_dereq_,module,exports){
 "use strict";
 
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div style=", " title=\"", "\">", "</div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var htm = _dereq_('htm');
+
+var vhtml = _dereq_('vhtml');
+
+var spacetime = _dereq_('spacetime');
+
+var _color = _dereq_('spencer-color').colors;
+
+console.log(spacetime.version);
+
+var Calendar =
+/*#__PURE__*/
+function () {
+  function Calendar(d) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    _classCallCheck(this, Calendar);
+
+    this.d = spacetime(d, options.timezone);
+    this.options = options;
+    this.h = htm.bind(vhtml);
+    this.styles = [];
+    this.squareDay = false;
+  }
+
+  _createClass(Calendar, [{
+    key: "buildStyle",
+    value: function buildStyle(obj) {
+      return Object.keys(obj).reduce(function (str, k) {
+        str += "".concat(k, ":").concat(obj[k], ";");
+        return str;
+      }, '');
+    }
+  }, {
+    key: "findStyle",
+    value: function findStyle(d) {
+      var style = {
+        flex: '1 1 0',
+        overflow: 'hidden',
+        color: _color.lighter,
+        margin: 'auto',
+        // 'min-width': '10px',
+        'min-height': '1rem',
+        height: 0,
+        'font-size': '8px',
+        'border': "1px solid ".concat(_color.lighter)
+      };
+
+      if (this.squareDay === true) {
+        style['padding-bottom'] = '10%';
+        style['min-height'] = '0px';
+      }
+
+      this.styles.forEach(function (c) {
+        if (d.isBefore(c.end) && d.isAfter(c.start)) {
+          if (c.color !== undefined) {
+            style['background-color'] = c.color;
+            style.border = "1px solid ".concat(c.color);
+          }
+
+          if (c.underline !== undefined) {
+            style['border-bottom'] = '1px solid ' + c.underline;
+          }
+        }
+      });
+      return style;
+    }
+  }, {
+    key: "buildDay",
+    value: function buildDay(d, stub) {
+      var h = this.h;
+      var style = this.findStyle(d);
+      var num = '';
+
+      if (this.options.numbers !== false) {
+        num = d.date();
+      }
+
+      var title = d.format('{month-short} {date}');
+
+      if (stub) {
+        style['background-color'] = _color.white;
+        style.border = '1px solid rgba(0,0,0,0)'; // + c.dark
+
+        num = '';
+        title = '';
+      }
+
+      return h(_templateObject(), this.buildStyle(style), title, num);
+    } // weekends(color) {}
+
+  }, {
+    key: "color",
+    value: function color(a, b, col) {
+      a = spacetime(a).startOf('day');
+      b = spacetime(b).endOf('day');
+      this.styles.push({
+        start: a,
+        end: b,
+        color: _color[col] || col
+      });
+      return this;
+    }
+  }, {
+    key: "underline",
+    value: function underline(a, b, col) {
+      a = spacetime(a).startOf('day');
+      b = spacetime(b).endOf('day');
+      this.styles.push({
+        start: a,
+        end: b,
+        underline: _color[col] || col
+      });
+      return this;
+    }
+  }, {
+    key: "day",
+    value: function day(d, col) {
+      this.color(d, d, col);
+      return this;
+    }
+  }, {
+    key: "bind",
+    value: function bind(r) {
+      this.h = htm.bind(r);
+      return this;
+    }
+  }]);
+
+  return Calendar;
+}();
+
+module.exports = Calendar;
+
+},{"htm":1,"spacetime":2,"spencer-color":3,"vhtml":4}],7:[function(_dereq_,module,exports){
+"use strict";
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4318,7 +4505,7 @@ function (_Calendar) {
 
 module.exports = Month;
 
-},{"../Calendar":5,"./_draw":7}],7:[function(_dereq_,module,exports){
+},{"../Calendar":5,"./_draw":8}],8:[function(_dereq_,module,exports){
 "use strict";
 
 function _templateObject2() {
@@ -4343,6 +4530,10 @@ function _templateObject() {
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
+var htm = _dereq_('htm');
+
+var vhtml = _dereq_('vhtml');
+
 var buildWeek = function buildWeek(d, self, month) {
   var h = self.h;
   var days = []; // console.log(d.format('iso'))
@@ -4358,9 +4549,10 @@ var buildWeek = function buildWeek(d, self, month) {
 }; //
 
 
-var drawMonth = function drawMonth(d, self) {
+var drawMonth = function drawMonth(d) {
+  var self = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var month = d.format('month');
-  var h = self.h;
+  var h = self.h || htm.bind(vhtml);
   d = d.startOf('week'); //.add(2, 'hours')
 
   var weeks = [];
@@ -4375,7 +4567,7 @@ var drawMonth = function drawMonth(d, self) {
 
 module.exports = drawMonth;
 
-},{}],8:[function(_dereq_,module,exports){
+},{"htm":1,"vhtml":4}],9:[function(_dereq_,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -4462,7 +4654,7 @@ function (_Calendar) {
 
 module.exports = ByMonth;
 
-},{"../Calendar":5,"../month/_draw":7}],9:[function(_dereq_,module,exports){
+},{"../Calendar":5,"../month/_draw":8}],10:[function(_dereq_,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -4550,7 +4742,7 @@ function (_Calendar) {
 
 module.exports = ByMonth;
 
-},{"../Calendar":5,"../month/_draw":7}],10:[function(_dereq_,module,exports){
+},{"../Calendar":5,"../month/_draw":8}],11:[function(_dereq_,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -4661,7 +4853,7 @@ function (_Calendar) {
 
 module.exports = ByQuarter;
 
-},{"../Calendar":5,"../month/_draw":7}],11:[function(_dereq_,module,exports){
+},{"../Calendar":5,"../month/_draw":8}],12:[function(_dereq_,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -4760,7 +4952,7 @@ function (_Calendar) {
 
 module.exports = LeftAlign;
 
-},{"../Calendar":5}],12:[function(_dereq_,module,exports){
+},{"../Calendar":5}],13:[function(_dereq_,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -4875,7 +5067,63 @@ function (_Calendar) {
 
 module.exports = WeekAlign;
 
-},{"../Calendar":5}],13:[function(_dereq_,module,exports){
+},{"../Calendar":5}],14:[function(_dereq_,module,exports){
+"use strict";
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"col\" style=\"max-width:100px;\">\n      <div class=\"grey f09\">", "</div>\n      <div class=\"w5 f06\">", "</div>\n    </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var spacetime = _dereq_('spacetime');
+
+var drawMonth = _dereq_('./calendars/month/_draw');
+
+var Calendar = _dereq_('./calendars/calendar');
+
+var htm = _dereq_('htm');
+
+var vhtml = _dereq_('vhtml');
+
+var h = htm.bind(vhtml); //
+
+var dynamic = function dynamic(start, end) {
+  start = spacetime(start);
+  end = spacetime(end);
+  var cal = new Calendar(start, {
+    numbers: false
+  });
+  var months = [];
+  var d = start;
+
+  if (start.isAfter(end)) {
+    var tmp = start;
+    start = end;
+    end = tmp;
+  }
+
+  var num = start.diff(end, 'months');
+
+  for (var i = 0; i < num; i += 1) {
+    var month = drawMonth(d, cal);
+    month = h(_templateObject(), d.format('month-short'), month);
+    months.push(month);
+    d = d.add(1, 'month');
+  }
+
+  return months;
+};
+
+module.exports = dynamic;
+
+},{"./calendars/calendar":6,"./calendars/month/_draw":8,"htm":1,"spacetime":2,"vhtml":4}],15:[function(_dereq_,module,exports){
 "use strict";
 
 var LeftAlignYear = _dereq_('./calendars/year/LeftAlign');
@@ -4889,6 +5137,8 @@ var _ByQuarter = _dereq_('./calendars/year/ByQuarter');
 var Month = _dereq_('./calendars/month/Month');
 
 var Quarter = _dereq_('./calendars/quarter/ByMonth');
+
+var show = _dereq_('./dynamic');
 
 var api = {
   year: {
@@ -4914,9 +5164,10 @@ var api = {
     byMonth: function byMonth(a, b) {
       return new Quarter(a, b);
     }
-  }
+  },
+  show: show
 };
 module.exports = api;
 
-},{"./calendars/month/Month":6,"./calendars/quarter/ByMonth":8,"./calendars/year/ByMonth":9,"./calendars/year/ByQuarter":10,"./calendars/year/LeftAlign":11,"./calendars/year/WeekAlign":12}]},{},[13])(13)
+},{"./calendars/month/Month":7,"./calendars/quarter/ByMonth":9,"./calendars/year/ByMonth":10,"./calendars/year/ByQuarter":11,"./calendars/year/LeftAlign":12,"./calendars/year/WeekAlign":13,"./dynamic":14}]},{},[15])(15)
 });
