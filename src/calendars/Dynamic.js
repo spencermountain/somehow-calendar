@@ -21,7 +21,7 @@ class Dynamic extends Calendar {
       end = tmp
     }
     let num = start.diff(end, 'months')
-    for (let i = 0; i < num; i += 1) {
+    for (let i = 0; i <= num; i += 1) {
       let month = drawMonth(d, this)
       month = this.h`<div class="col" style="max-width:100px;">
           <div class="grey f09">${d.format('month-short')}</div>
@@ -34,7 +34,7 @@ class Dynamic extends Calendar {
     return months
   }
   build() {
-    return this.drawMonths(this.start, this.end)
+    return this.drawMonths(this.start, this.end).join('')
   }
 }
 module.exports = Dynamic
