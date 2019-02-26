@@ -2,7 +2,7 @@ const htm = require('htm')
 const vhtml = require('vhtml')
 const spacetime = require('spacetime')
 const color = require('spencer-color').colors
-console.log(spacetime.version)
+
 class Calendar {
   constructor(d, options = {}) {
     this.d = spacetime(d, options.timezone)
@@ -10,6 +10,7 @@ class Calendar {
     this.h = htm.bind(vhtml)
     this.styles = []
     this.squareDay = false
+    this.weekends = true
   }
   buildStyle(obj) {
     return Object.keys(obj).reduce((str, k) => {
@@ -32,6 +33,13 @@ class Calendar {
     if (this.squareDay === true) {
       style['padding-bottom'] = '10%'
       style['min-height'] = '0px'
+    }
+
+    if (this.weekends === true) {
+      let day = d.day()
+      if (day === 0 || day === 6) {
+        style['background-color'] = '#ededed'
+      }
     }
     this.styles.forEach((c) => {
       if (d.isBefore(c.end) && d.isAfter(c.start)) {
