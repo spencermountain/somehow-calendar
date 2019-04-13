@@ -1,4 +1,4 @@
-/* somehow-calendar v0.1.0
+/* somehow-calendar v0.1.1
    github.com/spencermountain/somehow-calendar
    MIT
 */
@@ -4329,7 +4329,7 @@ return h;
 "use strict";
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div class=\"outline col\" >\n      ", "\n    </div>"]);
+  var data = _taggedTemplateLiteral(["<div style=\"", "\" >\n      ", "\n    </div>"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -4354,6 +4354,9 @@ var vhtml = _dereq_('vhtml');
 
 var drawMonth = _dereq_('./month');
 
+var styles = {
+  container: "\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n  align-items: flex-start;\n  text-align: center;\n  flex-wrap: wrap;\n  align-self: stretch;\n  "
+};
 var defaults = {
   dim_past: true,
   show_today: true,
@@ -4374,7 +4377,7 @@ function () {
     this.options = Object.assign({}, defaults, options);
     this.data = {
       colors: {},
-      underlined: {}
+      underline: {}
     };
     this.h = htm.bind(vhtml);
   }
@@ -4394,27 +4397,47 @@ function () {
 
       if (!_color) {
         _color = end;
-        end = start;
+        end = start.add(1, 'day');
       }
 
       end = spacetime(end);
+      start = start.minus(2, 'hours');
       start.every('day', end).forEach(function (d) {
         var date = d.format('iso-short');
         _this.data.colors[date] = _color;
       });
     }
   }, {
+    key: "underline",
+    value: function underline(start, end, color) {
+      var _this2 = this;
+
+      start = spacetime(start);
+
+      if (!color) {
+        color = end;
+        end = start.add(1, 'day');
+      }
+
+      end = spacetime(end);
+      start = start.minus(2, 'hours');
+      start.every('day', end).forEach(function (d) {
+        var date = d.format('iso-short');
+        _this2.data.underline[date] = color;
+      });
+    }
+  }, {
     key: "build",
     value: function build() {
-      var _this2 = this;
+      var _this3 = this;
 
       var beginning = this.start.clone();
       beginning = beginning.startOf('month').minus(2, 'hours');
       var months = beginning.every('month', this.end);
       months = months.map(function (d) {
-        return drawMonth(d, _this2);
+        return drawMonth(d, _this3);
       });
-      return this.h(_templateObject(), months);
+      return this.h(_templateObject(), styles.container, months);
     }
   }]);
 
@@ -4438,7 +4461,7 @@ module.exports = {
 "use strict";
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["<div style=\"", "\">\n    <div style=\"", "\">", "</div>\n    <div class=\" col\">\n      ", "\n    </div>\n  </div>"]);
+  var data = _taggedTemplateLiteral(["<div style=\"", "\">\n    <div style=\"", "\">", "</div>\n    <div>\n      ", "\n    </div>\n  </div>"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -4448,7 +4471,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div class=\"row\">\n    ", "\n  </div>"]);
+  var data = _taggedTemplateLiteral(["<div style=", ">\n    ", "\n  </div>"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -4472,6 +4495,11 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 var spacetime = _dereq_('spacetime');
 
 var today = spacetime.now();
+var styles = {
+  month: "\n    margin: 0.35rem;\n  ",
+  monthName: "\n    font-size: .667rem;\n    color: #838b91;\n    text-align: center;\n    margin-bottom: 0.2rem;\n    margin-top: 0.2rem;\n  ",
+  week: "\n    display: flex;\n    flex-direction: row;\n    justify-content: space-around;\n    align-items: center;\n    text-align: center;\n    flex-wrap: nowrap;\n    align-self: stretch;\n  "
+};
 
 var toStyle = function toStyle(obj) {
   return Object.keys(obj).reduce(function (str, k) {
@@ -4532,6 +4560,11 @@ var drawDay = function drawDay(d, cal, month) {
   if (cal.data.colors[date]) {
     style['background-color'] = cal.data.colors[date];
     style['border'] = '1px solid ' + cal.data.colors[date];
+  } //is it underlined?
+
+
+  if (cal.data.underline[date]) {
+    style['border-bottom'] = '3px solid ' + cal.data.underline[date];
   }
 
   return cal.h(_templateObject(), toStyle(style), d.format('nice-year'), inside);
@@ -4543,7 +4576,7 @@ var drawWeek = function drawWeek(w, cal, month) {
   var days = w.every('day', end).map(function (d) {
     return drawDay(d, cal, month);
   });
-  return cal.h(_templateObject2(), days);
+  return cal.h(_templateObject2(), styles.week, days);
 };
 
 var drawMonth = function drawMonth(start, cal) {
@@ -4554,9 +4587,7 @@ var drawMonth = function drawMonth(start, cal) {
   var weeks = start.every('week', end).map(function (d) {
     return drawWeek(d, cal, month);
   });
-  var container = "margin:0.35rem;";
-  var monthName = "font-size: .667rem; color:#838b91; text-align:center; margin-bottom:0.2rem;";
-  return cal.h(_templateObject3(), container, monthName, month, weeks);
+  return cal.h(_templateObject3(), styles.month, styles.monthName, month, weeks);
 };
 
 module.exports = drawMonth;

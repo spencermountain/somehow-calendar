@@ -3,6 +3,18 @@ const htm = require('htm')
 const vhtml = require('vhtml')
 const drawMonth = require('./month')
 
+const styles = {
+  container: `
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: center;
+  flex-wrap: wrap;
+  align-self: stretch;
+  `
+}
+
 const defaults = {
   dim_past: true,
   show_today: true,
@@ -56,7 +68,7 @@ class Show {
     beginning = beginning.startOf('month').minus(2, 'hours')
     let months = beginning.every('month', this.end)
     months = months.map(d => drawMonth(d, this))
-    return this.h`<div style="" >
+    return this.h`<div style="${styles.container}" >
       ${months}
     </div>`
   }

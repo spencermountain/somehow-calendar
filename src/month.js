@@ -2,8 +2,7 @@ const spacetime = require('spacetime')
 const today = spacetime.now()
 
 const styles = {
-  container: `
-    display:inline-block;
+  month: `
     margin: 0.35rem;
   `,
   monthName: `
@@ -19,7 +18,7 @@ const styles = {
     justify-content: space-around;
     align-items: center;
     text-align: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-self: stretch;
   `
 }
@@ -105,7 +104,7 @@ const drawMonth = function(start, cal) {
   let weeks = start.every('week', end).map(d => {
     return drawWeek(d, cal, month)
   })
-  return cal.h`<div style="${styles.container}">
+  return cal.h`<div style="${styles.month}">
     <div style="${styles.monthName}">${month}</div>
     <div>
       ${weeks}

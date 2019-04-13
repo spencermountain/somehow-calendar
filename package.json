@@ -1,6 +1,6 @@
 {
   "name": "somehow-calendar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "create calendar-based dataviz easily",
   "main": "builds/somehow-calendar.js",
   "unpkg": "builds/v.min.js",
