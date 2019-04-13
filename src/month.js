@@ -3,17 +3,24 @@ const today = spacetime.now()
 
 const styles = {
   container: `
-  margin:0.35rem;
+    display:inline-block;
+    margin: 0.35rem;
   `,
-  month: `font-size: .667rem; color:#838b91; text-align:center; margin-bottom:0.2rem;`,
+  monthName: `
+    font-size: .667rem;
+    color: #838b91;
+    text-align: center;
+    margin-bottom: 0.2rem;
+    margin-top: 0.2rem;
+  `,
   week: `
-  display:flex;
-  flex-direction: row !important;
-  justify-content: space-around;
-  align-items: center;
-  text-align:center;
-  flex-wrap: wrap;
-  align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+    align-self: stretch;
   `
 }
 
@@ -99,7 +106,7 @@ const drawMonth = function(start, cal) {
     return drawWeek(d, cal, month)
   })
   return cal.h`<div style="${styles.container}">
-    <div style="${styles.month}">${month}</div>
+    <div style="${styles.monthName}">${month}</div>
     <div>
       ${weeks}
     </div>
