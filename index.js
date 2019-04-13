@@ -19,7 +19,7 @@ const printCalendars = function() {
 
 let start = inputs.input({
   label: 'start',
-  value: 'May 4th 2019',
+  value: 'Apr 4th 2019',
   width: 130,
   cb: () => printCalendars()
 })
