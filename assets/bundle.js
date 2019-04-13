@@ -1,54 +1,1300 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
 "use strict";
 
-var calendars = _dereq_('./src'); // const spacetime = require('spacetime')
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<table class=\"f2 mud w7\">", "</table>"]);
 
+  _templateObject = function _templateObject() {
+    return data;
+  };
 
-var c = calendars.year.leftAlign('2019');
-c.color('june 5th 2019', 'june 8th 2019', 'red');
-document.querySelector('#leftAlign').innerHTML = c.build();
-var c2 = calendars.year.weekAlign('2019', {});
-c2.color('june 5th 2019', 'june 8th 2019', 'red');
-document.querySelector('#weekAlign').innerHTML = c2.build();
-var c3 = calendars.quarter.byMonth('june 9th 2019', {});
-c3.color('june 5th 2019', 'june 8th 2019', 'red');
-document.querySelector('#byWeek').innerHTML = c3.build();
+  return data;
+}
 
-},{"./src":13}],2:[function(_dereq_,module,exports){
-!function(){var n={},e=JSON.stringify;function t(e){for(var t=".",c=0;c<e.length;c++)t+=e[c].length+","+e[c];return(n[t]||(n[t]=i(e)))(this,arguments)}var i=function(n){for(var t,i,c,r,s,o=0,u="return ",a="",f="",h=0,l="",g="",d="",v=0,m=function(){c?9===o?(h++&&(u+=","),u+="h("+(f||e(a)),o=0):13===o||0===o&&"..."===a?(0===o?(d||(d=")",l=l?"Object.assign("+l:"Object.assign({}"),l+=g+","+f,g=""):r&&(l+=l?","+(g?"":"{"):"{",g="}",l+=e(r)+":",l+=f||(s||a)&&e(a)||"true",r=""),s=!1):0===o&&(o=13,r=a,a=f="",m(),o=0):(f||(a=a.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))&&(h++&&(u+=","),u+=f||e(a)),a=f=""},p=0;p<n.length;p++){p>0&&(c||m(),f="$["+p+"]",m());for(var O=0;O<n[p].length;O++){if(i=n[p].charCodeAt(O),c){if(39===i||34===i){if(v===i){v=0;continue}if(0===v){v=i;continue}}if(0===v)switch(i){case 62:m(),47!==o&&(u+=l?","+l+g+d:",null"),t&&(u+=")"),c=0,l="",o=1;continue;case 61:o=13,s=!0,r=a,a="";continue;case 47:t||(t=!0,9!==o||a.trim()||(a=f="",o=47));continue;case 9:case 10:case 13:case 32:m(),o=0;continue}}else if(60===i){m(),c=1,d=g=l="",t=s=!1,o=9;continue}a+=n[p].charAt(O)}}return m(),Function("h","$",u)};"undefined"!=typeof module?module.exports=t:self.htm=t}();
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var spacetime = _dereq_('spacetime');
+
+var inputs = _dereq_('somehow-input');
+
+var htm = _dereq_('htm');
+
+var vhtml = _dereq_('vhtml');
+
+var h = htm.bind(vhtml);
+
+var calendar = _dereq_('./src');
+
+var printCalendars = function printCalendars() {
+  var start = document.querySelector('#origin').querySelector('input').value;
+  var duration = document.querySelector('#duration').querySelector('input').value;
+  var end = spacetime(start).epoch + Number(duration);
+  var cal = calendar.months(start, end);
+  cal.color('june 5th 2019', 'june 8th 2019', '#cc7066');
+  document.querySelector('#results').innerHTML = h(_templateObject(), cal.build());
+};
+
+var start = inputs.input({
+  label: 'start',
+  value: 'Apr 4th 2019',
+  width: 130,
+  cb: function cb() {
+    return printCalendars();
+  }
+});
+var end = inputs.duration({
+  label: 'duration',
+  value: {
+    year: 1
+  },
+  max: {
+    month: 12
+  },
+  min: {
+    month: 1
+  },
+  cb: function cb() {
+    return printCalendars();
+  }
+});
+document.querySelector('#origin').innerHTML = start.build();
+document.querySelector('#duration').innerHTML = end.build();
+printCalendars();
+
+},{"./src":7,"htm":2,"somehow-input":3,"spacetime":4,"vhtml":5}],2:[function(_dereq_,module,exports){
+!function(){var n=function(t,e,r,u){for(var o=1;o<e.length;o++){var f=e[o++],s="number"==typeof f?r[f]:f;1===e[o]?u[0]=s:2===e[o]?(u[1]=u[1]||{})[e[++o]]=s:3===e[o]?u[1]=Object.assign(u[1]||{},s):u.push(e[o]?t.apply(null,n(t,s,r,["",null])):s)}return u},t=function(n){for(var t,e,r=1,u="",o="",f=[0],s=function(n){1===r&&(n||(u=u.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))?f.push(n||u,0):3===r&&(n||u)?(f.push(n||u,1),r=2):2===r&&"..."===u&&n?f.push(n,3):2===r&&u&&!n?f.push(!0,2,u):4===r&&e&&(f.push(n||u,2,e),e=""),u=""},p=0;p<n.length;p++){p&&(1===r&&s(),s(p));for(var h=0;h<n[p].length;h++)t=n[p][h],1===r?"<"===t?(s(),f=[f],r=3):u+=t:o?t===o?o="":u+=t:'"'===t||"'"===t?o=t:">"===t?(s(),r=1):r&&("="===t?(r=4,e=u,u=""):"/"===t?(s(),3===r&&(f=f[0]),r=f,(f=f[0]).push(r,4),r=0):" "===t||"\t"===t||"\n"===t||"\r"===t?(s(),r=2):u+=t)}return s(),f},e="function"==typeof Map,r=e?new Map:{},u=e?function(n){var e=r.get(n);return e||r.set(n,e=t(n)),e}:function(n){for(var e="",u=0;u<n.length;u++)e+=n[u].length+"-"+n[u];return r[e]||(r[e]=t(n))},o=function(t){var e=n(this,u(t),arguments,[]);return e.length>1?e:e[0]};"undefined"!=typeof module?module.exports=o:self.htm=o}();
 
 },{}],3:[function(_dereq_,module,exports){
 (function (global){
-/* spacetime v5.1.0
-   github.com/spencermountain/spacetime
+/* somehow v0.0.7
+   github.com/spencermountain/somehow-input
    MIT
 */
 
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.spacetime = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof _dereq_&&_dereq_;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof _dereq_&&_dereq_,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
-"use strict";
-
-module.exports = '5.1.0';
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.somehowInput = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof _dereq_&&_dereq_;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof _dereq_&&_dereq_,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
+!function(){var n={},e=JSON.stringify;function t(e){for(var t=".",c=0;c<e.length;c++)t+=e[c].length+","+e[c];return(n[t]||(n[t]=i(e)))(this,arguments)}var i=function(n){for(var t,i,c,r,s,o=0,u="return ",a="",f="",h=0,l="",g="",d="",v=0,m=function(){c?9===o?(h++&&(u+=","),u+="h("+(f||e(a)),o=0):13===o||0===o&&"..."===a?(0===o?(d||(d=")",l=l?"Object.assign("+l:"Object.assign({}"),l+=g+","+f,g=""):r&&(l+=l?","+(g?"":"{"):"{",g="}",l+=e(r)+":",l+=f||(s||a)&&e(a)||"true",r=""),s=!1):0===o&&(o=13,r=a,a=f="",m(),o=0):(f||(a=a.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))&&(h++&&(u+=","),u+=f||e(a)),a=f=""},p=0;p<n.length;p++){p>0&&(c||m(),f="$["+p+"]",m());for(var O=0;O<n[p].length;O++){if(i=n[p].charCodeAt(O),c){if(39===i||34===i){if(v===i){v=0;continue}if(0===v){v=i;continue}}if(0===v)switch(i){case 62:m(),47!==o&&(u+=l?","+l+g+d:",null"),t&&(u+=")"),c=0,l="",o=1;continue;case 61:o=13,s=!0,r=a,a="";continue;case 47:t||(t=!0,9!==o||a.trim()||(a=f="",o=47));continue;case 9:case 10:case 13:case 32:m(),o=0;continue}}else if(60===i){m(),c=1,d=g=l="",t=s=!1,o=9;continue}a+=n[p].charAt(O)}}return m(),Function("h","$",u)};"undefined"!=typeof module?module.exports=t:self.htm=t}();
 
 },{}],2:[function(_dereq_,module,exports){
-'use strict';
+(function (global){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).spencerColor=e()}}(function(){return function u(i,a,c){function f(r,e){if(!a[r]){if(!i[r]){var o="function"==typeof _dereq_&&_dereq_;if(!e&&o)return o(r,!0);if(d)return d(r,!0);var n=new Error("Cannot find module '"+r+"'");throw n.code="MODULE_NOT_FOUND",n}var t=a[r]={exports:{}};i[r][0].call(t.exports,function(e){return f(i[r][1][e]||e)},t,t.exports,u,i,a,c)}return a[r].exports}for(var d="function"==typeof _dereq_&&_dereq_,e=0;e<c.length;e++)f(c[e]);return f}({1:[function(e,r,o){"use strict";r.exports={blue:"#6699cc",green:"#6accb2",yellow:"#e1e6b3",red:"#cc7066",pink:"#F2C0BB",brown:"#705E5C",orange:"#cc8a66",purple:"#d8b3e6",navy:"#335799",olive:"#7f9c6c",fuscia:"#735873",beige:"#e6d7b3",slate:"#8C8C88",suede:"#9c896c",burnt:"#603a39",sea:"#50617A",sky:"#2D85A8",night:"#303b50",rouge:"#914045",grey:"#838B91",mud:"#C4ABAB",royal:"#275291",cherry:"#cc6966",tulip:"#e6b3bc",rose:"#D68881",fire:"#AB5850",greyblue:"#72697D",greygreen:"#8BA3A2",greypurple:"#978BA3",burn:"#6D5685",slategrey:"#bfb0b3",light:"#a3a5a5",lighter:"#d7d5d2",fudge:"#4d4d4d",lightgrey:"#949a9e",white:"#fbfbfb",dimgrey:"#606c74",softblack:"#463D4F",dark:"#443d3d",black:"#333333"}},{}],2:[function(e,r,o){"use strict";var n=e("./colors"),t={juno:["blue","mud","navy","slate","pink","burn"],barrow:["rouge","red","orange","burnt","brown","greygreen"],roma:["#8a849a","#b5b0bf","rose","lighter","greygreen","mud"],palmer:["red","navy","olive","pink","suede","sky"],mark:["#848f9a","#9aa4ac","slate","#b0b8bf","mud","grey"],salmon:["sky","sea","fuscia","slate","mud","fudge"],dupont:["green","brown","orange","red","olive","blue"],bloor:["night","navy","beige","rouge","mud","grey"],yukon:["mud","slate","brown","sky","beige","red"],david:["blue","green","yellow","red","pink","light"],neste:["mud","cherry","royal","rouge","greygreen","greypurple"],ken:["red","sky","#c67a53","greygreen","#dfb59f","mud"]};Object.keys(t).forEach(function(e){t[e]=t[e].map(function(e){return n[e]||e})}),r.exports=t},{"./colors":1}],3:[function(e,r,o){"use strict";var n=e("./colors"),t=e("./combos"),u={colors:n,list:Object.keys(n).map(function(e){return n[e]}),combos:t};r.exports=u},{"./colors":1,"./combos":2}]},{},[3])(3)});
 
-var shortDays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-var longDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-module.exports = {
-  short: function short() {
-    return shortDays;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],3:[function(_dereq_,module,exports){
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.vhtml = factory());
+}(this, (function () { 'use strict';
+
+var emptyTags = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+
+var esc = function esc(str) {
+	return String(str).replace(/[&<>"']/g, function (s) {
+		return '&' + map[s] + ';';
+	});
+};
+var map = { '&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', "'": 'apos' };
+
+var sanitized = {};
+
+function h(name, attrs) {
+	var stack = [];
+	for (var i = arguments.length; i-- > 2;) {
+		stack.push(arguments[i]);
+	}
+
+	if (typeof name === 'function') {
+		(attrs || (attrs = {})).children = stack.reverse();
+		return name(attrs);
+	}
+
+	var s = '<' + name;
+	if (attrs) for (var _i in attrs) {
+		if (attrs[_i] !== false && attrs[_i] != null) {
+			s += ' ' + esc(_i) + '="' + esc(attrs[_i]) + '"';
+		}
+	}
+
+	if (emptyTags.indexOf(name) === -1) {
+		s += '>';
+
+		while (stack.length) {
+			var child = stack.pop();
+			if (child) {
+				if (child.pop) {
+					for (var _i2 = child.length; _i2--;) {
+						stack.push(child[_i2]);
+					}
+				} else {
+					s += sanitized[child] === true ? child : esc(child);
+				}
+			}
+		}
+
+		s += '</' + name + '>';
+	} else {
+		s += '>';
+	}
+
+	sanitized[s] = true;
+	return s;
+}
+
+return h;
+
+})));
+
+
+},{}],4:[function(_dereq_,module,exports){
+"use strict";
+
+var Input = _dereq_('./inputs/Input');
+
+var Slider = _dereq_('./inputs/Slider');
+
+var Vslider = _dereq_('./inputs/Vslider');
+
+var PlusMinus = _dereq_('./inputs/PlusMinus');
+
+var Textarea = _dereq_('./inputs/Textarea');
+
+var Duration = _dereq_('./inputs/Duration');
+
+var Tabs = _dereq_('./inputs/Tabs');
+
+var Legend = _dereq_('./inputs/Legend');
+
+var Select = _dereq_('./inputs/Select');
+
+var inputs = {
+  input: function input(obj) {
+    return new Input(obj);
   },
-  long: function long() {
-    return longDays;
+  slider: function slider(obj) {
+    return new Slider(obj);
   },
-  set: function set(i18n) {
-    shortDays = i18n.short;
-    longDays = i18n.long;
+  vslider: function vslider(obj) {
+    return new Vslider(obj);
+  },
+  plusMinus: function plusMinus(obj) {
+    return new PlusMinus(obj);
+  },
+  textarea: function textarea(obj) {
+    return new Textarea(obj);
+  },
+  duration: function duration(obj) {
+    return new Duration(obj);
+  },
+  legend: function legend(obj) {
+    return new Legend(obj);
+  },
+  tabs: function tabs(obj) {
+    return new Tabs(obj);
+  },
+  select: function select(obj) {
+    return new Select(obj);
   }
 };
+module.exports = inputs;
 
-},{}],3:[function(_dereq_,module,exports){
-'use strict';
+},{"./inputs/Duration":5,"./inputs/Input":6,"./inputs/Legend":7,"./inputs/PlusMinus":8,"./inputs/Select":9,"./inputs/Slider":10,"./inputs/Tabs":11,"./inputs/Textarea":12,"./inputs/Vslider":13}],5:[function(_dereq_,module,exports){
+"use strict";
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"col w100p\">\n      <div class=\"grey\">", "</div>\n      <input class=\"w100p\" type=\"range\" id=\"", "\" value=", " ...", "/>\n      <div id=\"", "\" class=\"grey\">", "</div>\n    </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var uid = _dereq_('../uid');
+
+var mil = _dereq_('../milliseconds');
+
+var defaults = {
+  min: 0,
+  max: mil.year,
+  value: mil.month * 6,
+  step: mil.day,
+  debounce: false
+};
+
+var Slider =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(Slider, _Input);
+
+  function Slider() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Slider);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Slider).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('duration');
+    _this.display_id = _this._id + 'display';
+
+    if (obj.show_number === undefined) {
+      obj.show_number = true;
+    }
+
+    _this.show_number = obj.show_number;
+
+    if (_typeof(obj.max) === 'object') {
+      _this.attrs.max = _this.parseObj(obj.max);
+    }
+
+    if (_typeof(obj.min) === 'object') {
+      _this.attrs.min = _this.parseObj(obj.min);
+    }
+
+    _this._value = _this.attrs.value;
+
+    if (_typeof(obj.value) === 'object') {
+      _this._value = _this.parseObj(obj.value);
+    } else {
+      _this._value = obj.value;
+    }
+
+    return _this;
+  }
+
+  _createClass(Slider, [{
+    key: "parseObj",
+    value: function parseObj(obj) {
+      var val = 0;
+      Object.keys(obj).forEach(function (k) {
+        val += (mil[k] || 0) * obj[k];
+      });
+      val *= 1.01;
+      return val;
+    }
+  }, {
+    key: "round",
+    value: function round(val) {
+      if (this.attrs.decimal) {
+        return parseInt(val * 10, 10) / 10;
+      }
+
+      return parseInt(val, 10);
+    }
+  }, {
+    key: "displayText",
+    value: function displayText() {
+      var val = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+      if (val >= mil.year * 0.99) {
+        return this.round(val / mil.year) + ' years';
+      }
+
+      if (val >= mil.month * 0.99) {
+        return this.round(val / mil.month) + ' months';
+      }
+
+      if (val >= mil.week * 0.99) {
+        return this.round(val / mil.week) + ' weeks';
+      }
+
+      if (val >= mil.day * 0.99) {
+        return this.round(val / mil.day) + ' days';
+      }
+
+      return this.round(val / mil.hour) + ' hours';
+    }
+  }, {
+    key: "redraw",
+    value: function redraw() {
+      if (this.show_number) {
+        var el = document.getElementById(this.display_id);
+        el.innerHTML = this.displayText(this._value);
+      }
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var h = this.h;
+      this.setCallback();
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      return h(_templateObject(), label, this._id, this._value, this.attrs, this.display_id, this.displayText(this._value));
+    }
+  }]);
+
+  return Slider;
+}(Input);
+
+module.exports = Slider;
+
+},{"../milliseconds":14,"../uid":15,"./Input":6}],6:[function(_dereq_,module,exports){
+"use strict";
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"col\">\n      <div class=\"grey\">", "</div>\n      <input id=\"", "\" class=\"input\" style=\"max-width:8rem; padding-right:0px;\" type=\"text\" style=", " value=\"", "\"/>\n    </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var htm = _dereq_('htm');
+
+var vhtml = _dereq_('vhtml');
+
+var uid = _dereq_('../uid');
+
+var defaults = {};
+
+var Input =
+/*#__PURE__*/
+function () {
+  function Input() {
+    var _this = this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Input);
+
+    if (typeof obj === 'string') {
+      this._id = obj;
+      obj = {};
+    }
+
+    this.attrs = Object.assign({}, defaults, obj);
+    this._id = obj.id || uid('input');
+    this._value = obj.value || '';
+    this._label = obj.label || '';
+
+    var cb = obj.cb || function () {};
+
+    this.callback = function (val) {
+      _this._value = val;
+
+      _this.redraw();
+
+      cb(val);
+    };
+
+    this.timeout = null;
+    this.el = null;
+    this.h = htm.bind(vhtml);
+    this.el = obj.el || null;
+  }
+
+  _createClass(Input, [{
+    key: "bind",
+    value: function bind(fn) {
+      this.h = htm.bind(fn);
+    }
+  }, {
+    key: "debounce",
+    value: function debounce(cb, duration) {
+      //support immediate-mode
+      if (this.attrs.debounce === false) {
+        cb();
+        return;
+      }
+
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      this.timeout = setTimeout(cb, duration);
+    }
+  }, {
+    key: "setCallback",
+    value: function setCallback() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        var el = document.getElementById(_this2._id);
+        el.addEventListener('input', function (e) {
+          _this2.debounce(function () {
+            _this2.callback(e.target.value);
+          }, 300);
+        });
+      }, 50);
+    }
+  }, {
+    key: "redraw",
+    value: function redraw() {}
+  }, {
+    key: "build",
+    value: function build() {
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      this.setCallback();
+      var style = '';
+
+      if (this.attrs.width) {
+        style = "max-width:".concat(this.attrs.width, "px; min-width:10px;");
+      }
+
+      return this.h(_templateObject(), label, this._id, style, this._value);
+    }
+  }]);
+
+  return Input;
+}();
+
+module.exports = Input;
+
+},{"../uid":15,"htm":1,"vhtml":3}],7:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["<div class=\"col maxw7\" id=\"", "\">\n      <div class=\"grey center ulblue\">", "</div>\n      ", "\n      </div>"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"row-left pointer legend-row\">\n        <div class=\"w2 rounded m1\" style=\"", "\"></div>\n        <div class=\"grey\">", "</div>\n      </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var colors = _dereq_('spencer-color').colors;
+
+var uid = _dereq_('../uid');
+
+var defaults = {};
+
+var Legend =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(Legend, _Input);
+
+  function Legend() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Legend);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Legend).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('slider');
+    _this.labels = obj.labels || {};
+    return _this;
+  }
+
+  _createClass(Legend, [{
+    key: "build",
+    value: function build() {
+      var _this2 = this;
+
+      var h = this.h;
+      this.setCallback();
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      var labels = Object.keys(this.labels).map(function (k) {
+        var color = colors[_this2.labels[k]] || _this2.labels[k];
+        var bar = "height:5px; background-color:".concat(color, ";");
+        return h(_templateObject(), bar, k);
+      });
+      return h(_templateObject2(), this._id, label, labels);
+    }
+  }]);
+
+  return Legend;
+}(Input);
+
+module.exports = Legend;
+
+},{"../uid":15,"./Input":6,"spencer-color":2}],8:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"col\">\n      <div class=\"grey\">", "</div>\n      <div class=\"row\" style=\"justify-content: center;\">\n        <div class=\"bggreygreen rounded h2 w3 white f1 shadow\" style=", " id=\"", "\">\u2212</div>\n        <input id=\"", "\" class=\"input shadow center f1\" min=", " max=", " style=\"max-width:4rem; margin:0px; font-size:1rem; height:1.2rem;\" type=\"number\" value=\"", "\"/>\n        <div class=\"bggreygreen rounded h2 w3 white f1 shadow\" style=", " id=\"", "\">+</div>\n      </div>\n    </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var uid = _dereq_('../uid');
+
+var defaults = {
+  min: -100,
+  max: 100,
+  step: 1,
+  size: 200
+};
+
+var PlusMinus =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(PlusMinus, _Input);
+
+  function PlusMinus() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, PlusMinus);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PlusMinus).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('plusminus');
+    return _this;
+  }
+
+  _createClass(PlusMinus, [{
+    key: "moreCallbacks",
+    value: function moreCallbacks() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        var _this2$attrs = _this2.attrs,
+            min = _this2$attrs.min,
+            max = _this2$attrs.max;
+        var el = document.getElementById(_this2._id);
+
+        document.getElementById(_this2._id + 'plus').onclick = function () {
+          var num = Number(el.value) + 1;
+
+          if (num > min && num < max) {
+            el.value = num;
+          }
+        };
+
+        document.getElementById(_this2._id + 'minus').onclick = function () {
+          var num = Number(el.value) - 1;
+
+          if (num > min && num < max) {
+            el.value = num;
+          }
+        };
+      }, 60);
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      var buttonStyle = 'cursor:pointer; user-select: none; -moz-user-select: none;';
+      this.setCallback();
+      this.moreCallbacks();
+      var _this$attrs = this.attrs,
+          min = _this$attrs.min,
+          max = _this$attrs.max;
+      return this.h(_templateObject(), label, buttonStyle, this._id + 'minus', this._id, min, max, this._value, buttonStyle, this._id + 'plus');
+    }
+  }]);
+
+  return PlusMinus;
+}(Input);
+
+module.exports = PlusMinus;
+
+},{"../uid":15,"./Input":6}],9:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["<div class=\"col maxw7\" >\n        <div class=\"grey\">", "</div>\n        <select id=\"", "\" value=\"", "\" style=", ">\n        ", "\n        </select>\n      </div>"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<option ...", ">\n        ", "\n      </options>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var uid = _dereq_('../uid');
+
+var defaults = {};
+
+var Select =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(Select, _Input);
+
+  function Select() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Select);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Select).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('select');
+    _this.options = obj.options || [];
+    return _this;
+  }
+
+  _createClass(Select, [{
+    key: "setCallback",
+    value: function setCallback() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        var el = document.getElementById(_this2._id);
+        el.addEventListener('change', function (e) {
+          _this2.callback(e.target.value);
+        });
+      }, 50);
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var _this3 = this;
+
+      var h = this.h;
+      this.setCallback();
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      var options = this.options.map(function (str) {
+        var attr = {};
+
+        if (str === _this3.attrs.value) {
+          attr.selected = "selected";
+        }
+
+        return h(_templateObject(), attr, str);
+      });
+      var style = '';
+
+      if (this.attrs.width) {
+        style = "max-width:".concat(this.attrs.width, "px; min-width:10px;");
+      }
+
+      return h(_templateObject2(), label, this._id, this.attrs.value, style, options);
+    }
+  }]);
+
+  return Select;
+}(Input);
+
+module.exports = Select;
+
+},{"../uid":15,"./Input":6}],10:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"col w100p\">\n      <div class=\"grey\">", "</div>\n      <input class=\"w100p\" type=\"range\" id=\"", "\" value=", " ...", "/>\n      <div id=\"", "\" class=\"grey\">", "</div>\n    </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var uid = _dereq_('../uid');
+
+var defaults = {
+  min: -100,
+  max: 100,
+  step: 1,
+  size: 200,
+  debounce: false
+};
+
+var Slider =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(Slider, _Input);
+
+  function Slider() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Slider);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Slider).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('slider');
+    _this.display_id = _this._id + 'display';
+
+    if (obj.show_number === undefined) {
+      obj.show_number = true;
+    }
+
+    _this.show_number = obj.show_number;
+    return _this;
+  }
+
+  _createClass(Slider, [{
+    key: "redraw",
+    value: function redraw() {
+      if (this.show_number) {
+        var el = document.getElementById(this.display_id);
+        el.innerHTML = this._value;
+      }
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var h = this.h;
+      this.setCallback();
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      return h(_templateObject(), label, this._id, this._value, this.attrs, this.display_id, this._value);
+    }
+  }]);
+
+  return Slider;
+}(Input);
+
+module.exports = Slider;
+
+},{"../uid":15,"./Input":6}],11:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["<div class=\"col w100p\" style=\"user-select: none; -moz-user-select: none;\">\n      <div class=\"grey ullight b05 mb1\">", "</div>\n      <div class=\"row\" id=", ">", "</div>\n    </div>"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"pointer somehow-tab f1 grow\" style=\"", "\">", "</div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var uid = _dereq_('../uid');
+
+var defaults = {
+  light: '#b5bbbf',
+  lighter: '#b5bbbf',
+  selected: '#2D85A8',
+  tabs: []
+};
+
+var Tabs =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(Tabs, _Input);
+
+  function Tabs() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Tabs);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Tabs).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('slider');
+    _this.tabs = obj.tabs || defaults.tabs;
+    _this.value = obj.value || _this.tabs[0];
+    return _this;
+  }
+
+  _createClass(Tabs, [{
+    key: "moreCallbacks",
+    value: function moreCallbacks() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        // document.queryString('.somehow-tab')
+        var tabs = document.querySelectorAll('.somehow-tab');
+
+        var _loop = function _loop(i) {
+          var tab = tabs[i];
+
+          tab.onclick = function (e) {
+            for (var j = 0; j < tabs.length; j += 1) {
+              tabs[j].style.color = defaults.light;
+              tabs[j].style['border-color'] = 'rgba(181, 187, 191, 0.1)';
+            }
+
+            e.target.style.color = defaults.selected;
+            e.target.style['border-color'] = defaults.selected;
+
+            _this2.callback(_this2.tabs[i]);
+          };
+        };
+
+        for (var i = 0; i < tabs.length; i += 1) {
+          _loop(i);
+        }
+      }, 60);
+    }
+  }, {
+    key: "makeTabs",
+    value: function makeTabs() {
+      var _this3 = this;
+
+      var h = this.h;
+      var tabs = this.tabs.map(function (str) {
+        var style = "margin-left:4px; margin-right:4px; padding-left:4px; padding-right:4px; ";
+        style += 'transition: all 0.1s cubic-bezier(0.250, 0.460, 0.450, 0.940);';
+
+        if (_this3.value !== str) {
+          style += "border-bottom:3px solid rgba(181, 187, 191, 0.1); color:".concat(defaults.light);
+        } else {
+          style += "border-bottom:3px solid ".concat(defaults.selected, "; color:").concat(defaults.selected);
+        }
+
+        return h(_templateObject(), style, str);
+      });
+      return tabs;
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var h = this.h;
+      this.setCallback();
+      this.moreCallbacks();
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ' :';
+      }
+
+      var tabs = this.makeTabs();
+      return h(_templateObject2(), label, this._id, tabs);
+    }
+  }]);
+
+  return Tabs;
+}(Input);
+
+module.exports = Tabs;
+
+},{"../uid":15,"./Input":6}],12:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"col w9\">\n      <div class=\"grey pointer ullighter b3 white\" style=", " id=\"", "\">", "<span class=\"white f2\" style=\"margin:0.5rem;\">+</span></div>\n      <textarea class=\"w7\" id=\"", "\" style=", " ...", ">", "</textarea>\n    </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var uid = _dereq_('../uid');
+
+var defaults = {
+  min: -100,
+  max: 100,
+  step: 1,
+  size: 200,
+  color: '#2D85A8'
+};
+
+var Textarea =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(Textarea, _Input);
+
+  function Textarea() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Textarea);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Textarea).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('textarea');
+    _this.display_id = _this._id + 'display';
+    _this.show = obj.show;
+    _this.color = obj.color || defaults.color;
+    return _this;
+  }
+
+  _createClass(Textarea, [{
+    key: "moreCallbacks",
+    value: function moreCallbacks() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        document.getElementById(_this2._id + '_btn').onclick = function () {
+          _this2.show = !_this2.show;
+          var el = document.getElementById(_this2._id);
+
+          if (_this2.show) {
+            el.style.height = '16rem';
+            el.style.padding = '1rem';
+            el.style.visibility = 'visible';
+            el.style.resize = 'both';
+            el.scrollTop = el.scrollHeight;
+          } else {
+            el.style.height = '0rem';
+            el.style.padding = '0rem';
+            el.style.visibility = 'hidden';
+            el.style.resize = 'none';
+          }
+        };
+      }, 60);
+    }
+  }, {
+    key: "makeStyle",
+    value: function makeStyle() {
+      var style = 'transition: all 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940); font-size:10px; font-family: monospace;';
+      style += ' visibility: hidden; height:0px; padding:0px; resize: none;';
+      style += " border:6px solid ".concat(this.color, "; color:").concat(this.color, "; border-radius:7px; ");
+      style += "border-left:1px solid ".concat(this.color, "; border-right:1px solid ").concat(this.color, ";");
+      return style;
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var h = this.h;
+      this.setCallback();
+      this.moreCallbacks();
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      var style = 'padding:0.5rem; margin-left:0.5rem; background-color: ' + this.color;
+      return h(_templateObject(), style, this._id + '_btn', label, this._id, this.makeStyle(), this.attrs, this._value);
+    }
+  }]);
+
+  return Textarea;
+}(Input);
+
+module.exports = Textarea;
+
+},{"../uid":15,"./Input":6}],13:[function(_dereq_,module,exports){
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["<div class=\"col w100p\">\n      <div class=\"grey\">", "</div>\n      <input class=\"w100p\" type=\"range\" id=\"", "\" orient=\"vertical\" style=", " value=", " ...", "  />\n      <div id=\"", "\" class=\"grey\">", "</div>\n    </div>"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Input = _dereq_('./Input');
+
+var uid = _dereq_('../uid');
+
+var defaults = {
+  min: -100,
+  max: 100,
+  step: 1,
+  size: 200,
+  debounce: false
+};
+
+var Vslider =
+/*#__PURE__*/
+function (_Input) {
+  _inherits(Vslider, _Input);
+
+  function Vslider() {
+    var _this;
+
+    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Vslider);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Vslider).call(this, obj));
+    _this.attrs = Object.assign({}, defaults, _this.attrs);
+    _this._id = obj.id || uid('slider');
+    _this.display_id = _this._id + 'display';
+
+    if (obj.show_number === undefined) {
+      obj.show_number = true;
+    }
+
+    _this.show_number = obj.show_number;
+    _this.reverse = obj.reverse || false;
+    return _this;
+  }
+
+  _createClass(Vslider, [{
+    key: "redraw",
+    value: function redraw() {
+      if (this.show_number) {
+        var el = document.getElementById(this.display_id);
+        el.innerHTML = this._value;
+      }
+    }
+  }, {
+    key: "buildStyle",
+    value: function buildStyle() {
+      var style = 'writing-mode: bt-lr;';
+      /* IE */
+
+      style += '-webkit-appearance: slider-vertical;';
+      /* WebKit */
+
+      style += 'width: 8px; height: 175px; padding: 0 5px;';
+
+      if (!this.reverse) {
+        style += 'transform: rotateZ(180deg);';
+      }
+
+      return style;
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var h = this.h;
+      this.setCallback();
+      var label = '';
+
+      if (this._label) {
+        label = this._label + ':';
+      }
+
+      return h(_templateObject(), label, this._id, this.buildStyle(), this._value, this.attrs, this.display_id, this._value);
+    }
+  }]);
+
+  return Vslider;
+}(Input);
+
+module.exports = Vslider;
+
+},{"../uid":15,"./Input":6}],14:[function(_dereq_,module,exports){
+"use strict";
 
 var o = {
   millisecond: 1
@@ -57,7 +1303,81 @@ o.second = 1000;
 o.minute = 60000;
 o.hour = 3.6e6; // dst is supported post-hoc
 
-o.day = 8.64e7; // 
+o.day = 8.64e7; //
+
+o.date = o.day;
+o.month = 8.64e7 * 29.5; //(average)
+
+o.week = 6.048e8;
+o.year = 3.154e10; // leap-years are supported post-hoc
+//add plurals
+
+Object.keys(o).forEach(function (k) {
+  o[k + 's'] = o[k];
+});
+module.exports = o;
+
+},{}],15:[function(_dereq_,module,exports){
+"use strict";
+
+//may need to change when the term really-transforms? not sure.
+var uid = function uid(str) {
+  var nums = '';
+
+  for (var i = 0; i < 5; i++) {
+    nums += parseInt(Math.random() * 9, 10);
+  }
+
+  return str + '-' + nums;
+};
+
+module.exports = uid;
+
+},{}]},{},[4])(4)
+});
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],4:[function(_dereq_,module,exports){
+(function (global){
+/* spacetime v5.7.0
+   github.com/spencermountain/spacetime
+   MIT
+*/
+
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.spacetime = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof _dereq_&&_dereq_;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof _dereq_&&_dereq_,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
+"use strict";
+
+module.exports = '5.7.0';
+
+},{}],2:[function(_dereq_,module,exports){
+"use strict";
+
+var shortDays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+var longDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+module.exports = {
+  "short": function short() {
+    return shortDays;
+  },
+  "long": function long() {
+    return longDays;
+  },
+  set: function set(i18n) {
+    shortDays = i18n["short"];
+    longDays = i18n["long"];
+  }
+};
+
+},{}],3:[function(_dereq_,module,exports){
+"use strict";
+
+var o = {
+  millisecond: 1
+};
+o.second = 1000;
+o.minute = 60000;
+o.hour = 3.6e6; // dst is supported post-hoc
+
+o.day = 8.64e7; //
 
 o.date = o.day;
 o.month = 8.64e7 * 29.5; //(average)
@@ -90,7 +1410,7 @@ var monthLengths = [31, // January - 31 days
 module.exports = monthLengths;
 
 },{}],5:[function(_dereq_,module,exports){
-'use strict';
+"use strict";
 
 var shortMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sept', 'oct', 'nov', 'dec'];
 var longMonths = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
@@ -113,18 +1433,18 @@ function buildMapping() {
 }
 
 module.exports = {
-  short: function short() {
+  "short": function short() {
     return shortMonths;
   },
-  long: function long() {
+  "long": function long() {
     return longMonths;
   },
   mapping: function mapping() {
     return buildMapping();
   },
   set: function set(i18n) {
-    shortMonths = i18n.short;
-    longMonths = i18n.long;
+    shortMonths = i18n["short"];
+    longMonths = i18n["long"];
   }
 };
 
@@ -134,7 +1454,8 @@ module.exports = {
 module.exports = [null, [0, 1], //jan 1
 [3, 1], //apr 1
 [6, 1], //july 1
-[9, 1]];
+[9, 1] //oct 1
+];
 
 },{}],7:[function(_dereq_,module,exports){
 "use strict";
@@ -160,8 +1481,9 @@ module.exports = {
 };
 
 },{}],8:[function(_dereq_,module,exports){
-'use strict'; //git:blame @JuliasCaesar https://www.timeanddate.com/date/leapyear.html
+"use strict";
 
+//git:blame @JuliasCaesar https://www.timeanddate.com/date/leapyear.html
 exports.isLeapYear = function (year) {
   return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
 }; // unsurprisingly-nasty `typeof date` call
@@ -179,8 +1501,8 @@ exports.isObject = function (input) {
   return Object.prototype.toString.call(input) === '[object Object]';
 };
 
-exports.zeroPad = function (str, len) {
-  len = len || 2;
+exports.zeroPad = function (str) {
+  var len = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
   var pad = '0';
   str = str + '';
   return str.length >= len ? str : new Array(len - str.length + 1).join(pad) + str;
@@ -218,10 +1540,14 @@ exports.toCardinal = function (str) {
   str = String(str);
   str = str.replace(/([0-9])(st|nd|rd|th)$/i, '$1');
   return parseInt(str, 10);
-};
+}; //used mostly for cleanup of unit names, like 'months'
 
-exports.normalize = function (str) {
-  str = str.toLowerCase();
+
+exports.normalize = function () {
+  var str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  str = str.toLowerCase().trim();
+  str = str.replace(/ies$/, 'y'); //'centuries'
+
   str = str.replace(/s$/, '');
 
   if (str === 'day') {
@@ -258,8 +1584,15 @@ exports.beADate = function (d, s) {
   return d;
 };
 
+exports.formatTimezone = function (offset) {
+  var delimiter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  var absOffset = Math.abs(offset);
+  var sign = offset > 0 ? '+' : '-';
+  return "".concat(sign).concat(exports.zeroPad(absOffset)).concat(delimiter, "00");
+};
+
 },{}],9:[function(_dereq_,module,exports){
-'use strict';
+"use strict";
 
 var Spacetime = _dereq_('./spacetime');
 
@@ -305,8 +1638,8 @@ main.version = version; //aliases:
 main.plugin = main.extend;
 module.exports = main;
 
-},{"../_version":1,"./spacetime":34,"./whereIts":41}],10:[function(_dereq_,module,exports){
-'use strict';
+},{"../_version":1,"./spacetime":36,"./whereIts":43}],10:[function(_dereq_,module,exports){
+"use strict";
 
 var monthLengths = _dereq_('../data/monthLengths');
 
@@ -341,7 +1674,7 @@ var hasDate = function hasDate(obj) {
 module.exports = hasDate;
 
 },{"../data/monthLengths":4,"../fns":8}],11:[function(_dereq_,module,exports){
-'use strict';
+"use strict";
 
 var strFmt = _dereq_('./strParse');
 
@@ -362,13 +1695,19 @@ var namedDates = _dereq_('./named-dates'); //we have to actually parse these inp
 // this is only really ambiguous until 2054 or so
 
 
-var minimumEpoch = 2500000000; //support [2016, 03, 01] format
+var minimumEpoch = 2500000000;
+var defaults = {
+  year: new Date().getFullYear(),
+  month: 0,
+  date: 1 //support [2016, 03, 01] format
+
+};
 
 var handleArray = function handleArray(s, arr) {
   var order = ['year', 'month', 'date', 'hour', 'minute', 'second', 'millisecond'];
 
-  for (var i = 0; i < arr.length; i++) {
-    var num = arr[i] || 0;
+  for (var i = 0; i < order.length; i++) {
+    var num = arr[i] || defaults[order[i]] || 0;
     s = s[order[i]](num);
   }
 
@@ -377,15 +1716,23 @@ var handleArray = function handleArray(s, arr) {
 
 
 var handleObject = function handleObject(s, obj) {
+  obj = Object.assign({}, defaults, obj);
   var keys = Object.keys(obj);
 
   for (var i = 0; i < keys.length; i++) {
-    var unit = keys[i];
+    var unit = keys[i]; //make sure we have this method
 
-    if (s[unit] !== undefined) {
-      var num = obj[unit] || 0;
-      s = s[unit](num);
+    if (s[unit] === undefined || typeof s[unit] !== 'function') {
+      continue;
+    } //make sure the value is a number
+
+
+    if (obj[unit] === null || obj[unit] === undefined || obj[unit] === '') {
+      continue;
     }
+
+    var num = obj[unit] || defaults[unit] || 0;
+    s = s[unit](num);
   }
 
   return s;
@@ -428,6 +1775,7 @@ var parseInput = function parseInput(s, input, givenTz) {
     //support spacetime object as input
     if (input.epoch) {
       s.epoch = input.epoch;
+      s.tz = input.tz;
       return s;
     }
 
@@ -441,8 +1789,9 @@ var parseInput = function parseInput(s, input, givenTz) {
   } //little cleanup..
 
 
-  input = input.replace(/\b(mon|tues|wed|wednes|thu|thurs|fri|sat|satur|sun)(day)?\b/, '');
-  input = input.trim().replace(/ +/g, ' '); //try some known-words, like 'now'
+  input = input.replace(/\b(mon|tues|wed|wednes|thu|thurs|fri|sat|satur|sun)(day)?\b/i, '');
+  input = input.replace(/,/g, '');
+  input = input.replace(/ +/g, ' ').trim(); //try some known-words, like 'now'
 
   if (namedDates.hasOwnProperty(input) === true) {
     s = namedDates[input](s);
@@ -460,7 +1809,7 @@ var parseInput = function parseInput(s, input, givenTz) {
   }
 
   if (s.silent === false) {
-    console.warn('Warning: couldn\'t parse date-string: \'' + input + '\'');
+    console.warn("Warning: couldn't parse date-string: '" + input + "'");
   }
 
   s.epoch = null;
@@ -469,8 +1818,8 @@ var parseInput = function parseInput(s, input, givenTz) {
 
 module.exports = parseInput;
 
-},{"../fns":8,"./named-dates":12,"./strParse":14}],12:[function(_dereq_,module,exports){
-'use strict';
+},{"../fns":8,"./named-dates":12,"./strParse":15}],12:[function(_dereq_,module,exports){
+"use strict";
 
 var dates = {
   now: function now(s) {
@@ -515,8 +1864,9 @@ dates['new years eve'] = dates['new years'];
 module.exports = dates;
 
 },{}],13:[function(_dereq_,module,exports){
-'use strict'; //pull-apart ISO offsets, like "+0100"
+"use strict";
 
+//pull-apart ISO offsets, like "+0100"
 var parseOffset = function parseOffset(s, offset) {
   if (!offset) {
     return s;
@@ -525,32 +1875,35 @@ var parseOffset = function parseOffset(s, offset) {
 
   if (offset === 'Z') {
     offset = '+0000';
-  } //support "+01:00"
+  } // according to ISO8601, tz could be hh:mm, hhmm or hh
+  // so need few more steps before the calculation.
 
 
-  if (/:00/.test(offset) === true) {
-    offset = offset.replace(/:00/, '');
-  } //support "+01:30"
+  var num = 0; // for (+-)hh:mm
+
+  if (/^[\+-]?[0-9]{2}:[0-9]{2}$/.test(offset)) {
+    //support "+01:00"
+    if (/:00/.test(offset) === true) {
+      offset = offset.replace(/:00/, '');
+    } //support "+01:30"
 
 
-  if (/:00/.test(offset) === true) {
-    offset = offset.replace(/:00/, '.5');
+    if (/:30/.test(offset) === true) {
+      offset = offset.replace(/:30/, '.5');
+    }
+  } // for (+-)hhmm
+
+
+  if (/^[\+-]?[0-9]{4}$/.test(offset)) {
+    offset = offset.replace(/30$/, '.5');
   }
 
-  var num = parseInt(offset, 10); //divide by 100 or 10 - , "+0100", "+01"
+  num = parseFloat(offset); //divide by 100 or 10 - , "+0100", "+01"
 
   if (Math.abs(num) > 100) {
     num = num / 100;
-  } // console.log(offset, num)
-
-
-  var current = s.timezone().current.offset;
-
-  if (current === num) {
-    //we cool..
-    return s;
   } //okay, try to match it to a utc timezone
-  //this is opposite! a -5 offset maps to Etc/GMT+5  ¯\_()_/¯
+  //remember - this is opposite! a -5 offset maps to Etc/GMT+5  ¯\_(:/)_/¯
   //https://askubuntu.com/questions/519550/why-is-the-8-timezone-called-gmt-8-in-the-filesystem
 
 
@@ -561,19 +1914,11 @@ var parseOffset = function parseOffset(s, offset) {
   }
 
   var tz = 'etc/gmt' + num;
-  var zones = s.timezones; // console.log(tz)
+  var zones = s.timezones;
 
   if (zones[tz]) {
+    // log a warning if we're over-writing a given timezone?
     // console.log('changing timezone to: ' + tz)
-    //log a warning if we're over-writing a given timezone
-    // if (givenTz && zones[givenTz] && zones[givenTz].offset !== zones[tz].offset && s.silent === false) {
-    //don't log during our tests, either..
-    // if (typeof process !== 'undefined' && process.env && !process.env.TESTENV) {
-    //   console.warn('  - Setting timezone to: \'' + tz + '\'')
-    //   console.warn('     from ISO string \'' + offset + '\'')
-    //   console.warn('     overwriting given timezone: \'' + givenTz + '\'\n')
-    // }
-    // }
     s.tz = tz;
   }
 
@@ -583,7 +1928,69 @@ var parseOffset = function parseOffset(s, offset) {
 module.exports = parseOffset;
 
 },{}],14:[function(_dereq_,module,exports){
-'use strict';
+"use strict";
+
+var parseTime = function parseTime(s) {
+  var str = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  str = str.replace(/^\s+/, '').toLowerCase(); //trim
+  //formal time formats - 04:30.23
+
+  var arr = str.match(/([0-9]{1,2}):([0-9]{1,2}):?([0-9]{1,2})?[:\.]?([0-9]{1,4})?/);
+
+  if (arr !== null) {
+    //validate it a little
+    var h = Number(arr[1]);
+
+    if (h < 0 || h > 24) {
+      return s.startOf('day');
+    }
+
+    var m = Number(arr[2]); //don't accept '5:3pm'
+
+    if (arr[2].length < 2 || m < 0 || m > 59) {
+      return s.startOf('day');
+    }
+
+    s = s.hour(h);
+    s = s.minute(m);
+    s = s.seconds(arr[3] || 0);
+    s = s.millisecond(arr[4] || 0); //parse-out am/pm
+
+    var ampm = str.match(/[\b0-9](am|pm)\b/);
+
+    if (ampm !== null && ampm[1]) {
+      s = s.ampm(ampm[1]);
+    }
+
+    return s;
+  } //try an informal form - 5pm (no minutes)
+
+
+  arr = str.match(/([0-9]+) ?(am|pm)/);
+
+  if (arr !== null && arr[1]) {
+    var _h = Number(arr[1]); //validate it a little..
+
+
+    if (_h > 12 || _h < 1) {
+      return s.startOf('day');
+    }
+
+    s = s.hour(arr[1] || 0);
+    s = s.ampm(arr[2]);
+    s = s.startOf('hour');
+    return s;
+  } //no time info found, use start-of-day
+
+
+  s = s.startOf('day');
+  return s;
+};
+
+module.exports = parseTime;
+
+},{}],15:[function(_dereq_,module,exports){
+"use strict";
 
 var walkTo = _dereq_('../methods/set/walk');
 
@@ -591,37 +1998,17 @@ var months = _dereq_('../data/months').mapping();
 
 var parseOffset = _dereq_('./parseOffset');
 
+var parseTime = _dereq_('./parseTime');
+
 var hasDate = _dereq_('./hasDate');
 
-var fns = _dereq_('../fns'); // const zones = require('../../data');
+var fns = _dereq_('../fns');
 
-
-var parseHour = function parseHour(s, str) {
-  str = str.replace(/^\s+/, ''); //trim
-
-  var arr = str.match(/([0-9]{1,2}):([0-9]{1,2}):?([0-9]{1,2})?[:\.]?([0-9]{1,4})?/);
-
-  if (arr) {
-    s = s.hour(arr[1]);
-    s = s.minute(arr[2]);
-
-    if (arr[3]) {
-      s = s.seconds(arr[3]);
-    }
-
-    if (arr[4]) {
-      s = s.millisecond(arr[4]);
-    }
-  }
-
-  return s;
-};
-
-var parseYear = function parseYear(str) {
-  str = str || ''; //support '18 -> 2018
+var parseYear = function parseYear() {
+  var str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  //support '18 -> 2018
   // str = str.replace(/^'([0-9]{2})/, '20$1')
   // str = str.replace('([0-9]+) ?b\.?c\.?$', '-$1')
-
   var year = parseInt(str.trim(), 10);
   year = year || new Date().getFullYear();
   return year;
@@ -645,7 +2032,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
 
     parseOffset(s, arr[5], givenTz, options);
     walkTo(s, obj);
-    s = parseHour(s, arr[4]);
+    s = parseTime(s, arr[4]);
     return s;
   }
 }, //iso "2015-03-25" or "2015/03/25" //0-based-months!
@@ -670,6 +2057,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseTime(s);
     return s;
   }
 }, //short - uk "03/25/2015"  //0-based-months!
@@ -698,12 +2086,13 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseTime(s);
     return s;
   }
 }, //Long "Mar 25 2015"
 //February 22, 2017 15:30:00
 {
-  reg: /^([a-z]+) ([0-9]{1,2}(?:st|nd|rd|th)?),?( [0-9]{4})?( ([0-9:]+))?$/i,
+  reg: /^([a-z]+) ([0-9]{1,2}(?:st|nd|rd|th)?),?( [0-9]{4})?( ([0-9:]+( ?am| ?pm)?))?$/i,
   parse: function parse(s, arr) {
     var month = months[arr[1].toLowerCase()];
     var year = parseYear(arr[3]);
@@ -719,11 +2108,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
-
-    if (arr[4]) {
-      s = parseHour(s, arr[4]);
-    }
-
+    s = parseTime(s, arr[4]);
     return s;
   }
 }, //February 2017 (implied date)
@@ -744,11 +2129,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
-
-    if (arr[4]) {
-      s = parseHour(s, arr[4]);
-    }
-
+    s = parseTime(s, arr[4]);
     return s;
   }
 }, //Long "25 Mar 2015"
@@ -769,6 +2150,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseTime(s);
     return s;
   }
 }, {
@@ -789,6 +2171,7 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseTime(s);
     return s;
   }
 }, {
@@ -814,13 +2197,14 @@ var strFmt = [//iso-this 1998-05-30T22:00:00:000Z, iso-that 2017-04-03T08:00:00-
     }
 
     walkTo(s, obj);
+    s = parseTime(s);
     return s;
   }
 }];
 module.exports = strFmt;
 
-},{"../data/months":5,"../fns":8,"../methods/set/walk":31,"./hasDate":10,"./parseOffset":13}],15:[function(_dereq_,module,exports){
-'use strict';
+},{"../data/months":5,"../fns":8,"../methods/set/walk":33,"./hasDate":10,"./parseOffset":13,"./parseTime":14}],16:[function(_dereq_,module,exports){
+"use strict";
 
 var _format = _dereq_('./methods/format');
 
@@ -836,6 +2220,8 @@ var _since = _dereq_('./methods/since');
 
 var ends = _dereq_('./methods/startOf');
 
+var _every = _dereq_('./methods/every');
+
 var _timezone = _dereq_('./timezone/index');
 
 var findTz = _dereq_('./timezone/find');
@@ -846,9 +2232,14 @@ var fns = _dereq_('./fns'); //the spacetime instance methods (also, the API)
 
 
 var methods = {
-  set: function set(input) {
+  set: function set(input, tz) {
     var s = this.clone();
     s = handleInput(s, input);
+
+    if (tz) {
+      this.tz = findTz(tz);
+    }
+
     return s;
   },
   timezone: function timezone() {
@@ -898,6 +2289,15 @@ var methods = {
 
     return _since(this, d);
   },
+  next: function next(unit) {
+    var s = this.add(1, unit);
+    return s.startOf(unit);
+  },
+  //the start of the previous year/week/century
+  last: function last(unit) {
+    var s = this.subtract(1, unit);
+    return s.startOf(unit);
+  },
   isValid: function isValid() {
     //null/undefined epochs
     if (!this.epoch && this.epoch !== 0) {
@@ -907,11 +2307,15 @@ var methods = {
     return !isNaN(this.d.getTime());
   },
   //travel to this timezone
-  goto: function goto(tz) {
+  "goto": function goto(tz) {
     var s = this.clone();
     s.tz = findTz(tz, s.timezones); //science!
 
     return s;
+  },
+  //get each week/month/day between a -> b
+  every: function every(unit, to) {
+    return _every(this, unit, to);
   },
   isAwake: function isAwake() {
     var hour = this.hour(); //10pm -> 8am
@@ -947,10 +2351,11 @@ var methods = {
 };
 methods.inDST = methods.isDST;
 methods.round = methods.nearest;
+methods.each = methods.every;
 module.exports = methods;
 
-},{"./fns":8,"./input":11,"./methods/diff":18,"./methods/format":20,"./methods/format/unixFmt":21,"./methods/nearest":23,"./methods/progress":24,"./methods/since":32,"./methods/startOf":33,"./timezone/find":36,"./timezone/index":38}],16:[function(_dereq_,module,exports){
-'use strict';
+},{"./fns":8,"./input":11,"./methods/diff":19,"./methods/every":20,"./methods/format":22,"./methods/format/unixFmt":23,"./methods/nearest":25,"./methods/progress":26,"./methods/since":34,"./methods/startOf":35,"./timezone/find":38,"./timezone/index":40}],17:[function(_dereq_,module,exports){
+"use strict";
 
 var walkTo = _dereq_('./set/walk');
 
@@ -970,18 +2375,30 @@ var keep = {
   month: order.slice(0, 4),
   quarter: order.slice(0, 4),
   season: order.slice(0, 4),
-  year: order
+  year: order,
+  decade: order,
+  century: order
 };
-keep.week = keep.date;
+keep.week = keep.hour;
 keep.season = keep.date;
-keep.quarter = keep.date;
+keep.quarter = keep.date; // Units need to be dst adjuested
+
+var dstAwareUnits = {
+  year: true,
+  quarter: true,
+  season: true,
+  month: true,
+  week: true,
+  day: true
+};
 var keepDate = {
   month: true,
   quarter: true,
   season: true,
-  year: true
-}; //month is the only thing we 'model/compute'
-//- because ms-shifting can be off by enough
+  year: true //month is the only thing we 'model/compute'
+  //- because ms-shifting can be off by enough
+
+};
 
 var rollMonth = function rollMonth(want, old) {
   //increment year
@@ -1010,6 +2427,11 @@ var rollMonth = function rollMonth(want, old) {
 var addMethods = function addMethods(SpaceTime) {
   SpaceTime.prototype.add = function (num, unit) {
     var s = this.clone();
+
+    if (!unit || num === 0) {
+      return s; //don't bother
+    }
+
     var old = this.clone();
     unit = fns.normalize(unit); //move forward by the estimated milliseconds (rough)
 
@@ -1032,6 +2454,11 @@ var addMethods = function addMethods(SpaceTime) {
       keep[unit].forEach(function (u) {
         want[u] = old[u]();
       });
+    }
+
+    if (dstAwareUnits[unit]) {
+      var diff = old.timezone().current.offset - s.timezone().current.offset;
+      s.epoch += diff * 3600 * 1000;
     } //ensure month/year has ticked-over
 
 
@@ -1039,13 +2466,35 @@ var addMethods = function addMethods(SpaceTime) {
       want.month = old.month() + num; //month is the one unit we 'model' directly
 
       want = rollMonth(want, old);
+    } //support coercing a week, too
+
+
+    if (unit === 'week') {
+      var sum = old.date() + num * 7;
+
+      if (sum <= 28 && sum > 1) {
+        want.date = sum;
+      }
     } //support 25-hour day-changes on dst-changes
-    else if (unit === 'date' && num !== 0 && old.isSame(s, 'day')) {
-        want.date = old.date() + num;
+    else if (unit === 'date') {
+        //specify a naive date number, if it's easy to do...
+        var _sum = old.date() + num;
+
+        if (_sum <= 28 && _sum > 1) {
+          want.date = _sum;
+        } //or if we haven't moved at all..
+        else if (num !== 0 && old.isSame(s, 'day')) {
+            want.date = old.date() + num;
+          }
       } //ensure year has changed (leap-years)
       else if (unit === 'year' && s.year() === old.year()) {
           s.epoch += ms.week;
-        } //keep current date, unless the month doesn't have it.
+        } //these are easier
+        else if (unit === 'decade') {
+            want.year = s.year() + 10;
+          } else if (unit === 'century') {
+            want.year = s.year() + 100;
+          } //keep current date, unless the month doesn't have it.
 
 
     if (keepDate[unit]) {
@@ -1074,8 +2523,8 @@ var addMethods = function addMethods(SpaceTime) {
 
 module.exports = addMethods;
 
-},{"../data/milliseconds":3,"../data/monthLengths":4,"../fns":8,"./set/walk":31}],17:[function(_dereq_,module,exports){
-'use strict';
+},{"../data/milliseconds":3,"../data/monthLengths":4,"../fns":8,"./set/walk":33}],18:[function(_dereq_,module,exports){
+"use strict";
 
 var fns = _dereq_('../fns');
 
@@ -1127,9 +2576,9 @@ var addMethods = function addMethods(SpaceTime) {
       }
 
       return startEpoch < this.epoch && this.epoch < endEpoch;
-    }
-  }; //hook them into proto
+    } //hook them into proto
 
+  };
   Object.keys(methods).forEach(function (k) {
     SpaceTime.prototype[k] = methods[k];
   });
@@ -1137,8 +2586,8 @@ var addMethods = function addMethods(SpaceTime) {
 
 module.exports = addMethods;
 
-},{"../fns":8}],18:[function(_dereq_,module,exports){
-'use strict';
+},{"../fns":8}],19:[function(_dereq_,module,exports){
+"use strict";
 
 var fns = _dereq_('../fns'); //init this function up here
 
@@ -1157,12 +2606,14 @@ var climb = function climb(a, b, unit) {
   } //oops, we went too-far..
 
 
-  if (!a.isSame(b, unit)) {
+  if (a.isAfter(b, unit)) {
     i -= 1;
   }
 
   return i;
-};
+}; //these small units can just be 'eyeballed'
+//it's way too slow to do them procedurally
+
 
 var diffQuick = function diffQuick(a, b) {
   var ms = b.epoch - a.epoch;
@@ -1172,6 +2623,8 @@ var diffQuick = function diffQuick(a, b) {
   };
   obj.minutes = parseInt(obj.seconds / 60, 10);
   obj.hours = parseInt(obj.minutes / 60, 10);
+  obj.days = parseInt(obj.hours / 24, 10);
+  obj.weeks = parseInt(obj.days / 7, 10);
   return obj;
 };
 
@@ -1208,9 +2661,14 @@ doAll = function doAll(a, b) {
   //do ms, seconds, minutes in a faster way
   var all = diffQuick(a, b);
   all.years = diff(a, b, 'year');
-  all.months = diff(a, b, 'month');
+  all.months = diff(a, b, 'month'); //do a fast-diff for days/weeks, if it's huge
+
+  if (Math.abs(all.years) > 50) {
+    return all;
+  }
+
   all.weeks = diff(a, b, 'week');
-  all.days = diff(a, b, 'day'); //only slow-compute hours if it's a small diff
+  all.days = diff(a, b, 'day'); //only fully-compute hours if it's a small diff
 
   if (all.years === 0) {
     all.hours = diff(a, b, 'hour');
@@ -1221,23 +2679,98 @@ doAll = function doAll(a, b) {
 
 module.exports = diff;
 
-},{"../fns":8}],19:[function(_dereq_,module,exports){
+},{"../fns":8}],20:[function(_dereq_,module,exports){
 "use strict";
 
-var fns = _dereq_('../../fns'); // "+01:00", "+0100", or simply "+01"
+var fns = _dereq_('../fns');
+
+var days = _dereq_('../data/days'); //is it 'wednesday'?
+
+
+var isDay = function isDay(unit) {
+  if (days["short"]().find(function (s) {
+    return s === unit;
+  })) {
+    return true;
+  }
+
+  if (days["long"]().find(function (s) {
+    return s === unit;
+  })) {
+    return true;
+  }
+
+  return false;
+}; // return a list of the weeks/months/days between a -> b
+// returns spacetime objects in the timezone of the input
+
+
+var every = function every(start) {
+  var unit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  var end = arguments.length > 2 ? arguments[2] : undefined;
+
+  if (!unit || !end) {
+    return [];
+  } //cleanup unit param
+
+
+  unit = fns.normalize(unit); //cleanup to param
+
+  end = start.clone().set(end); //swap them, if they're backwards
+
+  if (start.isAfter(end)) {
+    var tmp = start;
+    start = end;
+    end = tmp;
+  } //support 'every wednesday'
+
+
+  var d = start.clone();
+
+  if (isDay(unit)) {
+    d = d.next(unit);
+    unit = 'week';
+  } else {
+    d = d.next(unit);
+  } //okay, actually start doing it
+
+
+  var result = [];
+
+  while (d.isBefore(end)) {
+    result.push(d);
+    d = d.add(1, unit);
+  }
+
+  return result;
+};
+
+module.exports = every;
+
+},{"../data/days":2,"../fns":8}],21:[function(_dereq_,module,exports){
+"use strict";
+
+var fns = _dereq_('../../fns'); // create the timezone offset part of an iso timestamp
+// it's kind of nuts how involved this is
+// "+01:00", "+0100", or simply "+01"
 
 
 var isoOffset = function isoOffset(s) {
   var offset = s.timezone().current.offset;
-  var minute = '00';
+  var isNegative = offset < 0;
+  var minute = '00'; //handle 5.5 → '5:30'
 
-  if (offset % 1 === 0.5) {
-    //fraction of the hour
+  if (Math.abs(offset % 1) === 0.5) {
     minute = '30';
-    offset = Math.floor(offset);
+
+    if (offset >= 0) {
+      offset = Math.floor(offset);
+    } else {
+      offset = Math.ceil(offset);
+    }
   }
 
-  if (offset < 0) {
+  if (isNegative) {
     //handle negative sign
     offset *= -1;
     offset = fns.zeroPad(offset, 2);
@@ -1247,9 +2780,9 @@ var isoOffset = function isoOffset(s) {
     offset = '+' + offset;
   }
 
-  offset = offset + ':' + minute; //this is a little cleaner?
+  offset = offset + ':' + minute; //'Z' means 00
 
-  if (offset === "+00:00") {
+  if (offset === '+00:00') {
     offset = 'Z';
   }
 
@@ -1258,8 +2791,8 @@ var isoOffset = function isoOffset(s) {
 
 module.exports = isoOffset;
 
-},{"../../fns":8}],20:[function(_dereq_,module,exports){
-'use strict';
+},{"../../fns":8}],22:[function(_dereq_,module,exports){
+"use strict";
 
 var fns = _dereq_('../../fns');
 
@@ -1274,7 +2807,7 @@ var format = {
     return fns.titleCase(s.dayName());
   },
   'day-short': function dayShort(s) {
-    return fns.titleCase(days.short()[s.day()]);
+    return fns.titleCase(days["short"]()[s.day()]);
   },
   'day-number': function dayNumber(s) {
     return s.day();
@@ -1298,7 +2831,7 @@ var format = {
     return fns.titleCase(s.monthName());
   },
   'month-short': function monthShort(s) {
-    return fns.titleCase(months.short()[s.month()]);
+    return fns.titleCase(months["short"]()[s.month()]);
   },
   'month-number': function monthNumber(s) {
     return s.month();
@@ -1409,14 +2942,14 @@ var format = {
     return new Date(s.epoch).toISOString(); //2017-03-08T19:45:28.367Z
   },
   //i made these up
-  'nice': function nice(s) {
-    return "".concat(months.short()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.time());
+  nice: function nice(s) {
+    return "".concat(months["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.time());
   },
   'nice-year': function niceYear(s) {
-    return "".concat(months.short()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.year());
+    return "".concat(months["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.year());
   },
   'nice-day': function niceDay(s) {
-    return "".concat(days.short()[s.day()], " ").concat(fns.titleCase(months.short()[s.month()]), " ").concat(fns.ordinal(s.date()));
+    return "".concat(days["short"]()[s.day()], " ").concat(fns.titleCase(months["short"]()[s.month()]), " ").concat(fns.ordinal(s.date()));
   },
   'nice-full': function niceFull(s) {
     return "".concat(s.dayName(), " ").concat(fns.titleCase(s.monthName()), " ").concat(fns.ordinal(s.date()), ", ").concat(s.time());
@@ -1430,18 +2963,19 @@ var aliases = {
   'time-h24': 'time-24',
   'time-12': 'time',
   'time-h12': 'time',
-  'tz': 'timezone',
+  tz: 'timezone',
   'day-num': 'day-number',
   'month-num': 'month-number',
   'nice-short': 'nice',
-  'mdy': 'numeric-us',
-  'dmy': 'numeric-uk',
-  'ymd': 'numeric',
+  mdy: 'numeric-us',
+  dmy: 'numeric-uk',
+  ymd: 'numeric',
   'yyyy/mm/dd': 'numeric',
   'mm/dd/yyyy': 'numeric-us',
   'dd/mm/yyyy': 'numeric-us',
   'little-endian': 'numeric-uk',
-  'big-endian': 'numeric'
+  'big-endian': 'numeric',
+  'day-nice': 'nice-day'
 };
 Object.keys(aliases).forEach(function (k) {
   return format[k] = format[aliases[k]];
@@ -1486,10 +3020,12 @@ var printFormat = function printFormat(s) {
 
 module.exports = printFormat;
 
-},{"../../data/days":2,"../../data/months":5,"../../fns":8,"./_offset":19}],21:[function(_dereq_,module,exports){
-'use strict';
+},{"../../data/days":2,"../../data/months":5,"../../fns":8,"./_offset":21}],23:[function(_dereq_,module,exports){
+"use strict";
 
-var pad = _dereq_('../../fns').zeroPad; //parse this insane unix-time-templating thing, from the 19th century
+var pad = _dereq_('../../fns').zeroPad;
+
+var formatTimezone = _dereq_('../../fns').formatTimezone; //parse this insane unix-time-templating thing, from the 19th century
 //http://unicode.org/reports/tr35/tr35-25.html#Date_Format_Patterns
 //time-symbols we support
 
@@ -1667,26 +3203,26 @@ var mapping = {
     return s.timezone().name;
   },
   Z: function Z(s) {
-    return s.timezone().current.offset + '00';
+    return formatTimezone(s.timezone().current.offset);
   },
   ZZ: function ZZ(s) {
-    return s.timezone().current.offset + '00';
+    return formatTimezone(s.timezone().current.offset);
   },
   ZZZ: function ZZZ(s) {
-    return s.timezone().current.offset + '00';
+    return formatTimezone(s.timezone().current.offset);
   },
   ZZZZ: function ZZZZ(s) {
-    return s.timezone().current.offset + ':00';
+    return formatTimezone(s.timezone().current.offset, ':');
   }
 };
 
-var addAlias = function addAlias(char, to, n) {
-  var name = char;
+var addAlias = function addAlias(_char, to, n) {
+  var name = _char;
   var toName = to;
 
   for (var i = 0; i < n; i += 1) {
     mapping[name] = mapping[toName];
-    name += char;
+    name += _char;
     toName += to;
   }
 };
@@ -1740,8 +3276,8 @@ var unixFmt = function unixFmt(s, str) {
 
 module.exports = unixFmt;
 
-},{"../../fns":8}],22:[function(_dereq_,module,exports){
-'use strict';
+},{"../../fns":8}],24:[function(_dereq_,module,exports){
+"use strict";
 
 var fns = _dereq_('../fns');
 
@@ -1752,15 +3288,15 @@ var months = _dereq_('../data/months');
 var addMethods = function addMethods(SpaceTime) {
   var methods = {
     i18n: function i18n(data) {
-      if (!fns.isObject(data) || !fns.isObject(data.days) || !fns.isObject(data.months) || !fns.isArray(data.days.short) || !fns.isArray(data.days.long) || !fns.isArray(data.months.short) || !fns.isArray(data.months.long)) {
+      if (!fns.isObject(data) || !fns.isObject(data.days) || !fns.isObject(data.months) || !fns.isArray(data.days["short"]) || !fns.isArray(data.days["long"]) || !fns.isArray(data.months["short"]) || !fns.isArray(data.months["long"])) {
         throw new Error('Invalid i18n payload passed.');
       }
 
       days.set(data.days);
       months.set(data.months);
-    }
-  }; //hook them into proto
+    } //hook them into proto
 
+  };
   Object.keys(methods).forEach(function (k) {
     SpaceTime.prototype[k] = methods[k];
   });
@@ -1768,13 +3304,14 @@ var addMethods = function addMethods(SpaceTime) {
 
 module.exports = addMethods;
 
-},{"../data/days":2,"../data/months":5,"../fns":8}],23:[function(_dereq_,module,exports){
-'use strict'; //round to either current, or +1 of this unit
+},{"../data/days":2,"../data/months":5,"../fns":8}],25:[function(_dereq_,module,exports){
+"use strict";
+
+var fns = _dereq_('../fns'); //round to either current, or +1 of this unit
+
 
 var nearest = function nearest(s, unit) {
-  unit = unit.toLowerCase();
-  unit = unit.replace(/s$/, ''); //singular form...
-
+  unit = fns.normalize(unit);
   var prog = s.progress();
 
   if (prog[unit] !== undefined) {
@@ -1792,9 +3329,10 @@ var nearest = function nearest(s, unit) {
 
 module.exports = nearest;
 
-},{}],24:[function(_dereq_,module,exports){
-'use strict'; //how far it is along, from 0-1
+},{"../fns":8}],26:[function(_dereq_,module,exports){
+"use strict";
 
+//how far it is along, from 0-1
 var progress = function progress(s) {
   var units = ['year', 'season', 'quarter', 'month', 'week', 'day', 'quarterHour', 'hour', 'minute'];
   var obj = {};
@@ -1810,8 +3348,8 @@ var progress = function progress(s) {
 
 module.exports = progress;
 
-},{}],25:[function(_dereq_,module,exports){
-'use strict';
+},{}],27:[function(_dereq_,module,exports){
+"use strict";
 
 var quarters = _dereq_('../../data/quarters');
 
@@ -1969,8 +3507,8 @@ module.exports = {
   }
 };
 
-},{"../../data/quarters":6,"../../data/seasons":7,"../../fns":8,"../set/set":30}],26:[function(_dereq_,module,exports){
-'use strict';
+},{"../../data/quarters":6,"../../data/seasons":7,"../../fns":8,"../set/set":32}],28:[function(_dereq_,module,exports){
+"use strict";
 
 var normal = _dereq_('./normal');
 
@@ -1993,12 +3531,10 @@ var addMethods = function addMethods(Space) {
 
 module.exports = addMethods;
 
-},{"./destructive":25,"./normal":27,"./tricky":28}],27:[function(_dereq_,module,exports){
-'use strict';
+},{"./destructive":27,"./normal":29,"./tricky":30}],29:[function(_dereq_,module,exports){
+"use strict";
 
-var set = _dereq_('../set/set');
-
-var walkTo = _dereq_('../set/walk'); //the most basic get/set methods
+var set = _dereq_('../set/set'); //the most basic get/set methods
 
 
 var methods = {
@@ -2034,12 +3570,12 @@ var methods = {
 
     if (num !== undefined) {
       var s = this.clone();
-      s.epoch = set.hours(s, num);
-      walkTo(s, {
-        month: this.month(),
-        date: this.date(),
-        hour: num
-      });
+      s.epoch = set.hours(s, num); // walkTo(s, {
+      //   month: this.month(),
+      //   date: this.date(),
+      //   hour: num
+      // })
+
       return s;
     }
 
@@ -2221,9 +3757,9 @@ var methods = {
   fromNow: function fromNow() {
     var d = this.clone().set(Date.now());
     return d.since(this);
-  }
-}; //aliases
+  } //aliases
 
+};
 methods.milliseconds = methods.millisecond;
 methods.seconds = methods.second;
 methods.minutes = methods.minute;
@@ -2234,8 +3770,8 @@ methods.h24 = methods.hour24;
 methods.days = methods.day;
 module.exports = methods;
 
-},{"../set/set":30,"../set/walk":31}],28:[function(_dereq_,module,exports){
-'use strict';
+},{"../set/set":32}],30:[function(_dereq_,module,exports){
+"use strict";
 
 var days = _dereq_('../../data/days');
 
@@ -2256,10 +3792,10 @@ module.exports = {
 
     if (typeof input === 'string') {
       input = input.toLowerCase();
-      want = days.short().indexOf(input);
+      want = days["short"]().indexOf(input);
 
       if (want === -1) {
-        want = days.long().indexOf(input);
+        want = days["long"]().indexOf(input);
       }
     } //move approx
 
@@ -2283,20 +3819,24 @@ module.exports = {
       which = 'pm';
     }
 
-    if (input === undefined) {
+    if (typeof input !== 'string') {
       return which;
-    }
+    } //okay, we're doing a setter
+
 
     var s = this.clone();
+    input = input.toLowerCase().trim(); //ampm should never change the day
+    // - so use `.hour(n)` instead of `.minus(12,'hour')`
 
-    if (input === which) {
-      return s;
+    if (hour >= 12 && input === 'am') {
+      //noon is 12pm
+      hour -= 12;
+      return s.hour(hour);
     }
 
-    if (s === 'am') {
-      s = s.subtract(12, 'hours');
-    } else {
-      s = s.add(12, 'hours');
+    if (hour < 12 && input === 'pm') {
+      hour += 12;
+      return s.hour(hour);
     }
 
     return s;
@@ -2304,7 +3844,7 @@ module.exports = {
   //these are helpful name-wrappers
   dayName: function dayName(input) {
     if (input === undefined) {
-      return days.long()[this.day()];
+      return days["long"]()[this.day()];
     }
 
     var s = this.clone();
@@ -2313,7 +3853,7 @@ module.exports = {
   },
   monthName: function monthName(input) {
     if (input === undefined) {
-      return months.long()[this.month()];
+      return months["long"]()[this.month()];
     }
 
     var s = this.clone();
@@ -2322,9 +3862,10 @@ module.exports = {
   }
 };
 
-},{"../../data/days":2,"../../data/months":5,"../set/walk":31}],29:[function(_dereq_,module,exports){
-'use strict'; //make a string, for easy comparison between dates
+},{"../../data/days":2,"../../data/months":5,"../set/walk":33}],31:[function(_dereq_,module,exports){
+"use strict";
 
+//make a string, for easy comparison between dates
 var print = {
   millisecond: function millisecond(s) {
     return s.epoch;
@@ -2360,6 +3901,10 @@ var addMethods = function addMethods(SpaceTime) {
   SpaceTime.prototype.isSame = function (b, unit) {
     var a = this;
 
+    if (!unit) {
+      return null;
+    }
+
     if (typeof b === 'string' || typeof b === 'number') {
       b = new SpaceTime(b, this.timezone.name);
     } //support 'seconds' aswell as 'second'
@@ -2377,10 +3922,11 @@ var addMethods = function addMethods(SpaceTime) {
 
 module.exports = addMethods;
 
-},{}],30:[function(_dereq_,module,exports){
-'use strict'; // javascript setX methods like setDate() can't be used because of the local bias
-//these methods wrap around them.
+},{}],32:[function(_dereq_,module,exports){
+"use strict";
 
+// javascript setX methods like setDate() can't be used because of the local bias
+//these methods wrap around them.
 var ms = _dereq_('../../data/milliseconds');
 
 var months = _dereq_('../../data/months');
@@ -2437,10 +3983,20 @@ module.exports = {
   },
   hours: function hours(s, n) {
     n = validate(n);
+
+    if (n >= 24) {
+      n = 24;
+    } else if (n < 0) {
+      n = 0;
+    }
+
     var old = s.clone();
     var diff = s.hour() - n;
     var shift = diff * ms.hour;
     s.epoch -= shift;
+    walkTo(s, {
+      hour: n
+    });
     confirm(s, old, 'minute');
     return s.epoch;
   },
@@ -2487,7 +4043,21 @@ module.exports = {
     return s.epoch;
   },
   date: function date(s, n) {
-    n = validate(n);
+    n = validate(n); //avoid setting february 31st
+
+    if (n > 28) {
+      var max = monthLength[s.month()];
+
+      if (n > max) {
+        n = max;
+      }
+    } //avoid setting < 0
+
+
+    if (n <= 0) {
+      n = 1;
+    }
+
     walkTo(s, {
       date: n
     });
@@ -2499,7 +4069,16 @@ module.exports = {
       n = months.mapping()[n.toLowerCase()];
     }
 
-    n = validate(n);
+    n = validate(n); //don't go past december
+
+    if (n >= 12) {
+      n = 11;
+    }
+
+    if (n <= 0) {
+      n = 0;
+    }
+
     var date = s.date(); //there's no 30th of february, etc.
 
     if (date > monthLength[n]) {
@@ -2523,22 +4102,28 @@ module.exports = {
   dayOfYear: function dayOfYear(s, n) {
     n = validate(n);
     var old = s.clone();
-    var diff = n - s.dayOfYear();
-    var shift = diff * ms.day;
-    s.epoch += shift;
+    n -= 1; //days are 1-based
+
+    if (n <= 0) {
+      n = 0;
+    } else if (n >= 365) {
+      n = 364;
+    }
+
+    s = s.startOf('year');
+    s = s.add(n, 'day');
     confirm(s, old, 'hour');
     return s.epoch;
   }
 };
 
-},{"../../data/milliseconds":3,"../../data/monthLengths":4,"../../data/months":5,"./walk":31}],31:[function(_dereq_,module,exports){
-'use strict';
+},{"../../data/milliseconds":3,"../../data/monthLengths":4,"../../data/months":5,"./walk":33}],33:[function(_dereq_,module,exports){
+"use strict";
 
 var ms = _dereq_('../../data/milliseconds'); //basically, step-forward/backward until js Date object says we're there.
 
 
 var walk = function walk(s, n, fn, unit, previous) {
-  // console.log(unit, s.d.getDate())
   var current = s.d[fn]();
 
   if (current === n) {
@@ -2549,10 +4134,13 @@ var walk = function walk(s, n, fn, unit, previous) {
   var original = s.epoch; //try to get it as close as we can
 
   var diff = n - current;
-  s.epoch += ms[unit] * diff; //edge case, if we are going many days, be a little conservative
+  s.epoch += ms[unit] * diff; //DST edge-case: if we are going many days, be a little conservative
 
   if (unit === 'day' && Math.abs(diff) > 28) {
-    s.epoch += ms.hour;
+    //but don't push it over a month
+    if (n < 28) {
+      s.epoch += ms.hour;
+    }
   } //repair it if we've gone too far or something
   //(go by half-steps, just in case)
 
@@ -2569,7 +4157,7 @@ var walk = function walk(s, n, fn, unit, previous) {
 
 
   if (previous !== null && startUnit !== s.d[previous]()) {
-    console.warn('spacetime warning: missed setting ' + unit);
+    // console.warn('spacetime warning: missed setting ' + unit)
     s.epoch = original;
   }
 }; //find the desired date by a increment/check while loop
@@ -2689,8 +4277,7 @@ var walkTo = function walkTo(s, wants) {
     } // console.log(k, n)
 
 
-    units[k].walkTo(s, n); // console.log(s.monthName())
-    // console.log(s.format())
+    units[k].walkTo(s, n);
   }
 
   return;
@@ -2698,8 +4285,8 @@ var walkTo = function walkTo(s, wants) {
 
 module.exports = walkTo;
 
-},{"../../data/milliseconds":3}],32:[function(_dereq_,module,exports){
-'use strict';
+},{"../../data/milliseconds":3}],34:[function(_dereq_,module,exports){
+"use strict";
 
 var fns = _dereq_('../fns'); //by spencermountain + Shaun Grady
 //our conceptual 'break-points' for each unit
@@ -2748,16 +4335,9 @@ function getDiff(a, b) {
     }
 
     var max = earlier.diff(later, unit);
-    earlier = earlier.add(max, unit); //did we go one too far?
-
-    if (earlier.epoch > later.epoch + 10) {
-      //(fudge this calc by 10 milliseconds)
-      earlier = earlier.subtract(1, unit);
-      max -= 1;
-    }
-
+    earlier = earlier.add(max, unit);
     diff[unit] = max;
-  }); //reverse it
+  }); //reverse it, if necessary
 
   if (isBefore) {
     Object.keys(diff).forEach(function (u) {
@@ -2851,8 +4431,8 @@ var since = function since(start, end) {
 
 module.exports = since;
 
-},{"../fns":8}],33:[function(_dereq_,module,exports){
-'use strict';
+},{"../fns":8}],35:[function(_dereq_,module,exports){
+"use strict";
 
 var seasons = _dereq_('../data/seasons');
 
@@ -2988,6 +4568,20 @@ var units = {
       millisecond: 0
     });
     return s;
+  },
+  decade: function decade(s) {
+    s = s.startOf('year');
+    var year = s.year();
+    var decade = parseInt(year / 10, 10) * 10;
+    s = s.year(decade);
+    return s;
+  },
+  century: function century(s) {
+    s = s.startOf('year');
+    var year = s.year();
+    var decade = parseInt(year / 100, 10) * 100;
+    s = s.year(decade);
+    return s;
   }
 };
 units.date = units.day;
@@ -3026,8 +4620,8 @@ module.exports = {
   endOf: endOf
 };
 
-},{"../data/quarters":6,"../data/seasons":7,"./set/walk":31}],34:[function(_dereq_,module,exports){
-'use strict';
+},{"../data/quarters":6,"../data/seasons":7,"./set/walk":33}],36:[function(_dereq_,module,exports){
+"use strict";
 
 var quickOffset = _dereq_('./timezone/quick');
 
@@ -3040,9 +4634,9 @@ var methods = _dereq_('./methods');
 var timezones = _dereq_('../zonefile/unpack'); //fake timezone-support, for fakers (es5 class)
 
 
-var SpaceTime = function SpaceTime(input, tz, options) {
-  options = options || {}; //the holy moment
-
+var SpaceTime = function SpaceTime(input, tz) {
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  //the holy moment
   this.epoch = null; //the shift for the given timezone
 
   this.tz = findTz(tz, timezones); //whether to output warnings to console
@@ -3107,7 +4701,7 @@ _dereq_('./methods/i18n')(SpaceTime);
 
 module.exports = SpaceTime;
 
-},{"../zonefile/unpack":45,"./input":11,"./methods":15,"./methods/add":16,"./methods/compare":17,"./methods/i18n":22,"./methods/query":26,"./methods/same":29,"./timezone/find":36,"./timezone/quick":39}],35:[function(_dereq_,module,exports){
+},{"../zonefile/unpack":47,"./input":11,"./methods":16,"./methods/add":17,"./methods/compare":18,"./methods/i18n":24,"./methods/query":28,"./methods/same":31,"./timezone/find":38,"./timezone/quick":41}],37:[function(_dereq_,module,exports){
 "use strict";
 
 var informal = _dereq_('../../zonefile/informal').informal; //these timezone abbreviations are used aggressively in other places
@@ -3204,8 +4798,8 @@ var display = function display(tz, obj) {
 
 module.exports = display;
 
-},{"../../zonefile/informal":44}],36:[function(_dereq_,module,exports){
-'use strict';
+},{"../../zonefile/informal":46}],38:[function(_dereq_,module,exports){
+"use strict";
 
 var tzs = _dereq_('../../zonefile/unpack');
 
@@ -3213,13 +4807,11 @@ var informal = _dereq_('../../zonefile/informal').lookup;
 
 var guessTz = _dereq_('./guessTz');
 
-var local = guessTz(); // console.log(informal)
-// const isNum = /^(etc\/gmt|etc|gmt|utc|h)([+\-0-9 ]+)$/i
-
+var local = guessTz();
 var isOffset = /(\-?[0-9]+)h(rs)?/; //add all the city names by themselves
 
 var cities = Object.keys(tzs).reduce(function (h, k) {
-  var city = k.split('/')[1];
+  var city = k.split('/')[1] || '';
   city = city.replace(/_/g, ' ');
   h[city] = k;
   return h;
@@ -3286,18 +4878,19 @@ var lookupTz = function lookupTz(str, zones) {
     }
   }
 
-  console.warn('Cannot find timezone named: \'' + str + '\'');
+  console.warn("Cannot find timezone named: '" + str + "'");
   return local;
 };
 
 module.exports = lookupTz;
 
-},{"../../zonefile/informal":44,"../../zonefile/unpack":45,"./guessTz":37}],37:[function(_dereq_,module,exports){
-'use strict'; //find the implicit iana code for this machine.
+},{"../../zonefile/informal":46,"../../zonefile/unpack":47,"./guessTz":39}],39:[function(_dereq_,module,exports){
+"use strict";
+
+//find the implicit iana code for this machine.
 //safely query the Intl object
 //based on - https://bitbucket.org/pellepim/jstimezonedetect/src
-
-var fallbackTZ = 'asia/shanghai'; //
+var fallbackTZ = 'utc'; //
 //this Intl object is not supported often, yet
 
 var safeIntl = function safeIntl() {
@@ -3313,11 +4906,11 @@ var safeIntl = function safeIntl() {
 
   var timezone = format.resolvedOptions().timeZone;
 
-  if (!timezone || timezone.indexOf('/') === -1 && timezone === 'UTC') {
+  if (!timezone) {
     return null;
   }
 
-  return timezone;
+  return timezone.toLowerCase();
 };
 
 var guessTz = function guessTz() {
@@ -3327,14 +4920,14 @@ var guessTz = function guessTz() {
     return fallbackTZ;
   }
 
-  return timezone.toLowerCase();
+  return timezone;
 }; //do it once per computer
 
 
 module.exports = guessTz;
 
-},{}],38:[function(_dereq_,module,exports){
-'use strict'; // const zones = require('../../data');
+},{}],40:[function(_dereq_,module,exports){
+"use strict";
 
 var findTz = _dereq_('./find');
 
@@ -3353,7 +4946,7 @@ var parseDst = function parseDst(dst) {
 var titleCase = function titleCase(str) {
   str = str[0].toUpperCase() + str.substr(1);
   str = str.replace(/\/gmt/, '/GMT');
-  str = str.replace(/[\/_]([a-z])/ig, function (s) {
+  str = str.replace(/[\/_]([a-z])/gi, function (s) {
     return s.toUpperCase();
   });
   return str;
@@ -3434,15 +5027,21 @@ var timezone = function timezone(s) {
 
 module.exports = timezone;
 
-},{"./display":35,"./find":36,"./summerTime":40}],39:[function(_dereq_,module,exports){
+},{"./display":37,"./find":38,"./summerTime":42}],41:[function(_dereq_,module,exports){
 "use strict";
 
-var isSummer = _dereq_('./summerTime'); //
+var isSummer = _dereq_('./summerTime'); // this method avoids having to do a full dst-calculation on every operation
+// it reproduces some things in ./index.js, but speeds up spacetime considerably
 
 
 var quickOffset = function quickOffset(s) {
   var zones = s.timezones;
   var obj = zones[s.tz];
+
+  if (obj === undefined) {
+    console.warn("Warning: couldn't find timezone " + s.tz);
+    return 0;
+  }
 
   if (obj.dst === undefined) {
     return obj.offset;
@@ -3457,21 +5056,19 @@ var quickOffset = function quickOffset(s) {
   }
 
   var split = obj.dst.split('->');
-  var inSummer = isSummer(s.epoch, split[0], split[1], jul); // console.log(s.epoch, inSummer)
-  // console.log(new Date(s.epoch), inSummer)
+  var inSummer = isSummer(s.epoch, split[0], split[1], jul);
 
   if (inSummer === true) {
     return jul;
-  } // console.log(jul)
-
+  }
 
   return dec;
 };
 
 module.exports = quickOffset;
 
-},{"./summerTime":40}],40:[function(_dereq_,module,exports){
-'use strict';
+},{"./summerTime":42}],42:[function(_dereq_,module,exports){
+"use strict";
 
 var zeroPad = _dereq_('../fns').zeroPad;
 
@@ -3507,8 +5104,8 @@ var shouldChange = function shouldChange(epoch, start, end, defaultOffset) {
 
 module.exports = shouldChange;
 
-},{"../fns":8}],41:[function(_dereq_,module,exports){
-'use strict';
+},{"../fns":8}],43:[function(_dereq_,module,exports){
+"use strict";
 
 var Spacetime = _dereq_('./spacetime'); // const timezones = require('../data');
 
@@ -3554,18 +5151,18 @@ var whereIts = function whereIts(a, b) {
 
 module.exports = whereIts;
 
-},{"./spacetime":34}],42:[function(_dereq_,module,exports){
+},{"./spacetime":36}],44:[function(_dereq_,module,exports){
 module.exports={
   "9|s": "2/dili,2/jayapura",
   "9|n": "2/chita,2/khandyga,2/pyongyang,2/seoul,2/tokyo,11/palau",
-  "9.5|s|04/01:03->10/07:02": "4/adelaide,4/broken_hill,4/south,4/yancowinna",
+  "9.5|s|04/07:03->10/06:02": "4/adelaide,4/broken_hill,4/south,4/yancowinna",
   "9.5|s": "4/darwin,4/north",
   "8|s": "12/casey,2/kuala_lumpur,2/makassar,2/singapore,4/perth,4/west",
   "8|n|03/25:03->09/29:23": "2/ulan_bator",
   "8|n": "2/brunei,2/choibalsan,2/chongqing,2/chungking,2/harbin,2/hong_kong,2/irkutsk,2/kuching,2/macao,2/macau,2/manila,2/shanghai,2/taipei,2/ujung_pandang,2/ulaanbaatar",
   "8.75|s": "4/eucla",
   "7|s": "12/davis,2/jakarta,9/christmas",
-  "7|n": "2/bangkok,2/barnaul,2/ho_chi_minh,2/hovd,2/krasnoyarsk,2/novokuznetsk,2/novosibirsk,2/phnom_penh,2/pontianak,2/saigon,2/vientiane",
+  "7|n": "2/bangkok,2/barnaul,2/ho_chi_minh,2/hovd,2/krasnoyarsk,2/novokuznetsk,2/novosibirsk,2/phnom_penh,2/pontianak,2/saigon,2/tomsk,2/vientiane",
   "6|s": "12/vostok",
   "6|n": "2/almaty,2/bishkek,2/dacca,2/dhaka,2/kashgar,2/omsk,2/qyzylorda,2/thimbu,2/thimphu,2/urumqi,9/chagos",
   "6.5|n": "2/rangoon,9/cocos",
@@ -3574,89 +5171,89 @@ module.exports={
   "5.75|n": "2/kathmandu,2/katmandu",
   "5.5|n": "2/calcutta,2/colombo,2/kolkata",
   "4|s": "9/reunion",
-  "4|n": "2/dubai,2/muscat,2/tbilisi,2/yerevan,8/astrakhan,8/samara,8/saratov,8/ulyanovsk,9/mahe,9/mauritius",
+  "4|n": "2/dubai,2/muscat,2/tbilisi,2/yerevan,8/astrakhan,8/samara,8/saratov,8/ulyanovsk,8/volgograd,2/volgograd,9/mahe,9/mauritius",
   "4.5|n|03/22:00->09/21:24": "2/tehran",
   "4.5|n": "2/kabul",
   "3|s": "12/syowa,9/antananarivo",
-  "3|n|03/30:00->10/26:01": "2/amman",
-  "3|n|03/30:00->10/25:24": "2/damascus",
-  "3|n|03/25:03->10/28:04": "2/nicosia,8/athens,8/bucharest,8/helsinki,8/kiev,8/mariehamn,8/nicosia,8/riga,8/sofia,8/tallinn,8/uzhgorod,8/vilnius,8/zaporozhye",
-  "3|n|03/25:02->10/28:03": "8/chisinau,8/tiraspol",
-  "3|n|03/25:00->10/27:24": "2/beirut",
-  "3|n|03/24:01->10/27:01": "2/gaza,2/hebron",
-  "3|n|03/23:02->10/28:02": "2/jerusalem,2/tel_aviv",
-  "3|n": "0/addis_ababa,0/asmara,0/asmera,0/dar_es_salaam,0/djibouti,0/juba,0/kampala,0/mogadishu,0/nairobi,2/aden,2/baghdad,2/bahrain,2/istanbul,2/kuwait,2/qatar,2/riyadh,8/istanbul,8/kirov,8/minsk,8/moscow,8/simferopol,8/volgograd,9/comoro,9/mayotte",
-  "2|s|03/25:02->10/28:02": "12/troll",
+  "3|n|03/31:03->10/27:04": "2/nicosia,8/athens,8/bucharest,8/helsinki,8/kiev,8/mariehamn,8/nicosia,8/riga,8/sofia,8/tallinn,8/uzhgorod,8/vilnius,8/zaporozhye",
+  "3|n|03/31:02->10/27:03": "8/chisinau,8/tiraspol",
+  "3|n|03/31:00->10/26:24": "2/beirut",
+  "3|n|03/29:02->10/27:02": "2/jerusalem,2/tel_aviv",
+  "3|n|03/29:00->10/25:01": "2/amman",
+  "3|n|03/29:00->10/24:24": "2/damascus",
+  "3|n|03/23:01->10/26:01": "2/gaza,2/hebron",
+  "3|n": "0/addis_ababa,0/asmara,0/asmera,0/dar_es_salaam,0/djibouti,0/juba,0/kampala,0/mogadishu,0/nairobi,2/aden,2/baghdad,2/bahrain,2/istanbul,2/kuwait,2/qatar,2/riyadh,8/istanbul,8/kirov,8/minsk,8/moscow,8/simferopol,9/comoro,9/mayotte",
+  "2|s|03/31:02->10/27:02": "12/troll",
   "2|s": "0/gaborone,0/harare,0/johannesburg,0/lubumbashi,0/lusaka,0/maputo,0/maseru,0/mbabane",
-  "2|n|03/25:02->10/28:03": "0/ceuta,arctic/longyearbyen,3/jan_mayen,8/amsterdam,8/andorra,8/belgrade,8/berlin,8/bratislava,8/brussels,8/budapest,8/busingen,8/copenhagen,8/gibraltar,8/ljubljana,8/luxembourg,8/madrid,8/malta,8/monaco,8/oslo,8/paris,8/podgorica,8/prague,8/rome,8/san_marino,8/sarajevo,8/skopje,8/stockholm,8/tirane,8/vaduz,8/vatican,8/vienna,8/warsaw,8/zagreb,8/zurich",
+  "2|n|03/31:02->10/27:03": "0/ceuta,arctic/longyearbyen,3/jan_mayen,8/amsterdam,8/andorra,8/belgrade,8/berlin,8/bratislava,8/brussels,8/budapest,8/busingen,8/copenhagen,8/gibraltar,8/ljubljana,8/luxembourg,8/madrid,8/malta,8/monaco,8/oslo,8/paris,8/podgorica,8/prague,8/rome,8/san_marino,8/sarajevo,8/skopje,8/stockholm,8/tirane,8/vaduz,8/vatican,8/vienna,8/warsaw,8/zagreb,8/zurich",
   "2|n": "0/blantyre,0/bujumbura,0/cairo,0/khartoum,0/kigali,0/tripoli,8/kaliningrad",
   "1|s|04/02:01->09/03:03": "0/windhoek",
   "1|s": "0/kinshasa,0/luanda",
-  "1|n|07/02:03->10/29:02": "0/casablanca,0/el_aaiun",
-  "1|n|03/25:01->10/28:02": "3/canary,3/faeroe,3/faroe,3/madeira,8/belfast,8/dublin,8/guernsey,8/isle_of_man,8/jersey,8/lisbon,8/london",
+  "1|n|05/05:03->06/09:02": "0/casablanca,0/el_aaiun",
+  "1|n|03/31:01->10/27:02": "3/canary,3/faeroe,3/faroe,3/madeira,8/belfast,8/dublin,8/guernsey,8/isle_of_man,8/jersey,8/lisbon,8/london",
   "1|n": "0/algiers,0/bangui,0/brazzaville,0/douala,0/lagos,0/libreville,0/malabo,0/ndjamena,0/niamey,0/porto-novo,0/tunis",
   "14|n": "11/kiritimati",
-  "13|s|04/01:04->09/30:03": "11/apia",
+  "13|s|04/07:04->09/29:03": "11/apia",
   "13|s|01/15:02->11/05:03": "11/tongatapu",
   "13|n": "11/enderbury,11/fakaofo",
-  "12|s|04/01:03->09/30:02": "12/mcmurdo,12/south_pole,11/auckland",
-  "12|s|01/14:03->11/04:02": "11/fiji",
+  "12|s|04/07:03->09/29:02": "12/mcmurdo,12/south_pole,11/auckland",
+  "12|s|01/13:03->11/03:02": "11/fiji",
   "12|n": "2/anadyr,2/kamchatka,2/srednekolymsk,11/funafuti,11/kwajalein,11/majuro,11/nauru,11/tarawa,11/wake,11/wallis",
-  "12.75|s|04/07:03->09/29:02": "11/chatham",
+  "12.75|s|04/07:03->04/07:02": "11/chatham",
   "11|s": "12/macquarie,11/bougainville",
   "11|n": "2/magadan,2/sakhalin,11/efate,11/guadalcanal,11/kosrae,11/noumea,11/pohnpei,11/ponape",
   "11.5|n": "11/norfolk",
-  "10|s|04/01:03->10/07:02": "4/act,4/canberra,4/currie,4/hobart,4/melbourne,4/nsw,4/sydney,4/tasmania,4/victoria",
+  "10|s|04/07:03->10/06:02": "4/act,4/canberra,4/currie,4/hobart,4/melbourne,4/nsw,4/sydney,4/tasmania,4/victoria",
   "10|s": "12/dumontdurville,4/brisbane,4/lindeman,4/queensland",
   "10|n": "2/ust-nera,2/vladivostok,2/yakutsk,11/chuuk,11/guam,11/port_moresby,11/saipan,11/truk,11/yap",
-  "10.5|s|04/01:01->10/07:02": "4/lhi,4/lord_howe",
-  "0|n|03/25:00->10/28:01": "1/scoresbysund,3/azores",
+  "10.5|s|04/07:01->10/06:02": "4/lhi,4/lord_howe",
+  "0|n|03/31:00->10/27:01": "1/scoresbysund,3/azores",
   "0|n": "0/abidjan,0/accra,0/bamako,0/banjul,0/bissau,0/conakry,0/dakar,0/freetown,0/lome,0/monrovia,0/nouakchott,0/ouagadougou,0/sao_tome,0/timbuktu,1/danmarkshavn,3/reykjavik,3/st_helena,13/gmt,13/gmt+0,13/gmt-0,13/gmt0,13/greenwich,13/utc,13/universal,13/zulu",
-  "-9|n|03/11:02->11/04:02": "1/adak,1/atka",
+  "-9|n|03/10:02->11/03:02": "1/adak,1/atka",
   "-9|n": "11/gambier",
   "-9.5|n": "11/marquesas",
-  "-8|n|03/11:02->11/04:02": "1/anchorage,1/juneau,1/metlakatla,1/nome,1/sitka,1/yakutat",
+  "-8|n|03/10:02->11/03:02": "1/anchorage,1/juneau,1/metlakatla,1/nome,1/sitka,1/yakutat",
   "-8|n": "11/pitcairn",
-  "-7|n|03/11:02->11/04:02": "1/dawson,1/ensenada,1/los_angeles,1/santa_isabel,1/tijuana,1/vancouver,1/whitehorse,6/pacific,6/yukon,10/bajanorte",
+  "-7|n|03/10:02->11/03:02": "1/dawson,1/ensenada,1/los_angeles,1/santa_isabel,1/tijuana,1/vancouver,1/whitehorse,6/pacific,6/yukon,10/bajanorte",
   "-7|n": "1/creston,1/dawson_creek,1/hermosillo,1/phoenix",
-  "-6|s|05/12:22->08/11:22": "7/easterisland,11/easter",
-  "-6|n|04/01:02->10/28:02": "1/chihuahua,1/mazatlan,10/bajasur",
-  "-6|n|03/11:02->11/04:02": "1/boise,1/cambridge_bay,1/denver,1/edmonton,1/inuvik,1/ojinaga,1/shiprock,1/yellowknife,6/mountain",
+  "-6|s|04/06:22->09/07:22": "7/easterisland,11/easter",
+  "-6|n|04/07:02->10/27:02": "1/chihuahua,1/mazatlan,10/bajasur",
+  "-6|n|03/10:02->11/03:02": "1/boise,1/cambridge_bay,1/denver,1/edmonton,1/inuvik,1/ojinaga,1/shiprock,1/yellowknife,6/mountain",
   "-6|n": "1/belize,1/costa_rica,1/el_salvador,1/guatemala,1/managua,1/regina,1/swift_current,1/tegucigalpa,6/east-saskatchewan,6/saskatchewan,11/galapagos",
   "-5|s": "1/lima,1/rio_branco,5/acre",
-  "-5|n|04/01:02->10/28:02": "1/bahia_banderas,1/merida,1/mexico_city,1/monterrey,10/general",
+  "-5|n|04/07:02->10/27:02": "1/bahia_banderas,1/merida,1/mexico_city,1/monterrey,10/general",
   "-5|n|03/12:03->11/05:01": "1/north_dakota",
-  "-5|n|03/11:02->11/04:02": "1/chicago,1/knox_in,1/matamoros,1/menominee,1/rainy_river,1/rankin_inlet,1/resolute,1/winnipeg,6/central",
+  "-5|n|03/10:02->11/03:02": "1/chicago,1/knox_in,1/matamoros,1/menominee,1/rainy_river,1/rankin_inlet,1/resolute,1/winnipeg,6/central",
   "-5|n": "1/atikokan,1/bogota,1/cancun,1/cayman,1/coral_harbour,1/eirunepe,1/guayaquil,1/jamaica,1/panama,1/porto_acre",
   "-4|s|05/13:23->08/13:01": "12/palmer",
-  "-4|s|05/12:24->08/12:00": "1/santiago,7/continental",
-  "-4|s|03/24:24->10/07:00": "1/asuncion",
-  "-4|s|02/17:24->11/04:00": "1/campo_grande,1/cuiaba",
+  "-4|s|04/06:24->09/08:00": "1/santiago,7/continental",
+  "-4|s|03/23:24->10/06:00": "1/asuncion",
+  "-4|s|02/16:24->11/03:00": "1/campo_grande,1/cuiaba",
   "-4|s": "1/la_paz,1/manaus,5/west",
   "-4|n|03/12:03->11/05:01": "1/indiana,1/kentucky",
-  "-4|n|03/11:02->11/04:02": "1/detroit,1/fort_wayne,1/grand_turk,1/indianapolis,1/iqaluit,1/louisville,1/montreal,1/nassau,1/new_york,1/nipigon,1/pangnirtung,1/port-au-prince,1/thunder_bay,1/toronto,6/eastern",
-  "-4|n|03/11:00->11/04:01": "1/havana",
+  "-4|n|03/10:02->11/03:02": "1/detroit,1/fort_wayne,1/grand_turk,1/indianapolis,1/iqaluit,1/louisville,1/montreal,1/nassau,1/new_york,1/nipigon,1/pangnirtung,1/port-au-prince,1/thunder_bay,1/toronto,6/eastern",
+  "-4|n|03/10:00->11/03:01": "1/havana",
   "-4|n": "1/anguilla,1/antigua,1/aruba,1/barbados,1/blanc-sablon,1/boa_vista,1/caracas,1/curacao,1/dominica,1/grenada,1/guadeloupe,1/guyana,1/kralendijk,1/lower_princes,1/marigot,1/martinique,1/montserrat,1/port_of_spain,1/porto_velho,1/puerto_rico,1/santo_domingo,1/st_barthelemy,1/st_kitts,1/st_lucia,1/st_thomas,1/st_vincent,1/tortola,1/virgin",
-  "-3|s|02/17:24->11/04:00": "1/sao_paulo,5/east",
+  "-3|s|02/16:24->11/03:00": "1/sao_paulo,5/east",
   "-3|s": "1/argentina,1/buenos_aires,1/cordoba,1/fortaleza,1/montevideo,1/punta_arenas,12/rothera,3/stanley",
-  "-3|n|03/11:02->11/04:02": "1/glace_bay,1/goose_bay,1/halifax,1/moncton,1/thule,3/bermuda,6/atlantic",
+  "-3|n|03/10:02->11/03:02": "1/glace_bay,1/goose_bay,1/halifax,1/moncton,1/thule,3/bermuda,6/atlantic",
   "-3|n": "1/araguaina,1/bahia,1/belem,1/catamarca,1/cayenne,1/jujuy,1/maceio,1/mendoza,1/paramaribo,1/recife,1/rosario,1/santarem",
   "-2|s": "5/denoronha",
-  "-2|n|03/24:22->10/27:23": "1/godthab",
-  "-2|n|03/11:02->11/04:02": "1/miquelon",
+  "-2|n|03/30:22->10/26:23": "1/godthab",
+  "-2|n|03/10:02->11/03:02": "1/miquelon",
   "-2|n": "1/noronha,3/south_georgia",
-  "-2.5|n|03/11:02->11/04:02": "1/st_johns,6/newfoundland",
+  "-2.5|n|03/10:02->11/03:02": "1/st_johns,6/newfoundland",
   "-1|n": "3/cape_verde",
   "-11|n": "11/midway,11/niue,11/pago_pago,11/samoa",
   "-10|n": "11/honolulu,11/johnston,11/rarotonga,11/tahiti"
 }
-},{}],43:[function(_dereq_,module,exports){
+},{}],45:[function(_dereq_,module,exports){
 "use strict";
 
 //prefixes for iana names..
 module.exports = ['africa', 'america', 'asia', 'atlantic', 'australia', 'brazil', 'canada', 'chile', 'europe', 'indian', 'mexico', 'pacific', 'antarctica', 'etc'];
 
-},{}],44:[function(_dereq_,module,exports){
+},{}],46:[function(_dereq_,module,exports){
 "use strict";
 
 // this is a very rough list of informal and abbreviated timezones
@@ -3928,7 +5525,7 @@ module.exports = {
   lookup: lookup
 };
 
-},{}],45:[function(_dereq_,module,exports){
+},{}],47:[function(_dereq_,module,exports){
 "use strict";
 
 var data = _dereq_('./_build.json');
@@ -3955,9 +5552,15 @@ Object.keys(data).forEach(function (k) {
     });
     all[str] = obj;
   });
-}); //add etc/gmt+n
+});
+all['utc'] = {
+  offset: 0,
+  hem: 'n' //(sorry)
+  //add etc/gmt+n
 
-for (var i = -12; i < 13; i += 1) {
+};
+
+for (var i = -13; i <= 13; i += 0.5) {
   var num = i;
 
   if (num > 0) {
@@ -3983,13 +5586,8 @@ for (var i = -12; i < 13; i += 1) {
 
 module.exports = all;
 
-},{"./_build.json":42,"./_prefixes.js":43}]},{},[9])(9)
+},{"./_build.json":44,"./_prefixes.js":45}]},{},[9])(9)
 });
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],4:[function(_dereq_,module,exports){
-(function (global){
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).spencerColor=e()}}(function(){return function u(i,a,c){function f(r,e){if(!a[r]){if(!i[r]){var o="function"==typeof _dereq_&&_dereq_;if(!e&&o)return o(r,!0);if(s)return s(r,!0);var n=new Error("Cannot find module '"+r+"'");throw n.code="MODULE_NOT_FOUND",n}var t=a[r]={exports:{}};i[r][0].call(t.exports,function(e){return f(i[r][1][e]||e)},t,t.exports,u,i,a,c)}return a[r].exports}for(var s="function"==typeof _dereq_&&_dereq_,e=0;e<c.length;e++)f(c[e]);return f}({1:[function(e,r,o){"use strict";r.exports={blue:"#6699cc",green:"#6accb2",yellow:"#e1e6b3",red:"#cc7066",pink:"#F2C0BB",brown:"#705E5C",orange:"#cc8a66",purple:"#d8b3e6",navy:"#335799",olive:"#7f9c6c",fuscia:"#735873",beige:"#e6d7b3",slate:"#8C8C88",suede:"#9c896c",burnt:"#603a39",sea:"#50617A",sky:"#2D85A8",night:"#303b50",rouge:"#914045",grey:"#838B91",mud:"#C4ABAB",royal:"#275291",cherry:"#cc6966",tulip:"#e6b3bc",rose:"#D68881",fire:"#AB5850",greyblue:"#72697D",greygreen:"#8BA3A2",greypurple:"#978BA3",burn:"#6D5685",slategrey:"#bfb0b3",light:"#a3a5a5",lighter:"#d7d5d2",fudge:"#4d4d4d",lightgrey:"#949a9e",white:"#fbfbfb",dimgrey:"#606c74",softblack:"#463D4F",dark:"#443d3d",black:"#333333"}},{}],2:[function(e,r,o){"use strict";var n=e("./colors"),t={juno:["blue","mud","navy","slate","pink","burn"],barrow:["rouge","red","orange","burnt","brown","greygreen"],roma:["#8a849a","#b5b0bf","rose","lighter","greygreen","mud"],palmer:["red","navy","olive","pink","suede","sky"],mark:["#848f9a","#9aa4ac","slate","#b0b8bf","mud","grey"],salmon:["sky","sea","fuscia","slate","mud","fudge"],dupont:["green","brown","orange","red","olive","blue"],bloor:["night","navy","beige","rouge","mud","grey"],yukon:["mud","slate","brown","sky","beige","red"],david:["blue","green","yellow","red","pink","light"],neste:["mud","cherry","royal","rouge","greygreen","greypurple"],ken:["red","sky","#c67a53","greygreen","#dfb59f","mud"]};Object.keys(t).forEach(function(e){t[e]=t[e].map(function(e){return n[e]||e})}),r.exports=t},{"./colors":1}],3:[function(e,r,o){"use strict";var n=e("./colors"),t=e("./combos"),u={colors:n,list:Object.keys(n).map(function(e){return[e,n[e]]}),combos:t};u=Object.assign(u,t),r.exports=u},{"./colors":1,"./combos":2}]},{},[3])(3)});
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],5:[function(_dereq_,module,exports){
@@ -4062,7 +5660,7 @@ return h;
 "use strict";
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div style=", " title=\"", "\">", "</div>"]);
+  var data = _taggedTemplateLiteral(["<div class=\"outline col\" >\n      ", "\n    </div>"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -4078,536 +5676,100 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var spacetime = _dereq_('spacetime');
 
 var htm = _dereq_('htm');
 
 var vhtml = _dereq_('vhtml');
 
-var spacetime = _dereq_('spacetime');
+var drawMonth = _dereq_('./month');
 
-var _color = _dereq_('spencer-color').colors;
+var defaults = {
+  dim_past: true,
+  show_today: true,
+  show_weekends: true,
+  show_numbers: false
+};
 
-var Calendar =
+var Show =
 /*#__PURE__*/
 function () {
-  function Calendar(d) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  function Show(start, end) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-    _classCallCheck(this, Calendar);
+    _classCallCheck(this, Show);
 
-    this.d = spacetime(d, options.timezone);
-    this.options = options;
+    this.start = spacetime(start);
+    this.end = spacetime(end);
+    this.options = Object.assign({}, defaults, options);
+    this.data = {
+      colors: {},
+      underlined: {}
+    };
     this.h = htm.bind(vhtml);
-    this.styles = [];
-    this.squareDay = false;
   }
 
-  _createClass(Calendar, [{
-    key: "buildStyle",
-    value: function buildStyle(obj) {
-      return Object.keys(obj).reduce(function (str, k) {
-        str += "".concat(k, ":").concat(obj[k], ";");
-        return str;
-      }, '');
-    }
-  }, {
-    key: "findStyle",
-    value: function findStyle(d) {
-      var style = {
-        flex: '1 1 0',
-        overflow: 'hidden',
-        color: _color.lighter,
-        margin: 'auto',
-        // 'min-width': '10px',
-        'min-height': '1rem',
-        height: 0,
-        'font-size': '8px',
-        'border': "1px solid ".concat(_color.lighter)
-      };
-
-      if (this.squareDay === true) {
-        style['padding-bottom'] = '10%';
-        style['min-height'] = '0px';
-      }
-
-      this.styles.forEach(function (c) {
-        if (d.isBefore(c.end) && d.isAfter(c.start)) {
-          if (c.color !== undefined) {
-            style['background-color'] = c.color;
-            style.border = "1px solid ".concat(c.color);
-          }
-
-          if (c.underline !== undefined) {
-            style['border-bottom'] = '1px solid ' + c.underline;
-          }
-        }
-      });
-      return style;
-    }
-  }, {
-    key: "buildDay",
-    value: function buildDay(d, stub) {
-      var h = this.h;
-      var style = this.findStyle(d);
-      var num = '';
-
-      if (this.options.numbers !== false) {
-        num = d.date();
-      }
-
-      var title = d.format('{month-short} {date}');
-
-      if (stub) {
-        style['background-color'] = _color.white;
-        style.border = '1px solid rgba(0,0,0,0)'; // + c.dark
-
-        num = '';
-        title = '';
-      }
-
-      return h(_templateObject(), this.buildStyle(style), title, num);
-    } // weekends(color) {}
-
-  }, {
-    key: "color",
-    value: function color(a, b, col) {
-      a = spacetime(a).startOf('day');
-      b = spacetime(b).endOf('day');
-      this.styles.push({
-        start: a,
-        end: b,
-        color: _color[col] || col
-      });
-      return this;
-    }
-  }, {
-    key: "underline",
-    value: function underline(a, b, col) {
-      a = spacetime(a).startOf('day');
-      b = spacetime(b).endOf('day');
-      this.styles.push({
-        start: a,
-        end: b,
-        underline: _color[col] || col
-      });
-      return this;
-    }
-  }, {
-    key: "day",
-    value: function day(d, col) {
-      this.color(d, d, col);
-      return this;
-    }
-  }, {
+  _createClass(Show, [{
     key: "bind",
     value: function bind(r) {
       this.h = htm.bind(r);
       return this;
     }
-  }]);
-
-  return Calendar;
-}();
-
-module.exports = Calendar;
-
-},{"htm":2,"spacetime":3,"spencer-color":4,"vhtml":5}],7:[function(_dereq_,module,exports){
-"use strict";
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var Calendar = _dereq_('../Calendar');
-
-var drawMonth = _dereq_('./_draw');
-
-var Month =
-/*#__PURE__*/
-function (_Calendar) {
-  _inherits(Month, _Calendar);
-
-  function Month(d, options) {
-    var _this;
-
-    _classCallCheck(this, Month);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Month).call(this, d, options));
-    _this.d = _this.d.startOf('month');
-    _this.squareDay = true;
-    return _this;
-  }
-
-  _createClass(Month, [{
-    key: "build",
-    value: function build() {
-      return drawMonth(this.d, this);
-    }
-  }]);
-
-  return Month;
-}(Calendar);
-
-module.exports = Month;
-
-},{"../Calendar":6,"./_draw":8}],8:[function(_dereq_,module,exports){
-"use strict";
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div class=\"goleft col\">\n    ", "\n  </div>"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div class=\"row\" style=\"flex-wrap:nowrap;\">\n  ", "\n  </div>"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var buildWeek = function buildWeek(d, self, month) {
-  var h = self.h;
-  var days = [];
-  var last = 1;
-
-  for (var i = 0; i < 7; i += 1) {
-    var stub = d.format('month') !== month;
-    days.push(self.buildDay(d, stub));
-    d = d.add(1, 'day');
-
-    if (d.date() === last) {
-      console.log(d.format('nice'));
-    }
-
-    last = d.date();
-  }
-
-  return h(_templateObject(), days);
-}; //
-
-
-var drawMonth = function drawMonth(d, self) {
-  var month = d.format('month');
-  var h = self.h;
-  d = d.startOf('week'); //.add(2, 'hours')
-
-  var weeks = [];
-
-  for (var i = 0; i < 6; i += 1) {
-    weeks.push(buildWeek(d, self, month));
-    d = d.add(1, 'week');
-  }
-
-  return h(_templateObject2(), weeks);
-};
-
-module.exports = drawMonth;
-
-},{}],9:[function(_dereq_,module,exports){
-"use strict";
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div class=\"col mw12\">\n      <div class=\"goright grey f08\">", "</div>\n      ", "\n    </div>"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div class=\"w100p row\">\n        <div class=\"grey f09\">", "</div>\n        <div class=\"w8 f06\">", "</div>\n      </div>"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var Calendar = _dereq_('../Calendar');
-
-var drawMonth = _dereq_('../month/_draw');
-
-var ByMonth =
-/*#__PURE__*/
-function (_Calendar) {
-  _inherits(ByMonth, _Calendar);
-
-  function ByMonth(d, options) {
-    var _this;
-
-    _classCallCheck(this, ByMonth);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ByMonth).call(this, d, options));
-    _this.d = _this.d.startOf('month');
-    return _this;
-  }
-
-  _createClass(ByMonth, [{
-    key: "build",
-    value: function build() {
-      var h = this.h;
-      var d = this.d;
-      var year = d.year();
-      d = d.startOf('quarter');
-      var months = [];
-
-      for (var i = 0; i < 3; i += 1) {
-        var month = drawMonth(d, this);
-        month = h(_templateObject(), d.format('month-short'), month);
-        months.push(month);
-        d = d.add(1, 'month');
+  }, {
+    key: "color",
+    value: function color(start, end, _color) {
+      var _this = this;
+
+      start = spacetime(start);
+
+      if (!_color) {
+        _color = end;
+        end = start;
       }
 
-      return h(_templateObject2(), year, months);
-    }
-  }]);
-
-  return ByMonth;
-}(Calendar);
-
-module.exports = ByMonth;
-
-},{"../Calendar":6,"../month/_draw":8}],10:[function(_dereq_,module,exports){
-"use strict";
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div class=\"col mw12\">\n      <div class=\"goright grey f08\">", "</div>\n      ", "\n    </div>"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div class=\"w100p row\">\n        <div class=\"grey f09\">", "</div>\n        <div class=\"w8 f06\">", "</div>\n      </div>"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var Calendar = _dereq_('../Calendar');
-
-var drawMonth = _dereq_('../month/_draw');
-
-var ByMonth =
-/*#__PURE__*/
-function (_Calendar) {
-  _inherits(ByMonth, _Calendar);
-
-  function ByMonth(d, options) {
-    var _this;
-
-    _classCallCheck(this, ByMonth);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ByMonth).call(this, d, options));
-    _this.d = _this.d.startOf('year');
-    _this.squareDay = true;
-    return _this;
-  }
-
-  _createClass(ByMonth, [{
-    key: "build",
-    value: function build() {
-      var h = this.h;
-      var d = this.d;
-      var year = d.year();
-      d = d.startOf('year');
-      var months = [];
-
-      for (var i = 0; i < 12; i += 1) {
-        var month = drawMonth(d, this);
-        month = h(_templateObject(), d.format('month-short'), month);
-        months.push(month);
-        d = d.add(1, 'month');
-      }
-
-      return h(_templateObject2(), year, months);
-    }
-  }]);
-
-  return ByMonth;
-}(Calendar);
-
-module.exports = ByMonth;
-
-},{"../Calendar":6,"../month/_draw":8}],11:[function(_dereq_,module,exports){
-"use strict";
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div class=\"col\">\n      ", "\n    </div>"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div class=\"goleft row\">\n      <div style=\"flex-basis:2rem;\" class=\"lightgrey f08 right pr05\">", "</div>\n      ", "\n    </div>"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var Calendar = _dereq_('../Calendar');
-
-var LeftAlign =
-/*#__PURE__*/
-function (_Calendar) {
-  _inherits(LeftAlign, _Calendar);
-
-  function LeftAlign(d, options) {
-    var _this;
-
-    _classCallCheck(this, LeftAlign);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(LeftAlign).call(this, d, options));
-    _this.d = _this.d.startOf('year');
-    return _this;
-  }
-
-  _createClass(LeftAlign, [{
-    key: "buildMonth",
-    value: function buildMonth(d) {
-      var h = this.h;
-      var month = d.month();
-      var name = d.format('month-short').toLowerCase();
-      var days = [];
-
-      for (var i = 0; i < 31; i += 1) {
-        d = d.startOf('day');
-        var stub = d.month() !== month;
-        days.push(this.buildDay(d, stub));
-        d = d.add(1, 'day');
-      }
-
-      return h(_templateObject(), name, days);
+      end = spacetime(end);
+      start.every('day', end).forEach(function (d) {
+        var date = d.format('iso-short');
+        _this.data.colors[date] = _color;
+      });
     }
   }, {
     key: "build",
     value: function build() {
-      var h = this.h;
-      var months = [];
-      var d = this.d;
+      var _this2 = this;
 
-      for (var i = 0; i < 12; i += 1) {
-        d = d.startOf('month');
-        months.push(this.buildMonth(d));
-        d = d.add(1, 'month');
-      }
-
-      return h(_templateObject2(), months);
+      var beginning = this.start.clone();
+      beginning = beginning.startOf('month').minus(2, 'hours');
+      var months = beginning.every('month', this.end);
+      months = months.map(function (d) {
+        return drawMonth(d, _this2);
+      });
+      return this.h(_templateObject(), months);
     }
   }]);
 
-  return LeftAlign;
-}(Calendar);
+  return Show;
+}();
 
-module.exports = LeftAlign;
+module.exports = Show;
 
-},{"../Calendar":6}],12:[function(_dereq_,module,exports){
+},{"./month":8,"htm":2,"spacetime":4,"vhtml":5}],7:[function(_dereq_,module,exports){
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+var Show = _dereq_('./Show');
+
+module.exports = {
+  months: function months(start, end) {
+    return new Show(start, end);
+  }
+};
+
+},{"./Show":6}],8:[function(_dereq_,module,exports){
+"use strict";
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["<div class=\"col\">\n      ", "\n    </div>"]);
+  var data = _taggedTemplateLiteral(["<div style=\"", "\">\n    <div style=\"", "\">", "</div>\n    <div class=\" col\">\n      ", "\n    </div>\n  </div>"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -4617,7 +5779,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div class=\"goleft row\">\n      <div style=\"flex-basis:2rem;\" class=\"lightgrey f08 right pr05\">", "</div>\n      ", "\n    </div>"]);
+  var data = _taggedTemplateLiteral(["<div class=\"row\">\n    ", "\n  </div>"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -4627,7 +5789,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["<div style=\"width:3px; border-left:1px solid red;\"></div>"]);
+  var data = _taggedTemplateLiteral(["<div style=\"", "\" title=\"", "\">\n    ", "\n  </div>"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -4638,120 +5800,96 @@ function _templateObject() {
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var spacetime = _dereq_('spacetime');
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+var today = spacetime.now();
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+var toStyle = function toStyle(obj) {
+  return Object.keys(obj).reduce(function (str, k) {
+    str += "".concat(k, ":").concat(obj[k], "; ");
+    return str;
+  }, '');
+}; //
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+var drawDay = function drawDay(d, cal, month) {
+  var style = {
+    'flex-basis': 50,
+    flex: 1,
+    'min-width': '0.9rem',
+    height: '1rem',
+    border: '1px solid #d7d5d2',
+    'box-sizing': 'border-box',
+    'font-size': '9px',
+    color: '#a3a5a5',
+    overflow: 'hidden' //don't show leading/trailing days
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+  };
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+  if (d.format('month') !== month) {
+    style.opacity = 0;
+  } //show the day numbers?
 
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var Calendar = _dereq_('../Calendar');
+  var inside = '';
 
-var WeekAlign =
-/*#__PURE__*/
-function (_Calendar) {
-  _inherits(WeekAlign, _Calendar);
+  if (cal.options.show_numbers) {
+    inside = d.date();
+  } //dim the weekends?
 
-  function WeekAlign(d, options) {
-    var _this;
 
-    _classCallCheck(this, WeekAlign);
+  if (cal.options.show_weekends) {
+    var day = d.dayName();
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(WeekAlign).call(this, d, options));
-    _this.d = _this.d.startOf('year');
-    return _this;
+    if (day === 'saturday' || day === 'sunday') {
+      style['background-color'] = '#ededed';
+    }
+  } //dim the past?
+
+
+  if (cal.options.dim_past && d.epoch < today.epoch) {
+    style.opacity = '0.4';
+  } //highlight today?
+
+
+  if (cal.options.show_today && d.isSame(today, 'day')) {
+    style['background-color'] = 'steelblue';
+    style['border'] = '1px solid steelblue';
+  } //is it highlighted?
+
+
+  var date = d.format('iso-short');
+
+  if (cal.data.colors[date]) {
+    style['background-color'] = cal.data.colors[date];
+    style['border'] = '1px solid ' + cal.data.colors[date];
   }
 
-  _createClass(WeekAlign, [{
-    key: "buildMonth",
-    value: function buildMonth(d) {
-      var h = this.h;
-      var month = d.month();
-      var name = d.format('month-short').toLowerCase();
-      d = d.startOf('week');
-      var days = [];
-
-      for (var i = 0; i < 37; i += 1) {
-        d = d.startOf('day');
-
-        if (d.dayName() === 'monday') {
-          days.push(h(_templateObject()));
-        }
-
-        var stub = d.month() !== month;
-        days.push(this.buildDay(d, stub));
-        d = d.add(1, 'day');
-      }
-
-      return h(_templateObject2(), name, days);
-    }
-  }, {
-    key: "build",
-    value: function build() {
-      var h = this.h;
-      var months = [];
-      var d = this.d;
-
-      for (var i = 0; i < 12; i += 1) {
-        d = d.startOf('month');
-        months.push(this.buildMonth(d));
-        d = d.add(1, 'month');
-      }
-
-      return h(_templateObject3(), months);
-    }
-  }]);
-
-  return WeekAlign;
-}(Calendar);
-
-module.exports = WeekAlign;
-
-},{"../Calendar":6}],13:[function(_dereq_,module,exports){
-"use strict";
-
-var LeftAlignYear = _dereq_('./calendars/year/LeftAlign');
-
-var WeekAlignYear = _dereq_('./calendars/year/WeekAlign');
-
-var ByMonth = _dereq_('./calendars/year/ByMonth');
-
-var Month = _dereq_('./calendars/month/Month');
-
-var Quarter = _dereq_('./calendars/quarter/ByMonth');
-
-var api = {
-  year: {
-    leftAlign: function leftAlign(a, b) {
-      return new LeftAlignYear(a, b);
-    },
-    weekAlign: function weekAlign(a, b) {
-      return new WeekAlignYear(a, b);
-    },
-    byMonth: function byMonth(a, b) {
-      return new ByMonth(a, b);
-    }
-  },
-  month: {
-    month: function month(a, b) {
-      return new Month(a, b);
-    }
-  },
-  quarter: {
-    byMonth: function byMonth(a, b) {
-      return new Quarter(a, b);
-    }
-  }
+  return cal.h(_templateObject(), toStyle(style), d.format('nice-year'), inside);
 };
-module.exports = api;
 
-},{"./calendars/month/Month":7,"./calendars/quarter/ByMonth":9,"./calendars/year/ByMonth":10,"./calendars/year/LeftAlign":11,"./calendars/year/WeekAlign":12}]},{},[1]);
+var drawWeek = function drawWeek(w, cal, month) {
+  var end = w.endOf('week');
+  w = w.minus(2, 'hour');
+  var days = w.every('day', end).map(function (d) {
+    return drawDay(d, cal, month);
+  });
+  return cal.h(_templateObject2(), days);
+};
+
+var drawMonth = function drawMonth(start, cal) {
+  start = start.startOf('month');
+  var month = start.format('month');
+  var end = start.endOf('month');
+  start = start.startOf('week').minus(2, 'hours');
+  var weeks = start.every('week', end).map(function (d) {
+    return drawWeek(d, cal, month);
+  });
+  var container = "margin:0.35rem;";
+  var monthName = "font-size: .667rem; color:#838b91; text-align:center; margin-bottom:0.2rem;";
+  return cal.h(_templateObject3(), container, monthName, month, weeks);
+};
+
+module.exports = drawMonth;
+
+},{"spacetime":4}]},{},[1]);
