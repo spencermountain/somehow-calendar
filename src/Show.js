@@ -17,7 +17,7 @@ class Show {
     this.options = Object.assign({}, defaults, options)
     this.data = {
       colors: {},
-      underlined: {}
+      underline: {}
     }
     this.h = htm.bind(vhtml)
   }
@@ -29,12 +29,26 @@ class Show {
     start = spacetime(start)
     if (!color) {
       color = end
-      end = start
+      end = start.add(1, 'day')
     }
     end = spacetime(end)
+    start = start.minus(2, 'hours')
     start.every('day', end).forEach(d => {
       let date = d.format('iso-short')
       this.data.colors[date] = color
+    })
+  }
+  underline(start, end, color) {
+    start = spacetime(start)
+    if (!color) {
+      color = end
+      end = start.add(1, 'day')
+    }
+    end = spacetime(end)
+    start = start.minus(2, 'hours')
+    start.every('day', end).forEach(d => {
+      let date = d.format('iso-short')
+      this.data.underline[date] = color
     })
   }
   build() {
@@ -42,7 +56,7 @@ class Show {
     beginning = beginning.startOf('month').minus(2, 'hours')
     let months = beginning.every('month', this.end)
     months = months.map(d => drawMonth(d, this))
-    return this.h`<div class="outline col" >
+    return this.h`<div style="" >
       ${months}
     </div>`
   }

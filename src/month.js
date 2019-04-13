@@ -1,6 +1,22 @@
 const spacetime = require('spacetime')
 const today = spacetime.now()
 
+const styles = {
+  container: `
+  margin:0.35rem;
+  `,
+  month: `font-size: .667rem; color:#838b91; text-align:center; margin-bottom:0.2rem;`,
+  week: `
+  display:flex;
+  flex-direction: row !important;
+  justify-content: space-around;
+  align-items: center;
+  text-align:center;
+  flex-wrap: wrap;
+  align-self: stretch;
+  `
+}
+
 const toStyle = function(obj) {
   return Object.keys(obj).reduce((str, k) => {
     str += `${k}:${obj[k]}; `
@@ -54,6 +70,10 @@ const drawDay = function(d, cal, month) {
     style['background-color'] = cal.data.colors[date]
     style['border'] = '1px solid ' + cal.data.colors[date]
   }
+  //is it underlined?
+  if (cal.data.underline[date]) {
+    style['border-bottom'] = '3px solid ' + cal.data.underline[date]
+  }
 
   return cal.h`<div style="${toStyle(style)}" title="${d.format('nice-year')}">
     ${inside}
@@ -65,7 +85,7 @@ const drawWeek = function(w, cal, month) {
   let days = w.every('day', end).map(d => {
     return drawDay(d, cal, month)
   })
-  return cal.h`<div class="row">
+  return cal.h`<div style=${styles.week}>
     ${days}
   </div>`
 }
@@ -78,11 +98,9 @@ const drawMonth = function(start, cal) {
   let weeks = start.every('week', end).map(d => {
     return drawWeek(d, cal, month)
   })
-  let container = `margin:0.35rem;`
-  let monthName = `font-size: .667rem; color:#838b91; text-align:center; margin-bottom:0.2rem;`
-  return cal.h`<div style="${container}">
-    <div style="${monthName}">${month}</div>
-    <div class=" col">
+  return cal.h`<div style="${styles.container}">
+    <div style="${styles.month}">${month}</div>
+    <div>
       ${weeks}
     </div>
   </div>`

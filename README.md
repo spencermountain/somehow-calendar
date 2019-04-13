@@ -26,7 +26,11 @@ const calendar = require('somehow-calendar')
 let el = document.querySelector('body')
 
 let cal = calendar.months('april 1st 2019', 'june 3rd 2019')
+// highlight a date-range
 cal.color('june 5th 2019', 'june 8th 2019', '#cc7066')
+
+//cal.underline(date, color) works too
+
 el.innerHTML = cal.build()
 ```
 
