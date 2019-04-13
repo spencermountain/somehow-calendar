@@ -10,8 +10,10 @@ const printCalendars = function() {
   let duration = document.querySelector('#duration').querySelector('input')
     .value
   let end = spacetime(start).epoch + Number(duration)
+
   let cal = calendar.months(start, end)
-  cal.color('june 5th 2019', 'june 8th 2019', 'red')
+  cal.color('june 5th 2019', 'june 8th 2019', '#cc7066')
+
   document.querySelector(
     '#results'
   ).innerHTML = h`<table class="f2 mud w7">${cal.build()}</table>`
@@ -23,6 +25,7 @@ let start = inputs.input({
   width: 130,
   cb: () => printCalendars()
 })
+
 let end = inputs.duration({
   label: 'duration',
   value: {
@@ -36,6 +39,7 @@ let end = inputs.duration({
   },
   cb: () => printCalendars()
 })
+
 document.querySelector('#origin').innerHTML = start.build()
 document.querySelector('#duration').innerHTML = end.build()
 

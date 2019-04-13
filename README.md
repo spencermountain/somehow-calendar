@@ -25,12 +25,14 @@ renders html calendars using [spacetime](https://github.com/spencermountain/spac
 const calendar = require('somehow-calendar')
 let el = document.querySelector('body')
 
-let cal = calendar.months('jan 1st 2019', 'april 1 2019')
-cal.color('feb 5th 2019', 'feb 8th 2019', 'red')
+let cal = calendar.months('april 1st 2019', 'june 3rd 2019')
+cal.color('june 5th 2019', 'june 8th 2019', '#cc7066')
 el.innerHTML = cal.build()
 ```
 
-![image](https://user-images.githubusercontent.com/399657/50697138-682f6080-100f-11e9-8b17-cd80640a86ee.png)
+![image](https://user-images.githubusercontent.com/399657/56083660-03e22100-5df6-11e9-9326-943571775c95.png)
+
+<!-- ![image](https://user-images.githubusercontent.com/399657/50697138-682f6080-100f-11e9-8b17-cd80640a86ee.png) -->
 
 ### Output
 

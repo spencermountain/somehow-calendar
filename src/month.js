@@ -1,22 +1,30 @@
 const spacetime = require('spacetime')
 const today = spacetime.now()
+
+const toStyle = function(obj) {
+  return Object.keys(obj).reduce((str, k) => {
+    str += `${k}:${obj[k]}; `
+    return str
+  }, '')
+}
+
 //
 const drawDay = function(d, cal, month) {
-  let style = `
-    flex-basis: 50;
-    flex: 1;
-    min-width: 0.9rem;
-    height: 1rem;
-    border: 1px solid #d7d5d2;
-    box-sizing: border-box;
-    font-size: 9px;
-    color: #a3a5a5;
-    overflow: hidden;
-  `
+  let style = {
+    'flex-basis': 50,
+    flex: 1,
+    'min-width': '0.9rem',
+    height: '1rem',
+    border: '1px solid #d7d5d2',
+    'box-sizing': 'border-box',
+    'font-size': '9px',
+    color: '#a3a5a5',
+    overflow: 'hidden'
+  }
 
   //don't show leading/trailing days
   if (d.format('month') !== month) {
-    style += `opacity:0;`
+    style.opacity = 0
   }
 
   //show the day numbers?
@@ -28,19 +36,26 @@ const drawDay = function(d, cal, month) {
   if (cal.options.show_weekends) {
     let day = d.dayName()
     if (day === 'saturday' || day === 'sunday') {
-      style += `background-color:#ededed;`
+      style['background-color'] = '#ededed'
     }
   }
   //dim the past?
   if (cal.options.dim_past && d.epoch < today.epoch) {
-    style += `opacity:0.4;`
+    style.opacity = '0.4'
   }
   //highlight today?
   if (cal.options.show_today && d.isSame(today, 'day')) {
-    style += `background-color:steelblue; border: 1px solid steelblue;`
+    style['background-color'] = 'steelblue'
+    style['border'] = '1px solid steelblue'
+  }
+  //is it highlighted?
+  let date = d.format('iso-short')
+  if (cal.data.colors[date]) {
+    style['background-color'] = cal.data.colors[date]
+    style['border'] = '1px solid ' + cal.data.colors[date]
   }
 
-  return cal.h`<div style="${style}">
+  return cal.h`<div style="${toStyle(style)}" title="${d.format('nice-year')}">
     ${inside}
   </div>`
 }

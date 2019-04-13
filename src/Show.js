@@ -19,10 +19,6 @@ class Show {
       colors: {},
       underlined: {}
     }
-    if (options.today !== false) {
-      let today = spacetime.now().format('iso-short')
-      this.data.colors[today] = 'grey'
-    }
     this.h = htm.bind(vhtml)
   }
   bind(r) {
@@ -35,6 +31,11 @@ class Show {
       color = end
       end = start
     }
+    end = spacetime(end)
+    start.every('day', end).forEach(d => {
+      let date = d.format('iso-short')
+      this.data.colors[date] = color
+    })
   }
   build() {
     let beginning = this.start.clone()
