@@ -12,7 +12,10 @@ const printCalendars = function() {
   let end = spacetime(start).epoch + Number(duration)
 
   let cal = calendar.months(start, end)
-  cal.color('june 1th 2019', '#cc7066')
+  // cal.width('100px')
+  // cal.height('100px')
+  cal.radius('1px')
+  cal.color('june 1th 2019', 'July 12th 2019', '#cc7066')
 
   document.querySelector('#results').innerHTML = h`${cal.build()}`
 }

@@ -35,10 +35,11 @@ const drawDay = function(d, cal, month) {
   let style = {
     'flex-basis': 50,
     flex: 1,
-    'min-width': '0.9rem',
-    height: '1rem',
+    'min-width': cal._width,
+    height: cal._height,
     border: '1px solid #d7d5d2',
     'box-sizing': 'border-box',
+    'border-radius': cal._radius,
     'font-size': '9px',
     color: '#a3a5a5',
     overflow: 'hidden'
@@ -74,7 +75,6 @@ const drawDay = function(d, cal, month) {
   let date = d.format('iso-short')
   if (cal.data.colors[date]) {
     style['background-color'] = cal.data.colors[date]
-    style['border'] = '1px solid ' + cal.data.colors[date]
   }
   //is it underlined?
   if (cal.data.underline[date]) {

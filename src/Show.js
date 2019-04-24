@@ -27,6 +27,9 @@ class Show {
     this.start = spacetime(start)
     this.end = spacetime(end)
     this.options = Object.assign({}, defaults, options)
+    this._width = '0.9rem'
+    this._height = '1rem'
+    this._radius = '0px'
     this.data = {
       colors: {},
       underline: {}
@@ -35,6 +38,18 @@ class Show {
   }
   bind(r) {
     this.h = htm.bind(r)
+    return this
+  }
+  width(w) {
+    this._width = w
+    return this
+  }
+  height(h) {
+    this._height = h
+    return this
+  }
+  radius(r) {
+    this._radius = r
     return this
   }
   color(start, end, color) {
