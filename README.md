@@ -21,6 +21,10 @@ renders html calendars using [spacetime](https://github.com/spencermountain/spac
 
 <!-- ![image](https://user-images.githubusercontent.com/399657/50604609-81a89f00-0e8d-11e9-926d-5ffa4b39f4d3.png) -->
 
+### Months
+
+render month-calendars from the start to end dates, inclusive
+
 ```js
 const calendar = require('somehow-calendar')
 let el = document.querySelector('body')
@@ -32,6 +36,17 @@ cal.color('june 5th 2019', 'june 8th 2019', '#cc7066')
 //cal.underline(date, color) works too
 
 el.innerHTML = cal.build()
+```
+
+### Timeline
+
+a horizontal timeline separated by months
+
+```js
+let cal = calendar.months(start, end)
+cal.color('june 14th 2019', 'June 23rd 2019', '#cc7066')
+
+document.querySelector('#results').innerHTML = cal.build()
 ```
 
 ![image](https://user-images.githubusercontent.com/399657/56083660-03e22100-5df6-11e9-9326-943571775c95.png)
@@ -48,7 +63,7 @@ output is handled with Jason Miller's [htm](https://github.com/developit/htm) pa
 const calendar = require('somehow-calendar')
 const react = require('react')
 
-let c = calendar.year.leftAlign('2019')
+let c = calendar.months('2019', '2020')
 c.bind(react.createElement) // anything
 ```
 

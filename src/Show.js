@@ -1,7 +1,8 @@
 const spacetime = require('spacetime')
 const htm = require('htm')
 const vhtml = require('vhtml')
-const drawMonth = require('./month')
+const drawMonth = require('./draw/month')
+const drawTimeline = require('./draw/timeline')
 
 const styles = {
   container: `
@@ -29,7 +30,7 @@ class Show {
     this.options = Object.assign({}, defaults, options)
     this._width = '0.9rem'
     this._height = '1rem'
-    this._radius = '0px'
+    this._radius = '1px'
     this.data = {
       colors: {},
       underline: {}
@@ -82,7 +83,12 @@ class Show {
     let beginning = this.start.clone()
     beginning = beginning.startOf('month').minus(2, 'hours')
     let months = beginning.every('month', this.end)
-    months = months.map(d => drawMonth(d, this))
+    months = months.map(d => {
+      if (this.options.mode === 'timeline') {
+        return drawTimeline(d, this)
+      }
+      return drawMonth(d, this)
+    })
     return this.h`<div style="${styles.container}" >
       ${months}
     </div>`
