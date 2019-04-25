@@ -1,4 +1,4 @@
-/* somehow-calendar v0.2.0
+/* somehow-calendar v0.2.1
    github.com/spencermountain/somehow-calendar
    MIT
 */
@@ -4596,6 +4596,7 @@ var drawWeek = function drawWeek(w, cal, month) {
 };
 
 var drawMonth = function drawMonth(start, cal) {
+  var monthName = start.format('month-short');
   start = start.startOf('month');
   var month = start.format('month');
   var end = start.endOf('month');
@@ -4603,7 +4604,7 @@ var drawMonth = function drawMonth(start, cal) {
   var weeks = start.every('week', end).map(function (d) {
     return drawWeek(d, cal, month);
   });
-  return cal.h(_templateObject3(), styles.month, styles.monthName, start.format('month-short'), weeks);
+  return cal.h(_templateObject3(), styles.month, styles.monthName, monthName, weeks);
 };
 
 module.exports = drawMonth;
@@ -4749,6 +4750,7 @@ var drawWeek = function drawWeek(w, cal, month, weekNum) {
 };
 
 var drawMonth = function drawMonth(start, cal) {
+  var monthName = start.format('month-short');
   start = start.startOf('month');
   var month = start.format('month');
   var end = start.endOf('month');
@@ -4761,7 +4763,7 @@ var drawMonth = function drawMonth(start, cal) {
     weeks.push(cal.h(_templateObject3()));
   }
 
-  return cal.h(_templateObject4(), styles.month, styles.monthName, start.format('month-short'), styles.weeks, weeks);
+  return cal.h(_templateObject4(), styles.month, styles.monthName, monthName, styles.weeks, weeks);
 };
 
 module.exports = drawMonth;

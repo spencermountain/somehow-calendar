@@ -98,6 +98,7 @@ const drawWeek = function(w, cal, month) {
 }
 
 const drawMonth = function(start, cal) {
+  const monthName = start.format('month-short')
   start = start.startOf('month')
   let month = start.format('month')
   let end = start.endOf('month')
@@ -106,7 +107,7 @@ const drawMonth = function(start, cal) {
     return drawWeek(d, cal, month)
   })
   return cal.h`<div style="${styles.month}">
-    <div style="${styles.monthName}">${start.format('month-short')}</div>
+    <div style="${styles.monthName}">${monthName}</div>
     <div>
       ${weeks}
     </div>
