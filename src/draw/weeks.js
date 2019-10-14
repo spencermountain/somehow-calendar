@@ -14,7 +14,7 @@ const styles = {
     align-self: stretch;
   `,
   labels: `
-    color:grey;
+    color:#a3a5a5;
     font-size:10px;
   `
 }

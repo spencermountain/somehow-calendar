@@ -44,7 +44,8 @@ class Show {
     this._radius = '1px'
     this.data = {
       colors: {},
-      underline: {}
+      underline: {},
+      labels: {}
     }
     this.h = htm.bind(vhtml)
   }
@@ -89,6 +90,11 @@ class Show {
       let date = d.format('iso-short')
       this.data.underline[date] = color
     })
+  }
+  label(d, label) {
+    d = spacetime(d)
+    let date = d.format('iso-short')
+    this.data.labels[date] = label
   }
   build() {
     let beginning = this.start.clone()

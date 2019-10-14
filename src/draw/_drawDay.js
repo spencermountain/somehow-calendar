@@ -56,6 +56,10 @@ const drawDay = function(d, cal, ignore) {
   if (cal.data.underline[date]) {
     style['border-bottom'] = '3px solid ' + cal.data.underline[date]
   }
+  //is it labeled?
+  if (cal.data.labels[date]) {
+    inside = cal.data.labels[date]
+  }
 
   return cal.h`<div style="${toStyle(style)}" title="${d.format('nice-year')}">
     ${inside}
