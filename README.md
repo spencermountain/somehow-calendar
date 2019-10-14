@@ -19,20 +19,47 @@ renders html calendars using [spacetime](https://github.com/spencermountain/spac
 
 `npm i somehow-calendar`
 
-<!-- ![image](https://user-images.githubusercontent.com/399657/50604609-81a89f00-0e8d-11e9-926d-5ffa4b39f4d3.png) -->
+### Months
+a month-centered calendars from start to end dates, inclusive
 
 ```js
 const calendar = require('somehow-calendar')
-let el = document.querySelector('body')
-
-let cal = calendar.months('april 1st 2019', 'june 3rd 2019')
-cal.color('june 5th 2019', 'june 8th 2019', '#cc7066')
-el.innerHTML = cal.build()
+let cal = calendar.months('Jan 1 2019', 'Dec 28 2019', { monthName: false })
+cal.width('20px').height('20px')
+// highlight a particular range
+cal.color('june 14th 2019', 'June 23rd 2019', '#cc7066')
+document.querySelector('body') = cal.build()
 ```
 
-![image](https://user-images.githubusercontent.com/399657/56083660-03e22100-5df6-11e9-9326-943571775c95.png)
+![image](https://user-images.githubusercontent.com/399657/66760690-9b413300-ee70-11e9-8245-94f590bac34e.png)
 
-<!-- ![image](https://user-images.githubusercontent.com/399657/50697138-682f6080-100f-11e9-8b17-cd80640a86ee.png) -->
+### Weeks
+week-centered calendar from, to specific dates
+```js
+const calendar = require('somehow-calendar')
+let cal = calendar.months('Jan 1 2019', 'Dec 28 2019', { monthName: false })
+cal.width('20px').height('20px')
+// label specific dates
+cal.label('Mar 1 2019', 'M')
+// underline a particular range
+cal.color('dec 14th 2019', 'dec 28rd 2019', '#cc7066')
+
+document.querySelector('body') = cal.build()
+```
+
+![image](https://user-images.githubusercontent.com/399657/66760728-aac07c00-ee70-11e9-8af7-6c5febee9732.png)
+
+### Timeline
+a horizontal calendar separated by months
+
+```js
+const calendar = require('somehow-calendar')
+let cal = calendar.timeline('Jan 1 2019', 'Dec 28 2019', { monthName: false })
+cal.width('20px').height('20px')
+document.querySelector('body') = cal.build()
+```
+
+![image](https://user-images.githubusercontent.com/399657/66760750-b8760180-ee70-11e9-8ef9-fd2c4089f6f3.png)
 
 ### Output
 
@@ -44,7 +71,7 @@ output is handled with Jason Miller's [htm](https://github.com/developit/htm) pa
 const calendar = require('somehow-calendar')
 const react = require('react')
 
-let c = calendar.year.leftAlign('2019')
+let c = calendar.months('2019', '2020')
 c.bind(react.createElement) // anything
 ```
 
