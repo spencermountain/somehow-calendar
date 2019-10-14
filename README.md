@@ -38,6 +38,9 @@ cal.color('june 5th 2019', 'june 8th 2019', '#cc7066')
 el.innerHTML = cal.build()
 ```
 
+### Weeks
+shows a year from, to specific points
+
 ### Timeline
 
 a horizontal timeline separated by months

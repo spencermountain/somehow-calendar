@@ -2,17 +2,27 @@ const spacetime = require('spacetime')
 const htm = require('htm')
 const vhtml = require('vhtml')
 const drawMonth = require('./draw/month')
+const drawWeeks = require('./draw/weeks')
 const drawTimeline = require('./draw/timeline')
 
 const styles = {
-  container: `
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  text-align: center;
-  flex-wrap: wrap;
-  align-self: stretch;
+  row: `
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: center;
+    flex-wrap: wrap;
+    align-self: stretch;
+  `,
+  col: `
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: center;
+    flex-wrap: wrap;
+    align-self: stretch;
   `
 }
 
@@ -20,7 +30,8 @@ const defaults = {
   dim_past: true,
   show_today: true,
   show_weekends: true,
-  show_numbers: false
+  show_numbers: false,
+  monthName: true
 }
 
 class Show {
@@ -83,14 +94,19 @@ class Show {
     let beginning = this.start.clone()
     beginning = beginning.startOf('month').minus(2, 'hours')
     let months = beginning.every('month', this.end)
-    months = months.map(d => {
+    let inside = months.map(d => {
       if (this.options.mode === 'timeline') {
-        return drawTimeline(d, this)
+        return drawTimeline(d, this, this.options)
       }
-      return drawMonth(d, this)
+      return drawMonth(d, this, this.options)
     })
-    return this.h`<div style="${styles.container}" >
-      ${months}
+    if (this.options.mode === 'weeks') {
+      inside = drawWeeks(months[0], this, this.options)
+    }
+    return this.h`<div style="${
+      this.options.mode === 'weeks' ? styles.col : styles.row
+    }" >
+      ${inside}
     </div>`
   }
 }

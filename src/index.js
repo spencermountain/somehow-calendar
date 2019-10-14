@@ -7,5 +7,9 @@ module.exports = {
   timeline: function(start, end, options = {}) {
     options.mode = 'timeline'
     return new Show(start, end, options)
+  },
+  weeks: function(start, end, options = {}) {
+    options.mode = 'weeks'
+    return new Show(start, end, options)
   }
 }
