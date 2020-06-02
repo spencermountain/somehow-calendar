@@ -16,7 +16,7 @@
   <div class="m4">
 
     <Calendar
-      start="march 1 2012"
+      start="march 1 2020"
       end="June 2nd 2020"
       align="row"
       width="20rem">

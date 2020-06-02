@@ -1,9 +1,9 @@
 {
   "name": "somehow-calendar",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "create calendar-based dataviz easily",
-  "main": "builds/somehow-calendar.js",
-  "unpkg": "builds/v.min.js",
+  "main": "src/index.mjs",
+  "module": "src/index.mjs",
   "scripts": {
     "build": "rollup -c",
     "start": "rollup -c -w",
@@ -27,9 +27,6 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "11.1.0",
     "@rollup/plugin-node-resolve": "^7.0.0",
-    "prettier": "^2.0.5",
-    "prettier-plugin-svelte": "^0.7.0",
-    "pug": "^2.0.4",
     "rollup": "2.7.3",
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-svelte": "^5.0.3",
