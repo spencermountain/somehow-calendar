@@ -61,6 +61,17 @@ document.querySelector('body') = cal.build()
 
 ![image](https://user-images.githubusercontent.com/399657/66760750-b8760180-ee70-11e9-8ef9-fd2c4089f6f3.png)
 
+### Options
+```js
+const defaults = {
+  dim_past: true,
+  show_today: true,
+  show_weekends: true,
+  show_numbers: false,
+  monthName: true
+}
+```
+
 ### Output
 
 by default, it returns html strings, but...

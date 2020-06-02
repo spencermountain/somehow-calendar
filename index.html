@@ -2,35 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1,width=550" />
-    <title>•.</title>
-    <link href="./assets/spencer.min.css" rel="stylesheet" />
-    <meta name="author" content="Spencer Kelly, spencermountain@gmail.com" />
-    <style></style>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>• calendar</title>
+    <link rel="stylesheet" href="/build/spencer.min.css" />
+    <link rel="stylesheet" href="/build/bundle.css" />
+    <script defer src="/build/bundle.js"></script>
+    <style>
+      /* latin */
+      @font-face {
+        font-family: 'Merriweather';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Merriweather Regular'), local('Merriweather-Regular'),
+          url(./build/merriweather.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+          U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+          U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      html {
+        font-family: 'Merriweather', Georgia, 'Times New Roman', Times, serif;
+        color: #4d4d4d;
+      }
+    </style>
   </head>
-
-  <body class="body flexcol m6">
-    <h2 class="grey goleft">
-      <a href="https://github.com/spencermountain/somehow-calendar"
-        >somehow-calendar</a
-      >
-      calendar viz:
-    </h2>
-
-    <!-- duration-demo -->
-    <div class="row-left">
-      <div class="m2" id="origin"></div>
-      <div class="w8" id="duration"></div>
-    </div>
-    <div class="row" id="months"></div>
-    <div class="hr mv5"></div>
-    <div class="row" id="weeks"></div>
-    <div class="hr mv5"></div>
-    <div class="row" id="timeline"></div>
-
-    <div class="footer">
-      <a href="http://twitter.com/spencermountain/">by @spencermountain</a>
-    </div>
-    <script src="./assets/bundle.js"></script>
-  </body>
+  <body></body>
 </html>
