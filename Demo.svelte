@@ -1,5 +1,4 @@
 <script>
-  //export let name = ''
   import { Calendar, Day } from './src'
 </script>
 
@@ -8,7 +7,22 @@
 </style>
 
 <div>
-  <Calendar start="march 1" width="15rem">
-    <Day date="march 28th" color="blue" />
-  </Calendar>
+  <div>
+    <a href="https://github.com/spencermountain/somehow-calendar">
+      somehow-calendar
+    </a>
+    <span class="f08 grey">- its a svelte html calendar using spacetime.</span>
+  </div>
+  <div class="m4">
+
+    <Calendar
+      start="march 1 2012"
+      end="June 2nd 2020"
+      align="row"
+      width="20rem">
+      <Day date="march 28th" color="blue" />
+    </Calendar>
+  </div>
+  <hr />
+  <div class="m4" />
 </div>

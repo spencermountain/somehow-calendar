@@ -14,7 +14,7 @@
   .row {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
     flex-wrap: wrap;
@@ -24,17 +24,14 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-start;
     text-align: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-self: stretch;
   }
 </style>
 
-<div
-  style="width:{width};"
-  class:col={align === 'col'}
-  class:row={align === 'row'}>
+<div style="" class:col={align === 'col'} class:row={align === 'row'}>
   {#each months as month}
     <Month {month} {width} />
   {/each}

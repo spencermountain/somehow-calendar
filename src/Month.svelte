@@ -26,6 +26,9 @@
 </script>
 
 <style>
+  .month {
+    margin: 1rem;
+  }
   .monthName {
     font-size: 0.53rem;
     color: #838b91;
@@ -44,12 +47,9 @@
     align-self: stretch;
   }
   .day {
-    border: 1px solid lightgrey;
-    min-width: 20px;
-    min-height: 20px;
     flex: 1;
-    min-width: 20px;
-    height: 20px;
+    min-width: 12px;
+    min-height: 12px;
     border: 1px solid #dedbd7;
     box-sizing: border-box;
     border-radius: 0px;
@@ -57,12 +57,16 @@
     color: #a3a5a5;
     overflow: hidden;
   }
+  .square {
+    padding-top: 15%; /* 1:1 Aspect Ratio */
+    position: relative; /* If you want text inside of it */
+  }
   .noday {
-    border: 1px solid none !important;
+    border: 1px solid rgba(222, 219, 215, 0);
   }
   .today {
-    background-color: steelblue;
-    border: 1px solid steelblue !important;
+    background-color: lightsteelblue;
+    border: 1px solid lightsteelblue !important;
     color: white;
   }
   .weekend {
@@ -70,20 +74,21 @@
   }
 </style>
 
-<div style="width:{width};">
+<div class="month" style="width:{width};">
   <div class="monthName">{month.format('month')}</div>
   {#each weeks as w}
     <div class="week">
       {#each w as d}
         {#if d.isSame(month, 'month')}
           <div
-            class="day"
+            class="day square"
             class:weekend={d.isWeekend()}
-            class:today={d.isToday()}>
-            {d.format('date')}
+            class:today={d.isToday()}
+            title={d.format()}>
+            <!-- {d.format('date')} -->
           </div>
         {:else}
-          <div class="day noday">{' '}</div>
+          <div class="day noday square">{' '}</div>
         {/if}
       {/each}
     </div>
