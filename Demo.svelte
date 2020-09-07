@@ -2,10 +2,6 @@
   import { Calendar, Day } from './src'
 </script>
 
-<style>
-
-</style>
-
 <div>
   <div>
     <a href="https://github.com/spencermountain/somehow-calendar">
