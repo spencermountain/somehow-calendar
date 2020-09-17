@@ -1,36 +1,56 @@
 <script>
   import spacetime from 'spacetime'
-  export let month = ''
-  export let width = '100%'
+  import { onMount } from 'svelte'
+  import { days } from './stores'
+
+  export let date = ''
   let today = spacetime.now()
-  month = spacetime(month)
-  let start = month
-    .startOf('month')
-    .startOf('week')
-    .minus(1, 'second')
-  let end = month.endOf('month').endOf('week')
-  let weeks = start.every('week', end)
-  weeks = weeks.map(d => {
-    let end = d.endOf('week').add(1, 'second')
-    return d.every('day', end)
+  const isToday = function(d) {
+    return d.isSame(today, 'day')
+  }
+  const isWeekend = function(d) {
+    let day = d.day()
+    return day === 0 || day === 1
+  }
+  date = spacetime(date)
+
+  // create all day objects
+  const calculate = function(date) {
+    let start = date
+      .startOf('month')
+      .startOf('week')
+      .minus(1, 'second')
+    let end = date.endOf('month').endOf('week')
+    let weeks = start.every('week', end)
+    weeks = weeks.map(d => {
+      let end = d.endOf('week').add(1, 'second')
+      return d.every('day', end)
+    })
+    return weeks
+  }
+  let weeks = []
+
+  onMount(() => {
+    weeks = calculate(date)
+    weeks.forEach(w => {
+      w.forEach(day => {
+        day.color = 'none'
+        day.num = day.format('{date}')
+        let iso = day.format('iso-short')
+        if ($days[iso]) {
+          day.color = $days[iso].color
+        }
+      })
+    })
+    console.log('mount')
+    console.log($days)
   })
-  spacetime.extend({
-    isWeekend: function() {
-      let day = this.day()
-      return day === 0 || day === 1
-    },
-    isToday: function() {
-      return this.isSame(today, 'day')
-    }
-  })
+  // console.log('weeks', weeks.length)
 </script>
 
 <style>
-  .month {
-    margin: 1rem;
-  }
   .monthName {
-    font-size: 0.53rem;
+    font-size: 1rem;
     color: #838b91;
     text-align: right;
     margin-bottom: 0.2rem;
@@ -47,45 +67,88 @@
     align-self: stretch;
   }
   .day {
+    position: relative;
     flex: 1;
+    margin: 0.5%;
+    border-radius: 3px;
+    box-shadow: 2px 1px 2px 0px rgba(0, 0, 0, 0.1);
     min-width: 12px;
     min-height: 12px;
-    border: 1px solid #dedbd7;
     box-sizing: border-box;
-    border-radius: 0px;
     font-size: 9px;
     color: #a3a5a5;
     overflow: hidden;
+    transition: box-shadow 0.2s;
+    z-index: 1;
+  }
+  .day:hover {
+    box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.2);
+  }
+  .highlight {
+    box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.4);
   }
   .square {
     padding-top: 15%; /* 1:1 Aspect Ratio */
     position: relative; /* If you want text inside of it */
   }
   .noday {
-    border: 1px solid rgba(222, 219, 215, 0);
+    /* border: 1px solid rgba(222, 219, 215, 0); */
+    box-shadow: none;
   }
   .today {
     background-color: lightsteelblue;
     border: 1px solid lightsteelblue !important;
     color: white;
   }
+  .num {
+    position: absolute;
+    z-index: 4;
+    font-size: 14px;
+    color: #949a9e;
+    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    text-align: left;
+    padding-top: 75%;
+    margin-left: 5%;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .num:hover {
+    opacity: 0.8;
+  }
   .weekend {
     background-color: #f0f0f0;
   }
+  @media only screen and (max-width: 400px) {
+    .monthName {
+      font-size: 0.7rem;
+    }
+    .day {
+      border-radius: 2px;
+      margin: 0.5%;
+    }
+    .num {
+      font-size: 10px;
+    }
+  }
 </style>
 
-<div class="month" style="width:{width};">
-  <div class="monthName">{month.format('month')}</div>
+<div class="month" style="width:100%;">
+  <div class="monthName">{date.format('month')}</div>
   {#each weeks as w}
     <div class="week">
       {#each w as d}
-        {#if d.isSame(month, 'month')}
+        {#if d.isSame(date, 'month')}
           <div
             class="day square"
-            class:weekend={d.isWeekend()}
-            class:today={d.isToday()}
-            title={d.format()}>
-            <!-- {d.format('date')} -->
+            class:today={isToday(d)}
+            class:weekend={isWeekend(d)}
+            class:highlight={d.color !== 'none'}
+            style="background-color:{d.color};"
+            title={d.num}>
+            <div class="num">{d.num}</div>
           </div>
         {:else}
           <div class="day noday square">{' '}</div>
@@ -94,3 +157,4 @@
     </div>
   {/each}
 </div>
+<slot />

@@ -4,6 +4,12 @@ var app = (function () {
     'use strict';
 
     function noop() { }
+    function assign(tar, src) {
+        // @ts-ignore
+        for (const k in src)
+            tar[k] = src[k];
+        return tar;
+    }
     function add_location(element, file, line, column, char) {
         element.__svelte_meta = {
             loc: { file, line, column, char }
@@ -26,6 +32,57 @@ var app = (function () {
     }
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
+    }
+    function validate_store(store, name) {
+        if (store != null && typeof store.subscribe !== 'function') {
+            throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+        }
+    }
+    function subscribe(store, ...callbacks) {
+        if (store == null) {
+            return noop;
+        }
+        const unsub = store.subscribe(...callbacks);
+        return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+    }
+    function component_subscribe(component, store, callback) {
+        component.$$.on_destroy.push(subscribe(store, callback));
+    }
+    function create_slot(definition, ctx, $$scope, fn) {
+        if (definition) {
+            const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
+            return definition[0](slot_ctx);
+        }
+    }
+    function get_slot_context(definition, ctx, $$scope, fn) {
+        return definition[1] && fn
+            ? assign($$scope.ctx.slice(), definition[1](fn(ctx)))
+            : $$scope.ctx;
+    }
+    function get_slot_changes(definition, $$scope, dirty, fn) {
+        if (definition[2] && fn) {
+            const lets = definition[2](fn(dirty));
+            if ($$scope.dirty === undefined) {
+                return lets;
+            }
+            if (typeof lets === 'object') {
+                const merged = [];
+                const len = Math.max($$scope.dirty.length, lets.length);
+                for (let i = 0; i < len; i += 1) {
+                    merged[i] = $$scope.dirty[i] | lets[i];
+                }
+                return merged;
+            }
+            return $$scope.dirty | lets;
+        }
+        return $$scope.dirty;
+    }
+    function update_slot(slot, slot_definition, ctx, $$scope, dirty, get_slot_changes_fn, get_slot_context_fn) {
+        const slot_changes = get_slot_changes(slot_definition, $$scope, dirty, get_slot_changes_fn);
+        if (slot_changes) {
+            const slot_context = get_slot_context(slot_definition, ctx, $$scope, get_slot_context_fn);
+            slot.p(slot_context, slot_changes);
+        }
     }
 
     function append(target, node) {
@@ -79,6 +136,14 @@ var app = (function () {
     let current_component;
     function set_current_component(component) {
         current_component = component;
+    }
+    function get_current_component() {
+        if (!current_component)
+            throw new Error(`Function called outside component initialization`);
+        return current_component;
+    }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
     }
 
     const dirty_components = [];
@@ -145,19 +210,6 @@ var app = (function () {
     }
     const outroing = new Set();
     let outros;
-    function group_outros() {
-        outros = {
-            r: 0,
-            c: [],
-            p: outros // parent group
-        };
-    }
-    function check_outros() {
-        if (!outros.r) {
-            run_all(outros.c);
-        }
-        outros = outros.p;
-    }
     function transition_in(block, local) {
         if (block && block.i) {
             outroing.delete(block);
@@ -180,6 +232,12 @@ var app = (function () {
             block.o(local);
         }
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -363,6 +421,60 @@ var app = (function () {
         $capture_state() { }
         $inject_state() { }
     }
+
+    const subscriber_queue = [];
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = [];
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (stop) { // store is ready
+                    const run_queue = !subscriber_queue.length;
+                    for (let i = 0; i < subscribers.length; i += 1) {
+                        const s = subscribers[i];
+                        s[1]();
+                        subscriber_queue.push(s, value);
+                    }
+                    if (run_queue) {
+                        for (let i = 0; i < subscriber_queue.length; i += 2) {
+                            subscriber_queue[i][0](subscriber_queue[i + 1]);
+                        }
+                        subscriber_queue.length = 0;
+                    }
+                }
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.push(subscriber);
+            if (subscribers.length === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                const index = subscribers.indexOf(subscriber);
+                if (index !== -1) {
+                    subscribers.splice(index, 1);
+                }
+                if (subscribers.length === 0) {
+                    stop();
+                    stop = null;
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+
+    let days = writable({});
 
     /* spencermountain/spacetime 6.6.3 Apache 2.0 */
     function createCommonjsModule(fn, module) {
@@ -1732,7 +1844,7 @@ var app = (function () {
 
     var shortDays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     var longDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    var days = {
+    var days$1 = {
       "short": function short() {
         return shortDays;
       },
@@ -1789,7 +1901,7 @@ var app = (function () {
         return fns.titleCase(s.dayName());
       },
       'day-short': function dayShort(s) {
-        return fns.titleCase(days["short"]()[s.day()]);
+        return fns.titleCase(days$1["short"]()[s.day()]);
       },
       'day-number': function dayNumber(s) {
         return s.day();
@@ -1958,7 +2070,7 @@ var app = (function () {
         return "".concat(months["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.year());
       },
       'nice-day': function niceDay(s) {
-        return "".concat(days["short"]()[s.day()], " ").concat(fns.titleCase(months["short"]()[s.month()]), " ").concat(fns.ordinal(s.date()));
+        return "".concat(days$1["short"]()[s.day()], " ").concat(fns.titleCase(months["short"]()[s.month()]), " ").concat(fns.ordinal(s.date()));
       },
       'nice-full': function niceFull(s) {
         return "".concat(s.dayName(), " ").concat(fns.titleCase(s.monthName()), " ").concat(fns.ordinal(s.date()), ", ").concat(s.time());
@@ -2819,13 +2931,13 @@ var app = (function () {
     };
 
     var isDay = function isDay(unit) {
-      if (days["short"]().find(function (s) {
+      if (days$1["short"]().find(function (s) {
         return s === unit;
       })) {
         return true;
       }
 
-      if (days["long"]().find(function (s) {
+      if (days$1["long"]().find(function (s) {
         return s === unit;
       })) {
         return true;
@@ -3113,10 +3225,10 @@ var app = (function () {
         if (typeof input === 'string') {
           // accept 'wednesday'
           input = input.toLowerCase().trim();
-          var num = days["short"]().indexOf(input);
+          var num = days$1["short"]().indexOf(input);
 
           if (num === -1) {
-            num = days["long"]().indexOf(input);
+            num = days$1["long"]().indexOf(input);
           }
 
           if (num === -1) {
@@ -3553,10 +3665,10 @@ var app = (function () {
 
         if (typeof input === 'string') {
           input = input.toLowerCase();
-          want = days["short"]().indexOf(input);
+          want = days$1["short"]().indexOf(input);
 
           if (want === -1) {
-            want = days["long"]().indexOf(input);
+            want = days$1["long"]().indexOf(input);
           }
         } //move approx
 
@@ -3575,7 +3687,7 @@ var app = (function () {
       //these are helpful name-wrappers
       dayName: function dayName(input) {
         if (input === undefined) {
-          return days["long"]()[this.day()];
+          return days$1["long"]()[this.day()];
         }
 
         var s = this.clone();
@@ -4289,7 +4401,7 @@ var app = (function () {
         i18n: function i18n(data) {
           //change the day names
           if (fns.isObject(data.days)) {
-            days.set(data.days);
+            days$1.set(data.days);
           } //change the month names
 
 
@@ -4486,172 +4598,37 @@ var app = (function () {
     main$1.plugin = main$1.extend;
     var src = main$1;
 
-    /* src/Calendar.svelte generated by Svelte v3.24.1 */
-    const file = "src/Calendar.svelte";
-
-    function get_each_context(ctx, list, i) {
-    	const child_ctx = ctx.slice();
-    	child_ctx[5] = list[i];
-    	return child_ctx;
+    function createCommonjsModule$1(fn, basedir, module) {
+    	return module = {
+    	  path: basedir,
+    	  exports: {},
+    	  require: function (path, base) {
+          return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+        }
+    	}, fn(module, module.exports), module.exports;
     }
 
-    // (35:2) {#each months as month}
-    function create_each_block(ctx) {
-    	let month;
-    	let current;
-
-    	month = new Month({
-    			props: {
-    				month: /*month*/ ctx[5],
-    				width: /*width*/ ctx[1]
-    			},
-    			$$inline: true
-    		});
-
-    	const block = {
-    		c: function create() {
-    			create_component(month.$$.fragment);
-    		},
-    		m: function mount(target, anchor) {
-    			mount_component(month, target, anchor);
-    			current = true;
-    		},
-    		p: function update(ctx, dirty) {
-    			const month_changes = {};
-    			if (dirty & /*width*/ 2) month_changes.width = /*width*/ ctx[1];
-    			month.$set(month_changes);
-    		},
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(month.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(month.$$.fragment, local);
-    			current = false;
-    		},
-    		d: function destroy(detaching) {
-    			destroy_component(month, detaching);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block.name,
-    		type: "each",
-    		source: "(35:2) {#each months as month}",
-    		ctx
-    	});
-
-    	return block;
+    function commonjsRequire () {
+    	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
     }
+
+    var spencerColor = createCommonjsModule$1(function (module, exports) {
+    !function(e){module.exports=e();}(function(){return function u(i,a,c){function f(r,e){if(!a[r]){if(!i[r]){var o="function"==typeof commonjsRequire&&commonjsRequire;if(!e&&o)return o(r,!0);if(d)return d(r,!0);var n=new Error("Cannot find module '"+r+"'");throw n.code="MODULE_NOT_FOUND",n}var t=a[r]={exports:{}};i[r][0].call(t.exports,function(e){return f(i[r][1][e]||e)},t,t.exports,u,i,a,c);}return a[r].exports}for(var d="function"==typeof commonjsRequire&&commonjsRequire,e=0;e<c.length;e++)f(c[e]);return f}({1:[function(e,r,o){r.exports={blue:"#6699cc",green:"#6accb2",yellow:"#e1e6b3",red:"#cc7066",pink:"#F2C0BB",brown:"#705E5C",orange:"#cc8a66",purple:"#d8b3e6",navy:"#335799",olive:"#7f9c6c",fuscia:"#735873",beige:"#e6d7b3",slate:"#8C8C88",suede:"#9c896c",burnt:"#603a39",sea:"#50617A",sky:"#2D85A8",night:"#303b50",rouge:"#914045",grey:"#838B91",mud:"#C4ABAB",royal:"#275291",cherry:"#cc6966",tulip:"#e6b3bc",rose:"#D68881",fire:"#AB5850",greyblue:"#72697D",greygreen:"#8BA3A2",greypurple:"#978BA3",burn:"#6D5685",slategrey:"#bfb0b3",light:"#a3a5a5",lighter:"#d7d5d2",fudge:"#4d4d4d",lightgrey:"#949a9e",white:"#fbfbfb",dimgrey:"#606c74",softblack:"#463D4F",dark:"#443d3d",black:"#333333"};},{}],2:[function(e,r,o){var n=e("./colors"),t={juno:["blue","mud","navy","slate","pink","burn"],barrow:["rouge","red","orange","burnt","brown","greygreen"],roma:["#8a849a","#b5b0bf","rose","lighter","greygreen","mud"],palmer:["red","navy","olive","pink","suede","sky"],mark:["#848f9a","#9aa4ac","slate","#b0b8bf","mud","grey"],salmon:["sky","sea","fuscia","slate","mud","fudge"],dupont:["green","brown","orange","red","olive","blue"],bloor:["night","navy","beige","rouge","mud","grey"],yukon:["mud","slate","brown","sky","beige","red"],david:["blue","green","yellow","red","pink","light"],neste:["mud","cherry","royal","rouge","greygreen","greypurple"],ken:["red","sky","#c67a53","greygreen","#dfb59f","mud"]};Object.keys(t).forEach(function(e){t[e]=t[e].map(function(e){return n[e]||e});}),r.exports=t;},{"./colors":1}],3:[function(e,r,o){var n=e("./colors"),t=e("./combos"),u={colors:n,list:Object.keys(n).map(function(e){return n[e]}),combos:t};r.exports=u;},{"./colors":1,"./combos":2}]},{},[3])(3)});
+    });
+
+    /* src/Day.svelte generated by Svelte v3.24.1 */
 
     function create_fragment(ctx) {
-    	let div1;
-    	let t;
-    	let div0;
-    	let current;
-    	let each_value = /*months*/ ctx[2];
-    	validate_each_argument(each_value);
-    	let each_blocks = [];
-
-    	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
-    	}
-
-    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
-    		each_blocks[i] = null;
-    	});
-
     	const block = {
-    		c: function create() {
-    			div1 = element("div");
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
-    			t = space();
-    			div0 = element("div");
-    			add_location(div0, file, 37, 2, 823);
-    			attr_dev(div1, "class", "svelte-1v7kh5n");
-    			toggle_class(div1, "col", /*align*/ ctx[0] === "col");
-    			toggle_class(div1, "row", /*align*/ ctx[0] === "row");
-    			add_location(div1, file, 33, 0, 684);
-    		},
+    		c: noop,
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div1, anchor);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div1, null);
-    			}
-
-    			append_dev(div1, t);
-    			append_dev(div1, div0);
-    			current = true;
-    		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*months, width*/ 6) {
-    				each_value = /*months*/ ctx[2];
-    				validate_each_argument(each_value);
-    				let i;
-
-    				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context(ctx, each_value, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    						transition_in(each_blocks[i], 1);
-    					} else {
-    						each_blocks[i] = create_each_block(child_ctx);
-    						each_blocks[i].c();
-    						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(div1, t);
-    					}
-    				}
-
-    				group_outros();
-
-    				for (i = each_value.length; i < each_blocks.length; i += 1) {
-    					out(i);
-    				}
-
-    				check_outros();
-    			}
-
-    			if (dirty & /*align*/ 1) {
-    				toggle_class(div1, "col", /*align*/ ctx[0] === "col");
-    			}
-
-    			if (dirty & /*align*/ 1) {
-    				toggle_class(div1, "row", /*align*/ ctx[0] === "row");
-    			}
-    		},
-    		i: function intro(local) {
-    			if (current) return;
-
-    			for (let i = 0; i < each_value.length; i += 1) {
-    				transition_in(each_blocks[i]);
-    			}
-
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			each_blocks = each_blocks.filter(Boolean);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				transition_out(each_blocks[i]);
-    			}
-
-    			current = false;
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div1);
-    			destroy_each(each_blocks, detaching);
-    		}
+    		m: noop,
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d: noop
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
@@ -4666,139 +4643,19 @@ var app = (function () {
     }
 
     function instance($$self, $$props, $$invalidate) {
-    	let { start = "" } = $$props;
-    	let { end = "" } = $$props;
-    	let { align = "row" } = $$props;
-    	let { width = "100%" } = $$props;
-    	start = src(start);
-    	end = src(end || null);
-    	let months = start.every("month", end);
-    	const writable_props = ["start", "end", "align", "width"];
+    	let { date = "" } = $$props;
+    	let { color = "blue" } = $$props;
+    	let { label = "" } = $$props;
+    	color = spencerColor.colors[color] || color;
+    	date = src(date);
+    	let iso = date.format("iso-short");
 
-    	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Calendar> was created with unknown prop '${key}'`);
+    	days.update(obj => {
+    		obj[iso] = { color, label };
+    		return obj;
     	});
 
-    	let { $$slots = {}, $$scope } = $$props;
-    	validate_slots("Calendar", $$slots, []);
-
-    	$$self.$$set = $$props => {
-    		if ("start" in $$props) $$invalidate(3, start = $$props.start);
-    		if ("end" in $$props) $$invalidate(4, end = $$props.end);
-    		if ("align" in $$props) $$invalidate(0, align = $$props.align);
-    		if ("width" in $$props) $$invalidate(1, width = $$props.width);
-    	};
-
-    	$$self.$capture_state = () => ({
-    		spacetime: src,
-    		Month,
-    		start,
-    		end,
-    		align,
-    		width,
-    		months
-    	});
-
-    	$$self.$inject_state = $$props => {
-    		if ("start" in $$props) $$invalidate(3, start = $$props.start);
-    		if ("end" in $$props) $$invalidate(4, end = $$props.end);
-    		if ("align" in $$props) $$invalidate(0, align = $$props.align);
-    		if ("width" in $$props) $$invalidate(1, width = $$props.width);
-    		if ("months" in $$props) $$invalidate(2, months = $$props.months);
-    	};
-
-    	if ($$props && "$$inject" in $$props) {
-    		$$self.$inject_state($$props.$$inject);
-    	}
-
-    	return [align, width, months, start, end];
-    }
-
-    class Calendar extends SvelteComponentDev {
-    	constructor(options) {
-    		super(options);
-    		init(this, options, instance, create_fragment, safe_not_equal, { start: 3, end: 4, align: 0, width: 1 });
-
-    		dispatch_dev("SvelteRegisterComponent", {
-    			component: this,
-    			tagName: "Calendar",
-    			options,
-    			id: create_fragment.name
-    		});
-    	}
-
-    	get start() {
-    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set start(value) {
-    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get end() {
-    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set end(value) {
-    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get align() {
-    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set align(value) {
-    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get width() {
-    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set width(value) {
-    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-    }
-
-    /* src/Day.svelte generated by Svelte v3.24.1 */
-
-    const file$1 = "src/Day.svelte";
-
-    function create_fragment$1(ctx) {
-    	let div;
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			add_location(div, file$1, 8, 0, 64);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    		},
-    		p: noop,
-    		i: noop,
-    		o: noop,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_fragment$1.name,
-    		type: "component",
-    		source: "",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function instance$1($$self, $$props) {
-    	const writable_props = [];
+    	const writable_props = ["date", "color", "label"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Day> was created with unknown prop '${key}'`);
@@ -4806,39 +4663,100 @@ var app = (function () {
 
     	let { $$slots = {}, $$scope } = $$props;
     	validate_slots("Day", $$slots, []);
-    	return [];
+
+    	$$self.$$set = $$props => {
+    		if ("date" in $$props) $$invalidate(0, date = $$props.date);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("label" in $$props) $$invalidate(2, label = $$props.label);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		days,
+    		spacetime: src,
+    		c: spencerColor,
+    		date,
+    		color,
+    		label,
+    		iso
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("date" in $$props) $$invalidate(0, date = $$props.date);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("label" in $$props) $$invalidate(2, label = $$props.label);
+    		if ("iso" in $$props) iso = $$props.iso;
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [date, color, label];
     }
 
     class Day extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
+    		init(this, options, instance, create_fragment, safe_not_equal, { date: 0, color: 1, label: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Day",
     			options,
-    			id: create_fragment$1.name
+    			id: create_fragment.name
     		});
+    	}
+
+    	get date() {
+    		throw new Error("<Day>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set date(value) {
+    		throw new Error("<Day>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get color() {
+    		throw new Error("<Day>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set color(value) {
+    		throw new Error("<Day>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get label() {
+    		throw new Error("<Day>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set label(value) {
+    		throw new Error("<Day>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
     /* src/Month.svelte generated by Svelte v3.24.1 */
-    const file$2 = "src/Month.svelte";
+
+    const { console: console_1 } = globals;
+    const file = "src/Month.svelte";
+
+    function add_css() {
+    	var style = element("style");
+    	style.id = "svelte-rk9og6-style";
+    	style.textContent = ".monthName.svelte-rk9og6{font-size:1rem;color:#838b91;text-align:right;margin-bottom:0.2rem;margin-top:0.2rem;margin-right:0.7rem}.week.svelte-rk9og6{display:flex;flex-direction:row;justify-content:space-around;align-items:center;text-align:center;flex-wrap:nowrap;align-self:stretch}.day.svelte-rk9og6{position:relative;flex:1;margin:0.5%;border-radius:3px;box-shadow:2px 1px 2px 0px rgba(0, 0, 0, 0.1);min-width:12px;min-height:12px;box-sizing:border-box;font-size:9px;color:#a3a5a5;overflow:hidden;transition:box-shadow 0.2s;z-index:1}.day.svelte-rk9og6:hover{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.2)}.highlight.svelte-rk9og6{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.4)}.square.svelte-rk9og6{padding-top:15%;position:relative}.noday.svelte-rk9og6{box-shadow:none}.today.svelte-rk9og6{background-color:lightsteelblue;border:1px solid lightsteelblue !important;color:white}.num.svelte-rk9og6{position:absolute;z-index:4;font-size:14px;color:#949a9e;opacity:0.8;width:100%;height:100%;top:0px;text-align:left;padding-top:75%;margin-left:5%;opacity:0;transition:opacity 0.1s}.num.svelte-rk9og6:hover{opacity:0.8}.weekend.svelte-rk9og6{background-color:#f0f0f0}@media only screen and (max-width: 400px){.monthName.svelte-rk9og6{font-size:0.7rem}.day.svelte-rk9og6{border-radius:2px;margin:0.5%}.num.svelte-rk9og6{font-size:10px}}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiTW9udGguc3ZlbHRlIiwic291cmNlcyI6WyJNb250aC5zdmVsdGUiXSwic291cmNlc0NvbnRlbnQiOlsiPHNjcmlwdD5cbiAgaW1wb3J0IHNwYWNldGltZSBmcm9tICdzcGFjZXRpbWUnXG4gIGltcG9ydCB7IG9uTW91bnQgfSBmcm9tICdzdmVsdGUnXG4gIGltcG9ydCB7IGRheXMgfSBmcm9tICcuL3N0b3JlcydcblxuICBleHBvcnQgbGV0IGRhdGUgPSAnJ1xuICBsZXQgdG9kYXkgPSBzcGFjZXRpbWUubm93KClcbiAgY29uc3QgaXNUb2RheSA9IGZ1bmN0aW9uKGQpIHtcbiAgICByZXR1cm4gZC5pc1NhbWUodG9kYXksICdkYXknKVxuICB9XG4gIGNvbnN0IGlzV2Vla2VuZCA9IGZ1bmN0aW9uKGQpIHtcbiAgICBsZXQgZGF5ID0gZC5kYXkoKVxuICAgIHJldHVybiBkYXkgPT09IDAgfHwgZGF5ID09PSAxXG4gIH1cbiAgZGF0ZSA9IHNwYWNldGltZShkYXRlKVxuXG4gIC8vIGNyZWF0ZSBhbGwgZGF5IG9iamVjdHNcbiAgY29uc3QgY2FsY3VsYXRlID0gZnVuY3Rpb24oZGF0ZSkge1xuICAgIGxldCBzdGFydCA9IGRhdGVcbiAgICAgIC5zdGFydE9mKCdtb250aCcpXG4gICAgICAuc3RhcnRPZignd2VlaycpXG4gICAgICAubWludXMoMSwgJ3NlY29uZCcpXG4gICAgbGV0IGVuZCA9IGRhdGUuZW5kT2YoJ21vbnRoJykuZW5kT2YoJ3dlZWsnKVxuICAgIGxldCB3ZWVrcyA9IHN0YXJ0LmV2ZXJ5KCd3ZWVrJywgZW5kKVxuICAgIHdlZWtzID0gd2Vla3MubWFwKGQgPT4ge1xuICAgICAgbGV0IGVuZCA9IGQuZW5kT2YoJ3dlZWsnKS5hZGQoMSwgJ3NlY29uZCcpXG4gICAgICByZXR1cm4gZC5ldmVyeSgnZGF5JywgZW5kKVxuICAgIH0pXG4gICAgcmV0dXJuIHdlZWtzXG4gIH1cbiAgbGV0IHdlZWtzID0gW11cblxuICBvbk1vdW50KCgpID0+IHtcbiAgICB3ZWVrcyA9IGNhbGN1bGF0ZShkYXRlKVxuICAgIHdlZWtzLmZvckVhY2godyA9PiB7XG4gICAgICB3LmZvckVhY2goZGF5ID0+IHtcbiAgICAgICAgZGF5LmNvbG9yID0gJ25vbmUnXG4gICAgICAgIGRheS5udW0gPSBkYXkuZm9ybWF0KCd7ZGF0ZX0nKVxuICAgICAgICBsZXQgaXNvID0gZGF5LmZvcm1hdCgnaXNvLXNob3J0JylcbiAgICAgICAgaWYgKCRkYXlzW2lzb10pIHtcbiAgICAgICAgICBkYXkuY29sb3IgPSAkZGF5c1tpc29dLmNvbG9yXG4gICAgICAgIH1cbiAgICAgIH0pXG4gICAgfSlcbiAgICBjb25zb2xlLmxvZygnbW91bnQnKVxuICAgIGNvbnNvbGUubG9nKCRkYXlzKVxuICB9KVxuICAvLyBjb25zb2xlLmxvZygnd2Vla3MnLCB3ZWVrcy5sZW5ndGgpXG48L3NjcmlwdD5cblxuPHN0eWxlPlxuICAubW9udGhOYW1lIHtcbiAgICBmb250LXNpemU6IDFyZW07XG4gICAgY29sb3I6ICM4MzhiOTE7XG4gICAgdGV4dC1hbGlnbjogcmlnaHQ7XG4gICAgbWFyZ2luLWJvdHRvbTogMC4ycmVtO1xuICAgIG1hcmdpbi10b3A6IDAuMnJlbTtcbiAgICBtYXJnaW4tcmlnaHQ6IDAuN3JlbTtcbiAgfVxuICAud2VlayB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogcm93O1xuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYXJvdW5kO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIGZsZXgtd3JhcDogbm93cmFwO1xuICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gIH1cbiAgLmRheSB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGZsZXg6IDE7XG4gICAgbWFyZ2luOiAwLjUlO1xuICAgIGJvcmRlci1yYWRpdXM6IDNweDtcbiAgICBib3gtc2hhZG93OiAycHggMXB4IDJweCAwcHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgIG1pbi13aWR0aDogMTJweDtcbiAgICBtaW4taGVpZ2h0OiAxMnB4O1xuICAgIGJveC1zaXppbmc6IGJvcmRlci1ib3g7XG4gICAgZm9udC1zaXplOiA5cHg7XG4gICAgY29sb3I6ICNhM2E1YTU7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICB0cmFuc2l0aW9uOiBib3gtc2hhZG93IDAuMnM7XG4gICAgei1pbmRleDogMTtcbiAgfVxuICAuZGF5OmhvdmVyIHtcbiAgICBib3gtc2hhZG93OiAxcHggNHB4IDEwcHggMXB4IHJnYmEoMCwgMCwgMCwgMC4yKTtcbiAgfVxuICAuaGlnaGxpZ2h0IHtcbiAgICBib3gtc2hhZG93OiAxcHggNHB4IDEwcHggMXB4IHJnYmEoMCwgMCwgMCwgMC40KTtcbiAgfVxuICAuc3F1YXJlIHtcbiAgICBwYWRkaW5nLXRvcDogMTUlOyAvKiAxOjEgQXNwZWN0IFJhdGlvICovXG4gICAgcG9zaXRpb246IHJlbGF0aXZlOyAvKiBJZiB5b3Ugd2FudCB0ZXh0IGluc2lkZSBvZiBpdCAqL1xuICB9XG4gIC5ub2RheSB7XG4gICAgLyogYm9yZGVyOiAxcHggc29saWQgcmdiYSgyMjIsIDIxOSwgMjE1LCAwKTsgKi9cbiAgICBib3gtc2hhZG93OiBub25lO1xuICB9XG4gIC50b2RheSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogbGlnaHRzdGVlbGJsdWU7XG4gICAgYm9yZGVyOiAxcHggc29saWQgbGlnaHRzdGVlbGJsdWUgIWltcG9ydGFudDtcbiAgICBjb2xvcjogd2hpdGU7XG4gIH1cbiAgLm51bSB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHotaW5kZXg6IDQ7XG4gICAgZm9udC1zaXplOiAxNHB4O1xuICAgIGNvbG9yOiAjOTQ5YTllO1xuICAgIG9wYWNpdHk6IDAuODtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgdG9wOiAwcHg7XG4gICAgdGV4dC1hbGlnbjogbGVmdDtcbiAgICBwYWRkaW5nLXRvcDogNzUlO1xuICAgIG1hcmdpbi1sZWZ0OiA1JTtcbiAgICBvcGFjaXR5OiAwO1xuICAgIHRyYW5zaXRpb246IG9wYWNpdHkgMC4xcztcbiAgfVxuICAubnVtOmhvdmVyIHtcbiAgICBvcGFjaXR5OiAwLjg7XG4gIH1cbiAgLndlZWtlbmQge1xuICAgIGJhY2tncm91bmQtY29sb3I6ICNmMGYwZjA7XG4gIH1cbiAgQG1lZGlhIG9ubHkgc2NyZWVuIGFuZCAobWF4LXdpZHRoOiA0MDBweCkge1xuICAgIC5tb250aE5hbWUge1xuICAgICAgZm9udC1zaXplOiAwLjdyZW07XG4gICAgfVxuICAgIC5kYXkge1xuICAgICAgYm9yZGVyLXJhZGl1czogMnB4O1xuICAgICAgbWFyZ2luOiAwLjUlO1xuICAgIH1cbiAgICAubnVtIHtcbiAgICAgIGZvbnQtc2l6ZTogMTBweDtcbiAgICB9XG4gIH1cbjwvc3R5bGU+XG5cbjxkaXYgY2xhc3M9XCJtb250aFwiIHN0eWxlPVwid2lkdGg6MTAwJTtcIj5cbiAgPGRpdiBjbGFzcz1cIm1vbnRoTmFtZVwiPntkYXRlLmZvcm1hdCgnbW9udGgnKX08L2Rpdj5cbiAgeyNlYWNoIHdlZWtzIGFzIHd9XG4gICAgPGRpdiBjbGFzcz1cIndlZWtcIj5cbiAgICAgIHsjZWFjaCB3IGFzIGR9XG4gICAgICAgIHsjaWYgZC5pc1NhbWUoZGF0ZSwgJ21vbnRoJyl9XG4gICAgICAgICAgPGRpdlxuICAgICAgICAgICAgY2xhc3M9XCJkYXkgc3F1YXJlXCJcbiAgICAgICAgICAgIGNsYXNzOnRvZGF5PXtpc1RvZGF5KGQpfVxuICAgICAgICAgICAgY2xhc3M6d2Vla2VuZD17aXNXZWVrZW5kKGQpfVxuICAgICAgICAgICAgY2xhc3M6aGlnaGxpZ2h0PXtkLmNvbG9yICE9PSAnbm9uZSd9XG4gICAgICAgICAgICBzdHlsZT1cImJhY2tncm91bmQtY29sb3I6e2QuY29sb3J9O1wiXG4gICAgICAgICAgICB0aXRsZT17ZC5udW19PlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cIm51bVwiPntkLm51bX08L2Rpdj5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgezplbHNlfVxuICAgICAgICAgIDxkaXYgY2xhc3M9XCJkYXkgbm9kYXkgc3F1YXJlXCI+eycgJ308L2Rpdj5cbiAgICAgICAgey9pZn1cbiAgICAgIHsvZWFjaH1cbiAgICA8L2Rpdj5cbiAgey9lYWNofVxuPC9kaXY+XG48c2xvdCAvPlxuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQW1ERSxVQUFVLGNBQUMsQ0FBQyxBQUNWLFNBQVMsQ0FBRSxJQUFJLENBQ2YsS0FBSyxDQUFFLE9BQU8sQ0FDZCxVQUFVLENBQUUsS0FBSyxDQUNqQixhQUFhLENBQUUsTUFBTSxDQUNyQixVQUFVLENBQUUsTUFBTSxDQUNsQixZQUFZLENBQUUsTUFBTSxBQUN0QixDQUFDLEFBQ0QsS0FBSyxjQUFDLENBQUMsQUFDTCxPQUFPLENBQUUsSUFBSSxDQUNiLGNBQWMsQ0FBRSxHQUFHLENBQ25CLGVBQWUsQ0FBRSxZQUFZLENBQzdCLFdBQVcsQ0FBRSxNQUFNLENBQ25CLFVBQVUsQ0FBRSxNQUFNLENBQ2xCLFNBQVMsQ0FBRSxNQUFNLENBQ2pCLFVBQVUsQ0FBRSxPQUFPLEFBQ3JCLENBQUMsQUFDRCxJQUFJLGNBQUMsQ0FBQyxBQUNKLFFBQVEsQ0FBRSxRQUFRLENBQ2xCLElBQUksQ0FBRSxDQUFDLENBQ1AsTUFBTSxDQUFFLElBQUksQ0FDWixhQUFhLENBQUUsR0FBRyxDQUNsQixVQUFVLENBQUUsR0FBRyxDQUFDLEdBQUcsQ0FBQyxHQUFHLENBQUMsR0FBRyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDLENBQzlDLFNBQVMsQ0FBRSxJQUFJLENBQ2YsVUFBVSxDQUFFLElBQUksQ0FDaEIsVUFBVSxDQUFFLFVBQVUsQ0FDdEIsU0FBUyxDQUFFLEdBQUcsQ0FDZCxLQUFLLENBQUUsT0FBTyxDQUNkLFFBQVEsQ0FBRSxNQUFNLENBQ2hCLFVBQVUsQ0FBRSxVQUFVLENBQUMsSUFBSSxDQUMzQixPQUFPLENBQUUsQ0FBQyxBQUNaLENBQUMsQUFDRCxrQkFBSSxNQUFNLEFBQUMsQ0FBQyxBQUNWLFVBQVUsQ0FBRSxHQUFHLENBQUMsR0FBRyxDQUFDLElBQUksQ0FBQyxHQUFHLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxHQUFHLENBQUMsQUFDakQsQ0FBQyxBQUNELFVBQVUsY0FBQyxDQUFDLEFBQ1YsVUFBVSxDQUFFLEdBQUcsQ0FBQyxHQUFHLENBQUMsSUFBSSxDQUFDLEdBQUcsQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLEdBQUcsQ0FBQyxBQUNqRCxDQUFDLEFBQ0QsT0FBTyxjQUFDLENBQUMsQUFDUCxXQUFXLENBQUUsR0FBRyxDQUNoQixRQUFRLENBQUUsUUFBUSxBQUNwQixDQUFDLEFBQ0QsTUFBTSxjQUFDLENBQUMsQUFFTixVQUFVLENBQUUsSUFBSSxBQUNsQixDQUFDLEFBQ0QsTUFBTSxjQUFDLENBQUMsQUFDTixnQkFBZ0IsQ0FBRSxjQUFjLENBQ2hDLE1BQU0sQ0FBRSxHQUFHLENBQUMsS0FBSyxDQUFDLGNBQWMsQ0FBQyxVQUFVLENBQzNDLEtBQUssQ0FBRSxLQUFLLEFBQ2QsQ0FBQyxBQUNELElBQUksY0FBQyxDQUFDLEFBQ0osUUFBUSxDQUFFLFFBQVEsQ0FDbEIsT0FBTyxDQUFFLENBQUMsQ0FDVixTQUFTLENBQUUsSUFBSSxDQUNmLEtBQUssQ0FBRSxPQUFPLENBQ2QsT0FBTyxDQUFFLEdBQUcsQ0FDWixLQUFLLENBQUUsSUFBSSxDQUNYLE1BQU0sQ0FBRSxJQUFJLENBQ1osR0FBRyxDQUFFLEdBQUcsQ0FDUixVQUFVLENBQUUsSUFBSSxDQUNoQixXQUFXLENBQUUsR0FBRyxDQUNoQixXQUFXLENBQUUsRUFBRSxDQUNmLE9BQU8sQ0FBRSxDQUFDLENBQ1YsVUFBVSxDQUFFLE9BQU8sQ0FBQyxJQUFJLEFBQzFCLENBQUMsQUFDRCxrQkFBSSxNQUFNLEFBQUMsQ0FBQyxBQUNWLE9BQU8sQ0FBRSxHQUFHLEFBQ2QsQ0FBQyxBQUNELFFBQVEsY0FBQyxDQUFDLEFBQ1IsZ0JBQWdCLENBQUUsT0FBTyxBQUMzQixDQUFDLEFBQ0QsT0FBTyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxZQUFZLEtBQUssQ0FBQyxBQUFDLENBQUMsQUFDekMsVUFBVSxjQUFDLENBQUMsQUFDVixTQUFTLENBQUUsTUFBTSxBQUNuQixDQUFDLEFBQ0QsSUFBSSxjQUFDLENBQUMsQUFDSixhQUFhLENBQUUsR0FBRyxDQUNsQixNQUFNLENBQUUsSUFBSSxBQUNkLENBQUMsQUFDRCxJQUFJLGNBQUMsQ0FBQyxBQUNKLFNBQVMsQ0FBRSxJQUFJLEFBQ2pCLENBQUMsQUFDSCxDQUFDIn0= */";
+    	append_dev(document.head, style);
+    }
 
     function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[12] = list[i];
+    	return child_ctx;
+    }
+
+    function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[9] = list[i];
     	return child_ctx;
     }
 
-    function get_each_context$1(ctx, list, i) {
-    	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
-    	return child_ctx;
-    }
-
-    // (90:8) {:else}
+    // (153:8) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -4846,8 +4764,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = `${" "}`;
-    			attr_dev(div, "class", "day noday square svelte-2n6xi8");
-    			add_location(div, file$2, 90, 10, 2054);
+    			attr_dev(div, "class", "day noday square svelte-rk9og6");
+    			add_location(div, file, 153, 10, 3419);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -4862,45 +4780,66 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(90:8) {:else}",
+    		source: "(153:8) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (82:8) {#if d.isSame(month, 'month')}
+    // (143:8) {#if d.isSame(date, 'month')}
     function create_if_block(ctx) {
-    	let div;
-    	let div_title_value;
+    	let div1;
+    	let div0;
+    	let t_value = /*d*/ ctx[12].num + "";
+    	let t;
+    	let div1_title_value;
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			attr_dev(div, "class", "day square svelte-2n6xi8");
-    			attr_dev(div, "title", div_title_value = /*d*/ ctx[9].format());
-    			toggle_class(div, "weekend", /*d*/ ctx[9].isWeekend());
-    			toggle_class(div, "today", /*d*/ ctx[9].isToday());
-    			add_location(div, file$2, 82, 10, 1823);
+    			div1 = element("div");
+    			div0 = element("div");
+    			t = text(t_value);
+    			attr_dev(div0, "class", "num svelte-rk9og6");
+    			add_location(div0, file, 150, 12, 3345);
+    			attr_dev(div1, "class", "day square svelte-rk9og6");
+    			set_style(div1, "background-color", /*d*/ ctx[12].color);
+    			attr_dev(div1, "title", div1_title_value = /*d*/ ctx[12].num);
+    			toggle_class(div1, "today", /*isToday*/ ctx[2](/*d*/ ctx[12]));
+    			toggle_class(div1, "weekend", /*isWeekend*/ ctx[3](/*d*/ ctx[12]));
+    			toggle_class(div1, "highlight", /*d*/ ctx[12].color !== "none");
+    			add_location(div1, file, 143, 10, 3095);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
+    			append_dev(div0, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*weeks*/ 4 && div_title_value !== (div_title_value = /*d*/ ctx[9].format())) {
-    				attr_dev(div, "title", div_title_value);
+    			if (dirty & /*weeks*/ 2 && t_value !== (t_value = /*d*/ ctx[12].num + "")) set_data_dev(t, t_value);
+
+    			if (dirty & /*weeks*/ 2) {
+    				set_style(div1, "background-color", /*d*/ ctx[12].color);
     			}
 
-    			if (dirty & /*weeks*/ 4) {
-    				toggle_class(div, "weekend", /*d*/ ctx[9].isWeekend());
+    			if (dirty & /*weeks*/ 2 && div1_title_value !== (div1_title_value = /*d*/ ctx[12].num)) {
+    				attr_dev(div1, "title", div1_title_value);
     			}
 
-    			if (dirty & /*weeks*/ 4) {
-    				toggle_class(div, "today", /*d*/ ctx[9].isToday());
+    			if (dirty & /*isToday, weeks*/ 6) {
+    				toggle_class(div1, "today", /*isToday*/ ctx[2](/*d*/ ctx[12]));
+    			}
+
+    			if (dirty & /*isWeekend, weeks*/ 10) {
+    				toggle_class(div1, "weekend", /*isWeekend*/ ctx[3](/*d*/ ctx[12]));
+    			}
+
+    			if (dirty & /*weeks*/ 2) {
+    				toggle_class(div1, "highlight", /*d*/ ctx[12].color !== "none");
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div1);
     		}
     	};
 
@@ -4908,20 +4847,20 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(82:8) {#if d.isSame(month, 'month')}",
+    		source: "(143:8) {#if d.isSame(date, 'month')}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (81:6) {#each w as d}
+    // (142:6) {#each w as d}
     function create_each_block_1(ctx) {
     	let show_if;
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (show_if == null || dirty & /*weeks, month*/ 5) show_if = !!/*d*/ ctx[9].isSame(/*month*/ ctx[0], "month");
+    		if (show_if == null || dirty & /*weeks, date*/ 3) show_if = !!/*d*/ ctx[12].isSame(/*date*/ ctx[0], "month");
     		if (show_if) return create_if_block;
     		return create_else_block;
     	}
@@ -4961,18 +4900,18 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(81:6) {#each w as d}",
+    		source: "(142:6) {#each w as d}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (79:2) {#each weeks as w}
-    function create_each_block$1(ctx) {
+    // (140:2) {#each weeks as w}
+    function create_each_block(ctx) {
     	let div;
     	let t;
-    	let each_value_1 = /*w*/ ctx[6];
+    	let each_value_1 = /*w*/ ctx[9];
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -4989,8 +4928,8 @@ var app = (function () {
     			}
 
     			t = space();
-    			attr_dev(div, "class", "week svelte-2n6xi8");
-    			add_location(div, file$2, 79, 4, 1734);
+    			attr_dev(div, "class", "week svelte-rk9og6");
+    			add_location(div, file, 140, 4, 3007);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5002,8 +4941,8 @@ var app = (function () {
     			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*weeks, month*/ 5) {
-    				each_value_1 = /*w*/ ctx[6];
+    			if (dirty & /*weeks, isToday, isWeekend, date*/ 15) {
+    				each_value_1 = /*w*/ ctx[9];
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -5034,28 +4973,33 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block$1.name,
+    		id: create_each_block.name,
     		type: "each",
-    		source: "(79:2) {#each weeks as w}",
+    		source: "(140:2) {#each weeks as w}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$2(ctx) {
+    function create_fragment$1(ctx) {
     	let div1;
     	let div0;
-    	let t0_value = /*month*/ ctx[0].format("month") + "";
+    	let t0_value = /*date*/ ctx[0].format("month") + "";
     	let t0;
     	let t1;
-    	let each_value = /*weeks*/ ctx[2];
+    	let t2;
+    	let current;
+    	let each_value = /*weeks*/ ctx[1];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
     	}
+
+    	const default_slot_template = /*$$slots*/ ctx[5].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[4], null);
 
     	const block = {
     		c: function create() {
@@ -5068,11 +5012,13 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div0, "class", "monthName svelte-2n6xi8");
-    			add_location(div0, file$2, 77, 2, 1656);
-    			attr_dev(div1, "class", "month svelte-2n6xi8");
-    			set_style(div1, "width", /*width*/ ctx[1]);
-    			add_location(div1, file$2, 76, 0, 1611);
+    			t2 = space();
+    			if (default_slot) default_slot.c();
+    			attr_dev(div0, "class", "monthName svelte-rk9og6");
+    			add_location(div0, file, 138, 2, 2930);
+    			attr_dev(div1, "class", "month");
+    			set_style(div1, "width", "100%");
+    			add_location(div1, file, 137, 0, 2888);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5086,22 +5032,30 @@ var app = (function () {
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(div1, null);
     			}
+
+    			insert_dev(target, t2, anchor);
+
+    			if (default_slot) {
+    				default_slot.m(target, anchor);
+    			}
+
+    			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*month*/ 1 && t0_value !== (t0_value = /*month*/ ctx[0].format("month") + "")) set_data_dev(t0, t0_value);
+    			if ((!current || dirty & /*date*/ 1) && t0_value !== (t0_value = /*date*/ ctx[0].format("month") + "")) set_data_dev(t0, t0_value);
 
-    			if (dirty & /*weeks, month*/ 5) {
-    				each_value = /*weeks*/ ctx[2];
+    			if (dirty & /*weeks, isToday, isWeekend, date*/ 15) {
+    				each_value = /*weeks*/ ctx[1];
     				validate_each_argument(each_value);
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context$1(ctx, each_value, i);
+    					const child_ctx = get_each_context(ctx, each_value, i);
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i] = create_each_block(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(div1, null);
     					}
@@ -5114,15 +5068,179 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*width*/ 2) {
-    				set_style(div1, "width", /*width*/ ctx[1]);
+    			if (default_slot) {
+    				if (default_slot.p && dirty & /*$$scope*/ 16) {
+    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[4], dirty, null, null);
+    				}
     			}
     		},
-    		i: noop,
-    		o: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div1);
     			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(t2);
+    			if (default_slot) default_slot.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$1.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$1($$self, $$props, $$invalidate) {
+    	let $days;
+    	validate_store(days, "days");
+    	component_subscribe($$self, days, $$value => $$invalidate(6, $days = $$value));
+    	let { date = "" } = $$props;
+    	let today = src.now();
+
+    	const isToday = function (d) {
+    		return d.isSame(today, "day");
+    	};
+
+    	const isWeekend = function (d) {
+    		let day = d.day();
+    		return day === 0 || day === 1;
+    	};
+
+    	date = src(date);
+
+    	// create all day objects
+    	const calculate = function (date) {
+    		let start = date.startOf("month").startOf("week").minus(1, "second");
+    		let end = date.endOf("month").endOf("week");
+    		let weeks = start.every("week", end);
+
+    		weeks = weeks.map(d => {
+    			let end = d.endOf("week").add(1, "second");
+    			return d.every("day", end);
+    		});
+
+    		return weeks;
+    	};
+
+    	let weeks = [];
+
+    	onMount(() => {
+    		$$invalidate(1, weeks = calculate(date));
+
+    		weeks.forEach(w => {
+    			w.forEach(day => {
+    				day.color = "none";
+    				day.num = day.format("{date}");
+    				let iso = day.format("iso-short");
+
+    				if ($days[iso]) {
+    					day.color = $days[iso].color;
+    				}
+    			});
+    		});
+
+    		console.log("mount");
+    		console.log($days);
+    	});
+
+    	const writable_props = ["date"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Month> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Month", $$slots, ['default']);
+
+    	$$self.$$set = $$props => {
+    		if ("date" in $$props) $$invalidate(0, date = $$props.date);
+    		if ("$$scope" in $$props) $$invalidate(4, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		spacetime: src,
+    		onMount,
+    		days,
+    		date,
+    		today,
+    		isToday,
+    		isWeekend,
+    		calculate,
+    		weeks,
+    		$days
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("date" in $$props) $$invalidate(0, date = $$props.date);
+    		if ("today" in $$props) today = $$props.today;
+    		if ("weeks" in $$props) $$invalidate(1, weeks = $$props.weeks);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [date, weeks, isToday, isWeekend, $$scope, $$slots];
+    }
+
+    class Month extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		if (!document.getElementById("svelte-rk9og6-style")) add_css();
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { date: 0 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Month",
+    			options,
+    			id: create_fragment$1.name
+    		});
+    	}
+
+    	get date() {
+    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set date(value) {
+    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src/Range.svelte generated by Svelte v3.24.1 */
+
+    const file$1 = "src/Range.svelte";
+
+    function create_fragment$2(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			add_location(div, file$1, 8, 0, 64);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
     		}
     	};
 
@@ -5137,110 +5255,49 @@ var app = (function () {
     	return block;
     }
 
-    function instance$2($$self, $$props, $$invalidate) {
-    	let { month = "" } = $$props;
-    	let { width = "100%" } = $$props;
-    	let today = src.now();
-    	month = src(month);
-    	let start = month.startOf("month").startOf("week").minus(1, "second");
-    	let end = month.endOf("month").endOf("week");
-    	let weeks = start.every("week", end);
-
-    	weeks = weeks.map(d => {
-    		let end = d.endOf("week").add(1, "second");
-    		return d.every("day", end);
-    	});
-
-    	src.extend({
-    		isWeekend() {
-    			let day = this.day();
-    			return day === 0 || day === 1;
-    		},
-    		isToday() {
-    			return this.isSame(today, "day");
-    		}
-    	});
-
-    	const writable_props = ["month", "width"];
+    function instance$2($$self, $$props) {
+    	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Month> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Range> was created with unknown prop '${key}'`);
     	});
 
     	let { $$slots = {}, $$scope } = $$props;
-    	validate_slots("Month", $$slots, []);
-
-    	$$self.$$set = $$props => {
-    		if ("month" in $$props) $$invalidate(0, month = $$props.month);
-    		if ("width" in $$props) $$invalidate(1, width = $$props.width);
-    	};
-
-    	$$self.$capture_state = () => ({
-    		spacetime: src,
-    		month,
-    		width,
-    		today,
-    		start,
-    		end,
-    		weeks
-    	});
-
-    	$$self.$inject_state = $$props => {
-    		if ("month" in $$props) $$invalidate(0, month = $$props.month);
-    		if ("width" in $$props) $$invalidate(1, width = $$props.width);
-    		if ("today" in $$props) today = $$props.today;
-    		if ("start" in $$props) start = $$props.start;
-    		if ("end" in $$props) end = $$props.end;
-    		if ("weeks" in $$props) $$invalidate(2, weeks = $$props.weeks);
-    	};
-
-    	if ($$props && "$$inject" in $$props) {
-    		$$self.$inject_state($$props.$$inject);
-    	}
-
-    	return [month, width, weeks];
+    	validate_slots("Range", $$slots, []);
+    	return [];
     }
 
-    class Month extends SvelteComponentDev {
+    class Range extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { month: 0, width: 1 });
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
-    			tagName: "Month",
+    			tagName: "Range",
     			options,
     			id: create_fragment$2.name
     		});
     	}
-
-    	get month() {
-    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set month(value) {
-    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get width() {
-    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set width(value) {
-    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
     }
 
     /* Demo.svelte generated by Svelte v3.24.1 */
-    const file$3 = "Demo.svelte";
+    const file$2 = "Demo.svelte";
 
-    // (18:4) <Calendar       start="march 1 2020"       end="June 2nd 2020"       align="row"       width="20rem">
+    function add_css$1() {
+    	var style = element("style");
+    	style.id = "svelte-11ssdo7-style";
+    	style.textContent = ".container.svelte-11ssdo7{max-width:500px}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiRGVtby5zdmVsdGUiLCJzb3VyY2VzIjpbIkRlbW8uc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjxzY3JpcHQ+XG4gIGltcG9ydCB7IE1vbnRoLCBEYXksIFJhbmdlIH0gZnJvbSAnLi9zcmMnXG48L3NjcmlwdD5cblxuPHN0eWxlPlxuICAuY29udGFpbmVyIHtcbiAgICBtYXgtd2lkdGg6IDUwMHB4O1xuICB9XG48L3N0eWxlPlxuXG48ZGl2PlxuICA8ZGl2PlxuICAgIDxhIGhyZWY9XCJodHRwczovL2dpdGh1Yi5jb20vc3BlbmNlcm1vdW50YWluL3NvbWVob3ctY2FsZW5kYXJcIj5cbiAgICAgIHNvbWVob3ctY2FsZW5kYXJcbiAgICA8L2E+XG4gICAgPHNwYW4gY2xhc3M9XCJmMDggZ3JleVwiPi0gaXRzIGEgc3ZlbHRlIGh0bWwgY2FsZW5kYXIgdXNpbmcgc3BhY2V0aW1lLjwvc3Bhbj5cbiAgPC9kaXY+XG4gIDxkaXYgY2xhc3M9XCJjb250YWluZXJcIj5cbiAgICA8TW9udGggZGF0ZT1cIm1hcmNoIDIwMjBcIj5cbiAgICAgIDxEYXkgZGF0ZT1cIm1hcmNoIDI4dGhcIiAvPlxuICAgICAgPCEtLSA8UmFuZ2Ugc3RhcnQ9XCJtYXJjaCAybmRcIiBlbmQ9XCJtYXJjaCA1dGhcIiBjb2xvcj1cInJlZFwiIC8+IC0tPlxuICAgIDwvTW9udGg+XG4gIDwvZGl2PlxuPC9kaXY+XG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBS0UsVUFBVSxlQUFDLENBQUMsQUFDVixTQUFTLENBQUUsS0FBSyxBQUNsQixDQUFDIn0= */";
+    	append_dev(document.head, style);
+    }
+
+    // (19:4) <Month date="march 2020">
     function create_default_slot(ctx) {
     	let day;
     	let current;
 
     	day = new Day({
-    			props: { date: "march 28th", color: "blue" },
+    			props: { date: "march 28th" },
     			$$inline: true
     		});
 
@@ -5271,7 +5328,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(18:4) <Calendar       start=\\\"march 1 2020\\\"       end=\\\"June 2nd 2020\\\"       align=\\\"row\\\"       width=\\\"20rem\\\">",
+    		source: "(19:4) <Month date=\\\"march 2020\\\">",
     		ctx
     	});
 
@@ -5279,26 +5336,19 @@ var app = (function () {
     }
 
     function create_fragment$3(ctx) {
-    	let div3;
+    	let div2;
     	let div0;
     	let a;
     	let t1;
     	let span;
     	let t3;
     	let div1;
-    	let calendar;
-    	let t4;
-    	let hr;
-    	let t5;
-    	let div2;
+    	let month;
     	let current;
 
-    	calendar = new Calendar({
+    	month = new Month({
     			props: {
-    				start: "march 1 2020",
-    				end: "June 2nd 2020",
-    				align: "row",
-    				width: "20rem",
+    				date: "march 2020",
     				$$slots: { default: [create_default_slot] },
     				$$scope: { ctx }
     			},
@@ -5307,7 +5357,7 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div3 = element("div");
+    			div2 = element("div");
     			div0 = element("div");
     			a = element("a");
     			a.textContent = "somehow-calendar";
@@ -5316,62 +5366,51 @@ var app = (function () {
     			span.textContent = "- its a svelte html calendar using spacetime.";
     			t3 = space();
     			div1 = element("div");
-    			create_component(calendar.$$.fragment);
-    			t4 = space();
-    			hr = element("hr");
-    			t5 = space();
-    			div2 = element("div");
+    			create_component(month.$$.fragment);
     			attr_dev(a, "href", "https://github.com/spencermountain/somehow-calendar");
-    			add_location(a, file$3, 10, 4, 97);
+    			add_location(a, file$2, 12, 4, 141);
     			attr_dev(span, "class", "f08 grey");
-    			add_location(span, file$3, 13, 4, 196);
-    			add_location(div0, file$3, 9, 2, 87);
-    			attr_dev(div1, "class", "m4");
-    			add_location(div1, file$3, 15, 2, 283);
-    			add_location(hr, file$3, 25, 2, 479);
-    			attr_dev(div2, "class", "m4");
-    			add_location(div2, file$3, 26, 2, 488);
-    			add_location(div3, file$3, 8, 0, 79);
+    			add_location(span, file$2, 15, 4, 240);
+    			add_location(div0, file$2, 11, 2, 131);
+    			attr_dev(div1, "class", "container svelte-11ssdo7");
+    			add_location(div1, file$2, 17, 2, 327);
+    			add_location(div2, file$2, 10, 0, 123);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div3, anchor);
-    			append_dev(div3, div0);
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div0);
     			append_dev(div0, a);
     			append_dev(div0, t1);
     			append_dev(div0, span);
-    			append_dev(div3, t3);
-    			append_dev(div3, div1);
-    			mount_component(calendar, div1, null);
-    			append_dev(div3, t4);
-    			append_dev(div3, hr);
-    			append_dev(div3, t5);
-    			append_dev(div3, div2);
+    			append_dev(div2, t3);
+    			append_dev(div2, div1);
+    			mount_component(month, div1, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			const calendar_changes = {};
+    			const month_changes = {};
 
     			if (dirty & /*$$scope*/ 1) {
-    				calendar_changes.$$scope = { dirty, ctx };
+    				month_changes.$$scope = { dirty, ctx };
     			}
 
-    			calendar.$set(calendar_changes);
+    			month.$set(month_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
-    			transition_in(calendar.$$.fragment, local);
+    			transition_in(month.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
-    			transition_out(calendar.$$.fragment, local);
+    			transition_out(month.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div3);
-    			destroy_component(calendar);
+    			if (detaching) detach_dev(div2);
+    			destroy_component(month);
     		}
     	};
 
@@ -5395,13 +5434,14 @@ var app = (function () {
 
     	let { $$slots = {}, $$scope } = $$props;
     	validate_slots("Demo", $$slots, []);
-    	$$self.$capture_state = () => ({ Calendar, Day });
+    	$$self.$capture_state = () => ({ Month, Day, Range });
     	return [];
     }
 
     class Demo extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
+    		if (!document.getElementById("svelte-11ssdo7-style")) add_css$1();
     		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
