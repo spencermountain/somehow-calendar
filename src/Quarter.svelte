@@ -1,0 +1,44 @@
+<script>
+  import spacetime from 'spacetime'
+  import Month from './Month.svelte'
+  export let date = ''
+  date = spacetime(date)
+  let start = date.startOf('quarter').minus(1, 'second')
+  let months = start.every('month', date.endOf('quarter'))
+</script>
+
+<style>
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    flex-wrap: nowrap;
+    align-self: stretch;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    flex-wrap: nowrap;
+    align-self: stretch;
+  }
+  .gap {
+    margin: 10px;
+    flex: 1;
+    width: 100%;
+  }
+</style>
+
+<div class="row">
+  {#each months as m}
+    <div class="gap">
+      <Month date={m}>
+        <slot />
+      </Month>
+    </div>
+  {/each}
+</div>

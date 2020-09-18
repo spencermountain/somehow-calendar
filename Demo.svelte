@@ -1,10 +1,10 @@
 <script>
-  import { Month, Day, Range } from './src'
+  import { Year, Day, Quarter } from './src'
 </script>
 
 <style>
   .container {
-    max-width: 500px;
+    max-width: 1200px;
   }
 </style>
 
@@ -16,9 +16,8 @@
     <span class="f08 grey">- its a svelte html calendar using spacetime.</span>
   </div>
   <div class="container">
-    <Month date="march 2020">
+    <Quarter date="march 2020">
       <Day date="march 28th" />
-      <!-- <Range start="march 2nd" end="march 5th" color="red" /> -->
-    </Month>
+    </Quarter>
   </div>
 </div>

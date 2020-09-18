@@ -29,15 +29,22 @@ month-centered calendars from start to end dates, inclusive
 
 ```html
 <script>
-  import { Calendar, Day } from './src'
+  import { Month, Day } from './src'
 </script>
 
-<Calendar start="march 1 2012" end="June 2nd 2020">
+<Month date="march 2012">
   <Day date="march 28th" color="blue" />
-</Calendar>
+</Month>
 ```
 
-![image](https://user-images.githubusercontent.com/399657/66760690-9b413300-ee70-11e9-8245-94f590bac34e.png)
+![image](https://user-images.githubusercontent.com/399657/93616238-7b7c8e00-f9a2-11ea-8fa3-c385a1a8f735.png)
+
+### API
+
+- <Year date=""/>
+- <Quarter date=""/>
+- <Month date=""/>
+- <Day date="" color=""/>
 
 ### See also:
 
