@@ -41,10 +41,10 @@ month-centered calendars from start to end dates, inclusive
 
 ### API
 
-- <Year date=""/>
-- <Quarter date=""/>
-- <Month date=""/>
-- <Day date="" color=""/>
+- `<Year date=""/>`
+- `<Quarter date=""/>`
+- `<Month date=""/>`
+- `<Day date="" color=""/>`
 
 ### See also:
 
