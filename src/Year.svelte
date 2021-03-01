@@ -11,6 +11,12 @@
     months.slice(6, 9),
     months.slice(9, 12)
   ]
+
+  // set default days object
+  import { writable } from 'svelte/store'
+  import { setContext } from 'svelte'
+  export let days = writable({})
+  setContext('days', days)
 </script>
 
 <style>

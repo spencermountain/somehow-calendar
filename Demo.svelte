@@ -29,10 +29,10 @@
     <span class="f08 grey">- a svelte html calendar.</span>
   </div>
   <div class="container m4">
-    <Year date="march 2021">
+    <Quarter date="march 2021">
       <Day date="jan 28th 2021" />
       <Day date="feb 20th 2021" />
-      <Day date="march 28th 2021" />
-    </Year>
+      <Day date="march 28th 2021" color="orange" />
+    </Quarter>
   </div>
 </div>

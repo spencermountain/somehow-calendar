@@ -1,14 +1,24 @@
 <script>
   import spacetime from 'spacetime'
   import { onMount, afterUpdate } from 'svelte'
-  import { days } from './stores'
-  afterUpdate(() => {
-    $days = {}
-  })
+  import calcMonth from './_calc'
+  import { getContext, setContext } from 'svelte'
+
+  import { writable } from 'svelte/store'
+  let days = getContext('days')
+  if (!days) {
+    days = writable({})
+    setContext('days', days)
+  }
+
+  let weeks = []
   export let date = ''
   export let onClick = () => {}
   export let showToday = true
+  date = spacetime(date)
   let today = spacetime.now()
+
+  // render methods
   const isToday = function(d) {
     return showToday && d.isSame(today, 'day')
   }
@@ -16,41 +26,20 @@
     let day = d.day()
     return day === 0 || day === 1
   }
-  date = spacetime(date)
-
-  // create all day objects
-  const calculate = function(date) {
-    let start = date
-      .startOf('month')
-      .startOf('week')
-      .minus(1, 'second')
-    let end = date.endOf('month').endOf('week')
-    let weeks = start.every('week', end)
-    weeks = weeks.map(d => {
-      let end = d.endOf('week').add(1, 'second')
-      return d.every('day', end)
-    })
-    return weeks
-  }
-  let weeks = []
 
   onMount(() => {
-    weeks = calculate(date)
+    weeks = calcMonth(date)
     weeks.forEach(w => {
       w.forEach(day => {
         day.color = 'none'
         day.num = day.format('{date}')
         let iso = day.format('iso-short')
         if ($days[iso]) {
-          // console.log(iso + 'found')
           day.color = $days[iso].color
         }
       })
     })
-    // console.log('mount')
-    // console.log($days)
   })
-  // console.log('weeks', weeks.length)
 </script>
 
 <style>

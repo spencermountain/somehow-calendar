@@ -35,9 +35,6 @@ var app = (function () {
         const unsub = store.subscribe(...callbacks);
         return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
     }
-    function component_subscribe(component, store, callback) {
-        component.$$.on_destroy.push(subscribe(store, callback));
-    }
     function create_slot(definition, ctx, $$scope, fn) {
         if (definition) {
             const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
@@ -73,10 +70,6 @@ var app = (function () {
             const slot_context = get_slot_context(slot_definition, ctx, $$scope, get_slot_context_fn);
             slot.p(slot_context, slot_changes);
         }
-    }
-    function set_store_value(store, ret, value = ret) {
-        store.set(value);
-        return ret;
     }
 
     function append(target, node) {
@@ -143,8 +136,11 @@ var app = (function () {
     function onMount(fn) {
         get_current_component().$$.on_mount.push(fn);
     }
-    function afterUpdate(fn) {
-        get_current_component().$$.after_update.push(fn);
+    function setContext(key, context) {
+        get_current_component().$$.context.set(key, context);
+    }
+    function getContext(key) {
+        return get_current_component().$$.context.get(key);
     }
 
     const dirty_components = [];
@@ -373,60 +369,6 @@ var app = (function () {
             }
         }
     }
-
-    const subscriber_queue = [];
-    /**
-     * Create a `Writable` store that allows both updating and reading by subscription.
-     * @param {*=}value initial value
-     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
-     */
-    function writable(value, start = noop) {
-        let stop;
-        const subscribers = [];
-        function set(new_value) {
-            if (safe_not_equal(value, new_value)) {
-                value = new_value;
-                if (stop) { // store is ready
-                    const run_queue = !subscriber_queue.length;
-                    for (let i = 0; i < subscribers.length; i += 1) {
-                        const s = subscribers[i];
-                        s[1]();
-                        subscriber_queue.push(s, value);
-                    }
-                    if (run_queue) {
-                        for (let i = 0; i < subscriber_queue.length; i += 2) {
-                            subscriber_queue[i][0](subscriber_queue[i + 1]);
-                        }
-                        subscriber_queue.length = 0;
-                    }
-                }
-            }
-        }
-        function update(fn) {
-            set(fn(value));
-        }
-        function subscribe(run, invalidate = noop) {
-            const subscriber = [run, invalidate];
-            subscribers.push(subscriber);
-            if (subscribers.length === 1) {
-                stop = start(set) || noop;
-            }
-            run(value);
-            return () => {
-                const index = subscribers.indexOf(subscriber);
-                if (index !== -1) {
-                    subscribers.splice(index, 1);
-                }
-                if (subscribers.length === 0) {
-                    stop();
-                    stop = null;
-                }
-            };
-        }
-        return { set, update, subscribe };
-    }
-
-    let days$1 = writable({});
 
     /* spencermountain/spacetime 6.12.5 Apache 2.0 */
     function _slicedToArray(arr, i) {
@@ -4872,11 +4814,19 @@ var app = (function () {
     	let { date = "" } = $$props;
     	let { color = "blue" } = $$props;
     	let { label = "" } = $$props;
+    	let days = getContext("days");
+
+    	// if (!days) {
+    	//   console.log('=-=-=-= here -=-=-=-')
+    	//   let days = writable({})
+    	//   setContext('days', days)
+    	// })
     	color = spencerColor.colors[color] || color;
+
     	date = src(date);
     	let iso = date.format("iso-short");
 
-    	days$1.update(obj => {
+    	days.update(obj => {
     		obj[iso] = { color, label };
     		return obj;
     	});
@@ -4897,6 +4847,70 @@ var app = (function () {
     	}
     }
 
+    // create all day objects
+    const calculate = function (date) {
+      let start = date.startOf('month').startOf('week').minus(1, 'second');
+      let end = date.endOf('month').endOf('week');
+      let weeks = start.every('week', end);
+      weeks = weeks.map((d) => {
+        let end = d.endOf('week').add(1, 'second');
+        return d.every('day', end)
+      });
+      return weeks
+    };
+
+    const subscriber_queue = [];
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = [];
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (stop) { // store is ready
+                    const run_queue = !subscriber_queue.length;
+                    for (let i = 0; i < subscribers.length; i += 1) {
+                        const s = subscribers[i];
+                        s[1]();
+                        subscriber_queue.push(s, value);
+                    }
+                    if (run_queue) {
+                        for (let i = 0; i < subscriber_queue.length; i += 2) {
+                            subscriber_queue[i][0](subscriber_queue[i + 1]);
+                        }
+                        subscriber_queue.length = 0;
+                    }
+                }
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.push(subscriber);
+            if (subscribers.length === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                const index = subscribers.indexOf(subscriber);
+                if (index !== -1) {
+                    subscribers.splice(index, 1);
+                }
+                if (subscribers.length === 0) {
+                    stop();
+                    stop = null;
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+
     /* src/Month.svelte generated by Svelte v3.34.0 */
 
     function add_css$2() {
@@ -4912,13 +4926,13 @@ var app = (function () {
     	return child_ctx;
     }
 
-    function get_each_context_1$1(ctx, list, i) {
+    function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[15] = list[i];
     	return child_ctx;
     }
 
-    // (167:8) {:else}
+    // (156:8) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -4938,7 +4952,7 @@ var app = (function () {
     	};
     }
 
-    // (156:8) {#if d.isSame(date, 'month')}
+    // (145:8) {#if d.isSame(date, 'month')}
     function create_if_block(ctx) {
     	let div1;
     	let div0;
@@ -4949,7 +4963,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[8](/*d*/ ctx[15]);
+    		return /*click_handler*/ ctx[9](/*d*/ ctx[15]);
     	}
 
     	return {
@@ -4961,8 +4975,8 @@ var app = (function () {
     			attr(div1, "class", "day square svelte-1sajiwz");
     			set_style(div1, "background-color", /*d*/ ctx[15].color);
     			attr(div1, "title", div1_title_value = /*d*/ ctx[15].format("iso-short"));
-    			toggle_class(div1, "today", /*isToday*/ ctx[3](/*d*/ ctx[15]));
-    			toggle_class(div1, "weekend", /*isWeekend*/ ctx[4](/*d*/ ctx[15]));
+    			toggle_class(div1, "today", /*isToday*/ ctx[4](/*d*/ ctx[15]));
+    			toggle_class(div1, "weekend", /*isWeekend*/ ctx[5](/*d*/ ctx[15]));
     			toggle_class(div1, "highlight", /*d*/ ctx[15].color !== "none");
     		},
     		m(target, anchor) {
@@ -4977,25 +4991,25 @@ var app = (function () {
     		},
     		p(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*weeks*/ 4 && t_value !== (t_value = /*d*/ ctx[15].num + "")) set_data(t, t_value);
+    			if (dirty & /*weeks*/ 8 && t_value !== (t_value = /*d*/ ctx[15].num + "")) set_data(t, t_value);
 
-    			if (dirty & /*weeks*/ 4) {
+    			if (dirty & /*weeks*/ 8) {
     				set_style(div1, "background-color", /*d*/ ctx[15].color);
     			}
 
-    			if (dirty & /*weeks*/ 4 && div1_title_value !== (div1_title_value = /*d*/ ctx[15].format("iso-short"))) {
+    			if (dirty & /*weeks*/ 8 && div1_title_value !== (div1_title_value = /*d*/ ctx[15].format("iso-short"))) {
     				attr(div1, "title", div1_title_value);
     			}
 
-    			if (dirty & /*isToday, weeks*/ 12) {
-    				toggle_class(div1, "today", /*isToday*/ ctx[3](/*d*/ ctx[15]));
+    			if (dirty & /*isToday, weeks*/ 24) {
+    				toggle_class(div1, "today", /*isToday*/ ctx[4](/*d*/ ctx[15]));
     			}
 
-    			if (dirty & /*isWeekend, weeks*/ 20) {
-    				toggle_class(div1, "weekend", /*isWeekend*/ ctx[4](/*d*/ ctx[15]));
+    			if (dirty & /*isWeekend, weeks*/ 40) {
+    				toggle_class(div1, "weekend", /*isWeekend*/ ctx[5](/*d*/ ctx[15]));
     			}
 
-    			if (dirty & /*weeks*/ 4) {
+    			if (dirty & /*weeks*/ 8) {
     				toggle_class(div1, "highlight", /*d*/ ctx[15].color !== "none");
     			}
     		},
@@ -5007,13 +5021,13 @@ var app = (function () {
     	};
     }
 
-    // (155:6) {#each w as d}
-    function create_each_block_1$1(ctx) {
+    // (144:6) {#each w as d}
+    function create_each_block_1(ctx) {
     	let show_if;
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (show_if == null || dirty & /*weeks, date*/ 5) show_if = !!/*d*/ ctx[15].isSame(/*date*/ ctx[0], "month");
+    		if (show_if == null || dirty & /*weeks, date*/ 9) show_if = !!/*d*/ ctx[15].isSame(/*date*/ ctx[0], "month");
     		if (show_if) return create_if_block;
     		return create_else_block;
     	}
@@ -5050,7 +5064,7 @@ var app = (function () {
     	};
     }
 
-    // (153:2) {#each weeks as w}
+    // (142:2) {#each weeks as w}
     function create_each_block$1(ctx) {
     	let div;
     	let t;
@@ -5058,7 +5072,7 @@ var app = (function () {
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
-    		each_blocks[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
     	}
 
     	return {
@@ -5082,17 +5096,17 @@ var app = (function () {
     			append(div, t);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*weeks, isToday, isWeekend, onClick, date*/ 31) {
+    			if (dirty & /*weeks, isToday, isWeekend, onClick, date*/ 59) {
     				each_value_1 = /*w*/ ctx[12];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
-    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks[i] = create_each_block_1$1(child_ctx);
+    						each_blocks[i] = create_each_block_1(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(div, t);
     					}
@@ -5120,15 +5134,15 @@ var app = (function () {
     	let t1;
     	let t2;
     	let current;
-    	let each_value = /*weeks*/ ctx[2];
+    	let each_value = /*weeks*/ ctx[3];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
     		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
-    	const default_slot_template = /*#slots*/ ctx[7].default;
-    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[6], null);
+    	const default_slot_template = /*#slots*/ ctx[8].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[7], null);
 
     	return {
     		c() {
@@ -5168,8 +5182,8 @@ var app = (function () {
     		p(ctx, [dirty]) {
     			if ((!current || dirty & /*date*/ 1) && t0_value !== (t0_value = /*date*/ ctx[0].format("month") + "")) set_data(t0, t0_value);
 
-    			if (dirty & /*weeks, isToday, isWeekend, onClick, date*/ 31) {
-    				each_value = /*weeks*/ ctx[2];
+    			if (dirty & /*weeks, isToday, isWeekend, onClick, date*/ 59) {
+    				each_value = /*weeks*/ ctx[3];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -5192,8 +5206,8 @@ var app = (function () {
     			}
 
     			if (default_slot) {
-    				if (default_slot.p && dirty & /*$$scope*/ 64) {
-    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[6], dirty, null, null);
+    				if (default_slot.p && dirty & /*$$scope*/ 128) {
+    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[7], dirty, null, null);
     				}
     			}
     		},
@@ -5216,14 +5230,21 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let $days;
-    	component_subscribe($$self, days$1, $$value => $$invalidate(9, $days = $$value));
+    	let $days,
+    		$$unsubscribe_days = noop,
+    		$$subscribe_days = () => ($$unsubscribe_days(), $$unsubscribe_days = subscribe(days, $$value => $$invalidate(10, $days = $$value)), days);
+
+    	$$self.$$.on_destroy.push(() => $$unsubscribe_days());
     	let { $$slots: slots = {}, $$scope } = $$props;
+    	let days = getContext("days");
+    	$$subscribe_days();
 
-    	afterUpdate(() => {
-    		set_store_value(days$1, $days = {}, $days);
-    	});
+    	if (!days) {
+    		$$subscribe_days(days = writable({}));
+    		setContext("days", days);
+    	}
 
+    	let weeks = [];
     	let { date = "" } = $$props;
 
     	let { onClick = () => {
@@ -5231,8 +5252,10 @@ var app = (function () {
     	} } = $$props;
 
     	let { showToday = true } = $$props;
+    	date = src(date);
     	let today = src.now();
 
+    	// render methods
     	const isToday = function (d) {
     		return showToday && d.isSame(today, "day");
     	};
@@ -5242,26 +5265,8 @@ var app = (function () {
     		return day === 0 || day === 1;
     	};
 
-    	date = src(date);
-
-    	// create all day objects
-    	const calculate = function (date) {
-    		let start = date.startOf("month").startOf("week").minus(1, "second");
-    		let end = date.endOf("month").endOf("week");
-    		let weeks = start.every("week", end);
-
-    		weeks = weeks.map(d => {
-    			let end = d.endOf("week").add(1, "second");
-    			return d.every("day", end);
-    		});
-
-    		return weeks;
-    	};
-
-    	let weeks = [];
-
     	onMount(() => {
-    		$$invalidate(2, weeks = calculate(date));
+    		$$invalidate(3, weeks = calculate(date));
 
     		weeks.forEach(w => {
     			w.forEach(day => {
@@ -5270,26 +5275,25 @@ var app = (function () {
     				let iso = day.format("iso-short");
 
     				if ($days[iso]) {
-    					// console.log(iso + 'found')
     					day.color = $days[iso].color;
     				}
     			});
     		});
-    	}); // console.log('mount')
-    	// console.log($days)
+    	});
 
     	const click_handler = d => onClick(d);
 
     	$$self.$$set = $$props => {
     		if ("date" in $$props) $$invalidate(0, date = $$props.date);
     		if ("onClick" in $$props) $$invalidate(1, onClick = $$props.onClick);
-    		if ("showToday" in $$props) $$invalidate(5, showToday = $$props.showToday);
-    		if ("$$scope" in $$props) $$invalidate(6, $$scope = $$props.$$scope);
+    		if ("showToday" in $$props) $$invalidate(6, showToday = $$props.showToday);
+    		if ("$$scope" in $$props) $$invalidate(7, $$scope = $$props.$$scope);
     	};
 
     	return [
     		date,
     		onClick,
+    		days,
     		weeks,
     		isToday,
     		isWeekend,
@@ -5304,16 +5308,16 @@ var app = (function () {
     	constructor(options) {
     		super();
     		if (!document.getElementById("svelte-1sajiwz-style")) add_css$2();
-    		init(this, options, instance$1, create_fragment$2, safe_not_equal, { date: 0, onClick: 1, showToday: 5 });
+    		init(this, options, instance$1, create_fragment$2, safe_not_equal, { date: 0, onClick: 1, showToday: 6 });
     	}
     }
 
-    /* src/Year.svelte generated by Svelte v3.34.0 */
+    /* src/Quarter.svelte generated by Svelte v3.34.0 */
 
     function add_css$1() {
     	var style = element("style");
-    	style.id = "svelte-t5e0rj-style";
-    	style.textContent = ".row.svelte-t5e0rj{display:flex;flex-direction:row;justify-content:space-around;align-items:flex-start;text-align:center;flex-wrap:nowrap;align-self:stretch}.col.svelte-t5e0rj{display:flex;flex-direction:column;justify-content:space-around;align-items:center;text-align:center;flex-wrap:nowrap;align-self:stretch}.gap.svelte-t5e0rj{margin:10px;flex:1;width:100%}@media only screen and (max-width: 340px){.row.svelte-t5e0rj{flex-direction:column;margin-left:0px;margin-right:20px}}";
+    	style.id = "svelte-nw9fxb-style";
+    	style.textContent = ".row.svelte-nw9fxb{display:flex;flex-direction:row;justify-content:space-around;align-items:flex-start;text-align:center;flex-wrap:nowrap;align-self:stretch}.gap.svelte-nw9fxb{margin:10px;flex:1;width:100%}@media only screen and (max-width: 340px){.row.svelte-nw9fxb{flex-direction:column;margin-left:0px;margin-right:20px}}";
     	append(document.head, style);
     }
 
@@ -5323,17 +5327,11 @@ var app = (function () {
     	return child_ctx;
     }
 
-    function get_each_context_1(ctx, list, i) {
-    	const child_ctx = ctx.slice();
-    	child_ctx[9] = list[i];
-    	return child_ctx;
-    }
-
-    // (54:10) <Month date={m}>
+    // (44:6) <Month date={m}>
     function create_default_slot$1(ctx) {
     	let current;
-    	const default_slot_template = /*#slots*/ ctx[2].default;
-    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[3], null);
+    	const default_slot_template = /*#slots*/ ctx[3].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[4], null);
 
     	return {
     		c() {
@@ -5348,8 +5346,8 @@ var app = (function () {
     		},
     		p(ctx, dirty) {
     			if (default_slot) {
-    				if (default_slot.p && dirty & /*$$scope*/ 8) {
-    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[3], dirty, null, null);
+    				if (default_slot.p && dirty & /*$$scope*/ 16) {
+    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[4], dirty, null, null);
     				}
     			}
     		},
@@ -5368,15 +5366,16 @@ var app = (function () {
     	};
     }
 
-    // (52:6) {#each quarter as m}
-    function create_each_block_1(ctx) {
+    // (42:2) {#each months as m}
+    function create_each_block(ctx) {
     	let div;
     	let month;
+    	let t;
     	let current;
 
     	month = new Month({
     			props: {
-    				date: /*m*/ ctx[9],
+    				date: /*m*/ ctx[6],
     				$$slots: { default: [create_default_slot$1] },
     				$$scope: { ctx }
     			}
@@ -5386,17 +5385,19 @@ var app = (function () {
     		c() {
     			div = element("div");
     			create_component(month.$$.fragment);
-    			attr(div, "class", "gap svelte-t5e0rj");
+    			t = space();
+    			attr(div, "class", "gap svelte-nw9fxb");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
     			mount_component(month, div, null);
+    			append(div, t);
     			current = true;
     		},
     		p(ctx, dirty) {
     			const month_changes = {};
 
-    			if (dirty & /*$$scope*/ 8) {
+    			if (dirty & /*$$scope*/ 16) {
     				month_changes.$$scope = { dirty, ctx };
     			}
 
@@ -5418,100 +5419,10 @@ var app = (function () {
     	};
     }
 
-    // (50:2) {#each quarters as quarter}
-    function create_each_block(ctx) {
-    	let div;
-    	let t;
-    	let current;
-    	let each_value_1 = /*quarter*/ ctx[6];
-    	let each_blocks = [];
-
-    	for (let i = 0; i < each_value_1.length; i += 1) {
-    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
-    	}
-
-    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
-    		each_blocks[i] = null;
-    	});
-
-    	return {
-    		c() {
-    			div = element("div");
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
-    			t = space();
-    			attr(div, "class", "row svelte-t5e0rj");
-    		},
-    		m(target, anchor) {
-    			insert(target, div, anchor);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div, null);
-    			}
-
-    			append(div, t);
-    			current = true;
-    		},
-    		p(ctx, dirty) {
-    			if (dirty & /*quarters, $$scope*/ 9) {
-    				each_value_1 = /*quarter*/ ctx[6];
-    				let i;
-
-    				for (i = 0; i < each_value_1.length; i += 1) {
-    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    						transition_in(each_blocks[i], 1);
-    					} else {
-    						each_blocks[i] = create_each_block_1(child_ctx);
-    						each_blocks[i].c();
-    						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(div, t);
-    					}
-    				}
-
-    				group_outros();
-
-    				for (i = each_value_1.length; i < each_blocks.length; i += 1) {
-    					out(i);
-    				}
-
-    				check_outros();
-    			}
-    		},
-    		i(local) {
-    			if (current) return;
-
-    			for (let i = 0; i < each_value_1.length; i += 1) {
-    				transition_in(each_blocks[i]);
-    			}
-
-    			current = true;
-    		},
-    		o(local) {
-    			each_blocks = each_blocks.filter(Boolean);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				transition_out(each_blocks[i]);
-    			}
-
-    			current = false;
-    		},
-    		d(detaching) {
-    			if (detaching) detach(div);
-    			destroy_each(each_blocks, detaching);
-    		}
-    	};
-    }
-
     function create_fragment$1(ctx) {
     	let div;
     	let current;
-    	let each_value = /*quarters*/ ctx[0];
+    	let each_value = /*months*/ ctx[0];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -5530,7 +5441,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr(div, "class", "col svelte-t5e0rj");
+    			attr(div, "class", "row svelte-nw9fxb");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -5542,8 +5453,8 @@ var app = (function () {
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*quarters, $$scope*/ 9) {
-    				each_value = /*quarters*/ ctx[0];
+    			if (dirty & /*months, $$scope*/ 17) {
+    				each_value = /*months*/ ctx[0];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -5598,29 +5509,25 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	let { date = "" } = $$props;
     	date = src(date);
-    	let start = date.startOf("year").minus(1, "second");
-    	let months = start.every("month", date.endOf("year"));
-
-    	let quarters = [
-    		months.slice(0, 3),
-    		months.slice(3, 6),
-    		months.slice(6, 9),
-    		months.slice(9, 12)
-    	];
+    	let start = date.startOf("quarter").minus(1, "second");
+    	let months = start.every("month", date.endOf("quarter"));
+    	let { days = writable({}) } = $$props;
+    	setContext("days", days);
 
     	$$self.$$set = $$props => {
     		if ("date" in $$props) $$invalidate(1, date = $$props.date);
-    		if ("$$scope" in $$props) $$invalidate(3, $$scope = $$props.$$scope);
+    		if ("days" in $$props) $$invalidate(2, days = $$props.days);
+    		if ("$$scope" in $$props) $$invalidate(4, $$scope = $$props.$$scope);
     	};
 
-    	return [quarters, date, slots, $$scope];
+    	return [months, date, days, slots, $$scope];
     }
 
-    class Year extends SvelteComponent {
+    class Quarter extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-t5e0rj-style")) add_css$1();
-    		init(this, options, instance, create_fragment$1, safe_not_equal, { date: 1 });
+    		if (!document.getElementById("svelte-nw9fxb-style")) add_css$1();
+    		init(this, options, instance, create_fragment$1, safe_not_equal, { date: 1, days: 2 });
     	}
     }
 
@@ -5633,7 +5540,7 @@ var app = (function () {
     	append(document.head, style);
     }
 
-    // (32:4) <Year date="march 2021">
+    // (32:4) <Quarter date="march 2021">
     function create_default_slot(ctx) {
     	let day0;
     	let t0;
@@ -5643,7 +5550,10 @@ var app = (function () {
     	let current;
     	day0 = new Day({ props: { date: "jan 28th 2021" } });
     	day1 = new Day({ props: { date: "feb 20th 2021" } });
-    	day2 = new Day({ props: { date: "march 28th 2021" } });
+
+    	day2 = new Day({
+    			props: { date: "march 28th 2021", color: "orange" }
+    		});
 
     	return {
     		c() {
@@ -5690,10 +5600,10 @@ var app = (function () {
     	let div0;
     	let t3;
     	let div1;
-    	let year;
+    	let quarter;
     	let current;
 
-    	year = new Year({
+    	quarter = new Quarter({
     			props: {
     				date: "march 2021",
     				$$slots: { default: [create_default_slot] },
@@ -5711,7 +5621,7 @@ var app = (function () {
 
     			t3 = space();
     			div1 = element("div");
-    			create_component(year.$$.fragment);
+    			create_component(quarter.$$.fragment);
     			attr(div0, "class", "m4 svelte-qxs30b");
     			attr(div1, "class", "container m4 svelte-qxs30b");
     			attr(div2, "class", "row svelte-qxs30b");
@@ -5721,30 +5631,30 @@ var app = (function () {
     			append(div2, div0);
     			append(div2, t3);
     			append(div2, div1);
-    			mount_component(year, div1, null);
+    			mount_component(quarter, div1, null);
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			const year_changes = {};
+    			const quarter_changes = {};
 
     			if (dirty & /*$$scope*/ 1) {
-    				year_changes.$$scope = { dirty, ctx };
+    				quarter_changes.$$scope = { dirty, ctx };
     			}
 
-    			year.$set(year_changes);
+    			quarter.$set(quarter_changes);
     		},
     		i(local) {
     			if (current) return;
-    			transition_in(year.$$.fragment, local);
+    			transition_in(quarter.$$.fragment, local);
     			current = true;
     		},
     		o(local) {
-    			transition_out(year.$$.fragment, local);
+    			transition_out(quarter.$$.fragment, local);
     			current = false;
     		},
     		d(detaching) {
     			if (detaching) detach(div2);
-    			destroy_component(year);
+    			destroy_component(quarter);
     		}
     	};
     }
