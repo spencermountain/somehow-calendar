@@ -22,6 +22,13 @@
     flex: 1;
     width: 100%;
   }
+  @media only screen and (max-width: 340px) {
+    .row {
+      flex-direction: column;
+      margin-left: 0px;
+      margin-right: 20px;
+    }
+  }
 </style>
 
 <div class="row">

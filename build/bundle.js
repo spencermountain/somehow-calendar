@@ -4901,8 +4901,8 @@ var app = (function () {
 
     function add_css$2() {
     	var style = element("style");
-    	style.id = "svelte-bm47qp-style";
-    	style.textContent = ".monthName.svelte-bm47qp{font-size:1rem;color:#838b91;text-align:right;margin-bottom:0.2rem;margin-top:0.2rem;margin-right:0.7rem}.week.svelte-bm47qp{display:flex;flex-direction:row;justify-content:space-around;align-items:center;text-align:center;flex-wrap:nowrap;align-self:stretch}.day.svelte-bm47qp{position:relative;flex:1;margin:0.5%;border-radius:3px;box-shadow:2px 1px 6px 0px rgba(0, 0, 0, 0.2);min-width:12px;min-height:12px;box-sizing:border-box;font-size:9px;color:#a3a5a5;overflow:hidden;transition:box-shadow 0.2s;z-index:1;cursor:pointer}.day.svelte-bm47qp:hover{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.2)}.highlight.svelte-bm47qp{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.4)}.square.svelte-bm47qp{padding-top:15%;position:relative}.noday.svelte-bm47qp{box-shadow:none}.today.svelte-bm47qp{background-color:lightsteelblue;border:1px solid lightsteelblue !important;color:white}.num.svelte-bm47qp{position:absolute;z-index:4;font-size:14px;color:#949a9e;opacity:0.8;width:100%;height:100%;top:0px;text-align:center;margin:auto;opacity:0;transition:opacity 0.1s;cursor:pointer}.num.svelte-bm47qp:hover{opacity:0.8}.weekend.svelte-bm47qp{background-color:#f0f0f0}@media only screen and (max-width: 400px){.monthName.svelte-bm47qp{font-size:0.7rem}.day.svelte-bm47qp{border-radius:2px;margin:0.5%}.num.svelte-bm47qp{font-size:10px}}";
+    	style.id = "svelte-1sajiwz-style";
+    	style.textContent = ".monthName.svelte-1sajiwz{font-size:1rem;color:#838b91;text-align:right;margin-bottom:0.2rem;margin-top:0.2rem;margin-right:0.7rem}.week.svelte-1sajiwz{display:flex;flex-direction:row;justify-content:space-around;align-items:center;text-align:center;flex-wrap:nowrap;align-self:stretch}.day.svelte-1sajiwz{position:relative;flex:1;margin:0.5%;border-radius:3px;box-shadow:2px 1px 6px 0px rgba(0, 0, 0, 0.2);min-width:13px;min-height:12px;box-sizing:border-box;font-size:9px;color:#a3a5a5;overflow:hidden;z-index:1;cursor:pointer}.day.svelte-1sajiwz:hover{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.2)}.highlight.svelte-1sajiwz{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.4)}.square.svelte-1sajiwz{padding-top:15%;position:relative}.noday.svelte-1sajiwz{box-shadow:none !important}.today.svelte-1sajiwz{background-color:lightsteelblue;border:1px solid lightsteelblue !important;color:white}.num.svelte-1sajiwz{position:absolute;z-index:4;font-size:14px;color:#949a9e;opacity:0.8;width:100%;height:100%;top:0px;text-align:center;margin:auto;opacity:0;cursor:pointer}.num.svelte-1sajiwz:hover{opacity:0.8}.weekend.svelte-1sajiwz{background-color:#f0f0f0}@media only screen and (max-width: 400px){.monthName.svelte-1sajiwz{font-size:0.7rem}.day.svelte-1sajiwz{border-radius:2px;margin:0.5%;box-shadow:1px 1px 1px 0px rgba(0, 0, 0, 0.2)}.num.svelte-1sajiwz{display:none}}";
     	append(document.head, style);
     }
 
@@ -4912,13 +4912,13 @@ var app = (function () {
     	return child_ctx;
     }
 
-    function get_each_context_1(ctx, list, i) {
+    function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[15] = list[i];
     	return child_ctx;
     }
 
-    // (164:8) {:else}
+    // (167:8) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -4926,7 +4926,7 @@ var app = (function () {
     		c() {
     			div = element("div");
     			div.textContent = `${" "}`;
-    			attr(div, "class", "day noday square svelte-bm47qp");
+    			attr(div, "class", "day noday square svelte-1sajiwz");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -4938,7 +4938,7 @@ var app = (function () {
     	};
     }
 
-    // (153:8) {#if d.isSame(date, 'month')}
+    // (156:8) {#if d.isSame(date, 'month')}
     function create_if_block(ctx) {
     	let div1;
     	let div0;
@@ -4957,8 +4957,8 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			attr(div0, "class", "num svelte-bm47qp");
-    			attr(div1, "class", "day square svelte-bm47qp");
+    			attr(div0, "class", "num svelte-1sajiwz");
+    			attr(div1, "class", "day square svelte-1sajiwz");
     			set_style(div1, "background-color", /*d*/ ctx[15].color);
     			attr(div1, "title", div1_title_value = /*d*/ ctx[15].format("iso-short"));
     			toggle_class(div1, "today", /*isToday*/ ctx[3](/*d*/ ctx[15]));
@@ -5007,8 +5007,8 @@ var app = (function () {
     	};
     }
 
-    // (152:6) {#each w as d}
-    function create_each_block_1(ctx) {
+    // (155:6) {#each w as d}
+    function create_each_block_1$1(ctx) {
     	let show_if;
     	let if_block_anchor;
 
@@ -5050,7 +5050,7 @@ var app = (function () {
     	};
     }
 
-    // (150:2) {#each weeks as w}
+    // (153:2) {#each weeks as w}
     function create_each_block$1(ctx) {
     	let div;
     	let t;
@@ -5058,7 +5058,7 @@ var app = (function () {
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
-    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    		each_blocks[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
     	}
 
     	return {
@@ -5070,7 +5070,7 @@ var app = (function () {
     			}
 
     			t = space();
-    			attr(div, "class", "week svelte-bm47qp");
+    			attr(div, "class", "week svelte-1sajiwz");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -5087,12 +5087,12 @@ var app = (function () {
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
-    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i] = create_each_block_1$1(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(div, t);
     					}
@@ -5143,7 +5143,7 @@ var app = (function () {
 
     			t2 = space();
     			if (default_slot) default_slot.c();
-    			attr(div0, "class", "monthName svelte-bm47qp");
+    			attr(div0, "class", "monthName svelte-1sajiwz");
     			attr(div1, "class", "month");
     			set_style(div1, "width", "100%");
     		},
@@ -5303,27 +5303,33 @@ var app = (function () {
     class Month extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-bm47qp-style")) add_css$2();
+    		if (!document.getElementById("svelte-1sajiwz-style")) add_css$2();
     		init(this, options, instance$1, create_fragment$2, safe_not_equal, { date: 0, onClick: 1, showToday: 5 });
     	}
     }
 
-    /* src/Quarter.svelte generated by Svelte v3.34.0 */
+    /* src/Year.svelte generated by Svelte v3.34.0 */
 
     function add_css$1() {
     	var style = element("style");
-    	style.id = "svelte-5wzn08-style";
-    	style.textContent = ".row.svelte-5wzn08{display:flex;flex-direction:row;justify-content:space-around;align-items:flex-start;text-align:center;flex-wrap:nowrap;align-self:stretch}.gap.svelte-5wzn08{margin:10px;flex:1;width:100%}";
+    	style.id = "svelte-t5e0rj-style";
+    	style.textContent = ".row.svelte-t5e0rj{display:flex;flex-direction:row;justify-content:space-around;align-items:flex-start;text-align:center;flex-wrap:nowrap;align-self:stretch}.col.svelte-t5e0rj{display:flex;flex-direction:column;justify-content:space-around;align-items:center;text-align:center;flex-wrap:nowrap;align-self:stretch}.gap.svelte-t5e0rj{margin:10px;flex:1;width:100%}@media only screen and (max-width: 340px){.row.svelte-t5e0rj{flex-direction:column;margin-left:0px;margin-right:20px}}";
     	append(document.head, style);
     }
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[5] = list[i];
+    	child_ctx[6] = list[i];
     	return child_ctx;
     }
 
-    // (30:6) <Month date={m}>
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[9] = list[i];
+    	return child_ctx;
+    }
+
+    // (54:10) <Month date={m}>
     function create_default_slot$1(ctx) {
     	let current;
     	const default_slot_template = /*#slots*/ ctx[2].default;
@@ -5362,16 +5368,15 @@ var app = (function () {
     	};
     }
 
-    // (28:2) {#each months as m}
-    function create_each_block(ctx) {
+    // (52:6) {#each quarter as m}
+    function create_each_block_1(ctx) {
     	let div;
     	let month;
-    	let t;
     	let current;
 
     	month = new Month({
     			props: {
-    				date: /*m*/ ctx[5],
+    				date: /*m*/ ctx[9],
     				$$slots: { default: [create_default_slot$1] },
     				$$scope: { ctx }
     			}
@@ -5381,13 +5386,11 @@ var app = (function () {
     		c() {
     			div = element("div");
     			create_component(month.$$.fragment);
-    			t = space();
-    			attr(div, "class", "gap svelte-5wzn08");
+    			attr(div, "class", "gap svelte-t5e0rj");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
     			mount_component(month, div, null);
-    			append(div, t);
     			current = true;
     		},
     		p(ctx, dirty) {
@@ -5415,10 +5418,100 @@ var app = (function () {
     	};
     }
 
+    // (50:2) {#each quarters as quarter}
+    function create_each_block(ctx) {
+    	let div;
+    	let t;
+    	let current;
+    	let each_value_1 = /*quarter*/ ctx[6];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	return {
+    		c() {
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t = space();
+    			attr(div, "class", "row svelte-t5e0rj");
+    		},
+    		m(target, anchor) {
+    			insert(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			append(div, t);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*quarters, $$scope*/ 9) {
+    				each_value_1 = /*quarter*/ ctx[6];
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    						transition_in(each_blocks[i], 1);
+    					} else {
+    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i].c();
+    						transition_in(each_blocks[i], 1);
+    						each_blocks[i].m(div, t);
+    					}
+    				}
+
+    				group_outros();
+
+    				for (i = each_value_1.length; i < each_blocks.length; i += 1) {
+    					out(i);
+    				}
+
+    				check_outros();
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value_1.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o(local) {
+    			each_blocks = each_blocks.filter(Boolean);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+    }
+
     function create_fragment$1(ctx) {
     	let div;
     	let current;
-    	let each_value = /*months*/ ctx[0];
+    	let each_value = /*quarters*/ ctx[0];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -5437,7 +5530,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr(div, "class", "row svelte-5wzn08");
+    			attr(div, "class", "col svelte-t5e0rj");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -5449,8 +5542,8 @@ var app = (function () {
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*months, $$scope*/ 9) {
-    				each_value = /*months*/ ctx[0];
+    			if (dirty & /*quarters, $$scope*/ 9) {
+    				each_value = /*quarters*/ ctx[0];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -5505,21 +5598,28 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	let { date = "" } = $$props;
     	date = src(date);
-    	let start = date.startOf("quarter").minus(1, "second");
-    	let months = start.every("month", date.endOf("quarter"));
+    	let start = date.startOf("year").minus(1, "second");
+    	let months = start.every("month", date.endOf("year"));
+
+    	let quarters = [
+    		months.slice(0, 3),
+    		months.slice(3, 6),
+    		months.slice(6, 9),
+    		months.slice(9, 12)
+    	];
 
     	$$self.$$set = $$props => {
     		if ("date" in $$props) $$invalidate(1, date = $$props.date);
     		if ("$$scope" in $$props) $$invalidate(3, $$scope = $$props.$$scope);
     	};
 
-    	return [months, date, slots, $$scope];
+    	return [quarters, date, slots, $$scope];
     }
 
-    class Quarter extends SvelteComponent {
+    class Year extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-5wzn08-style")) add_css$1();
+    		if (!document.getElementById("svelte-t5e0rj-style")) add_css$1();
     		init(this, options, instance, create_fragment$1, safe_not_equal, { date: 1 });
     	}
     }
@@ -5528,37 +5628,59 @@ var app = (function () {
 
     function add_css() {
     	var style = element("style");
-    	style.id = "svelte-bb7tsf-style";
-    	style.textContent = ".container.svelte-bb7tsf{max-width:1200px}";
+    	style.id = "svelte-qxs30b-style";
+    	style.textContent = ".row.svelte-qxs30b{display:flex;flex-direction:row;justify-content:space-around;align-items:center;text-align:center;flex-wrap:wrap;align-self:stretch}.container.svelte-qxs30b{max-width:900px;width:100%}.m4.svelte-qxs30b{margin:4rem}";
     	append(document.head, style);
     }
 
-    // (19:4) <Quarter date="march 2021">
+    // (32:4) <Year date="march 2021">
     function create_default_slot(ctx) {
-    	let day;
+    	let day0;
+    	let t0;
+    	let day1;
+    	let t1;
+    	let day2;
     	let current;
-    	day = new Day({ props: { date: "march 28th" } });
+    	day0 = new Day({ props: { date: "jan 28th 2021" } });
+    	day1 = new Day({ props: { date: "feb 20th 2021" } });
+    	day2 = new Day({ props: { date: "march 28th 2021" } });
 
     	return {
     		c() {
-    			create_component(day.$$.fragment);
+    			create_component(day0.$$.fragment);
+    			t0 = space();
+    			create_component(day1.$$.fragment);
+    			t1 = space();
+    			create_component(day2.$$.fragment);
     		},
     		m(target, anchor) {
-    			mount_component(day, target, anchor);
+    			mount_component(day0, target, anchor);
+    			insert(target, t0, anchor);
+    			mount_component(day1, target, anchor);
+    			insert(target, t1, anchor);
+    			mount_component(day2, target, anchor);
     			current = true;
     		},
     		p: noop,
     		i(local) {
     			if (current) return;
-    			transition_in(day.$$.fragment, local);
+    			transition_in(day0.$$.fragment, local);
+    			transition_in(day1.$$.fragment, local);
+    			transition_in(day2.$$.fragment, local);
     			current = true;
     		},
     		o(local) {
-    			transition_out(day.$$.fragment, local);
+    			transition_out(day0.$$.fragment, local);
+    			transition_out(day1.$$.fragment, local);
+    			transition_out(day2.$$.fragment, local);
     			current = false;
     		},
     		d(detaching) {
-    			destroy_component(day, detaching);
+    			destroy_component(day0, detaching);
+    			if (detaching) detach(t0);
+    			destroy_component(day1, detaching);
+    			if (detaching) detach(t1);
+    			destroy_component(day2, detaching);
     		}
     	};
     }
@@ -5568,10 +5690,10 @@ var app = (function () {
     	let div0;
     	let t3;
     	let div1;
-    	let quarter;
+    	let year;
     	let current;
 
-    	quarter = new Quarter({
+    	year = new Year({
     			props: {
     				date: "march 2021",
     				$$slots: { default: [create_default_slot] },
@@ -5585,42 +5707,44 @@ var app = (function () {
     			div0 = element("div");
 
     			div0.innerHTML = `<a href="https://github.com/spencermountain/somehow-calendar">somehow-calendar</a> 
-    <span class="f08 grey">- its a svelte html calendar using spacetime.</span>`;
+    <span class="f08 grey">- a svelte html calendar.</span>`;
 
     			t3 = space();
     			div1 = element("div");
-    			create_component(quarter.$$.fragment);
-    			attr(div1, "class", "container svelte-bb7tsf");
+    			create_component(year.$$.fragment);
+    			attr(div0, "class", "m4 svelte-qxs30b");
+    			attr(div1, "class", "container m4 svelte-qxs30b");
+    			attr(div2, "class", "row svelte-qxs30b");
     		},
     		m(target, anchor) {
     			insert(target, div2, anchor);
     			append(div2, div0);
     			append(div2, t3);
     			append(div2, div1);
-    			mount_component(quarter, div1, null);
+    			mount_component(year, div1, null);
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			const quarter_changes = {};
+    			const year_changes = {};
 
     			if (dirty & /*$$scope*/ 1) {
-    				quarter_changes.$$scope = { dirty, ctx };
+    				year_changes.$$scope = { dirty, ctx };
     			}
 
-    			quarter.$set(quarter_changes);
+    			year.$set(year_changes);
     		},
     		i(local) {
     			if (current) return;
-    			transition_in(quarter.$$.fragment, local);
+    			transition_in(year.$$.fragment, local);
     			current = true;
     		},
     		o(local) {
-    			transition_out(quarter.$$.fragment, local);
+    			transition_out(year.$$.fragment, local);
     			current = false;
     		},
     		d(detaching) {
     			if (detaching) detach(div2);
-    			destroy_component(quarter);
+    			destroy_component(year);
     		}
     	};
     }
@@ -5628,7 +5752,7 @@ var app = (function () {
     class Demo extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-bb7tsf-style")) add_css();
+    		if (!document.getElementById("svelte-qxs30b-style")) add_css();
     		init(this, options, null, create_fragment, safe_not_equal, {});
     	}
     }

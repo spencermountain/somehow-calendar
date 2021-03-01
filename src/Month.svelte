@@ -77,13 +77,13 @@
     margin: 0.5%;
     border-radius: 3px;
     box-shadow: 2px 1px 6px 0px rgba(0, 0, 0, 0.2);
-    min-width: 12px;
+    min-width: 13px;
     min-height: 12px;
     box-sizing: border-box;
     font-size: 9px;
     color: #a3a5a5;
     overflow: hidden;
-    transition: box-shadow 0.2s;
+    /* transition: box-shadow 0.2s; */
     z-index: 1;
     cursor: pointer;
     /* border: 0.5px solid rgba(0, 0, 0, 0.1); */
@@ -100,7 +100,7 @@
   }
   .noday {
     /* border: 1px solid rgba(222, 219, 215, 0); */
-    box-shadow: none;
+    box-shadow: none !important;
     /* border: none; */
   }
   .today {
@@ -122,7 +122,7 @@
     /* padding-top: 40%; */
     /* margin-left: 5%; */
     opacity: 0;
-    transition: opacity 0.1s;
+    /* transition: opacity 0.1s; */
     cursor: pointer;
   }
   .num:hover {
@@ -138,9 +138,12 @@
     .day {
       border-radius: 2px;
       margin: 0.5%;
+      box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.2);
+      /* background-color: red; */
     }
     .num {
-      font-size: 10px;
+      /* font-size: 10px; */
+      display: none;
     }
   }
 </style>

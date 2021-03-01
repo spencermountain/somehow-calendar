@@ -18,7 +18,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-start;
     text-align: center;
     flex-wrap: nowrap;
     align-self: stretch;
@@ -36,6 +36,13 @@
     margin: 10px;
     flex: 1;
     width: 100%;
+  }
+  @media only screen and (max-width: 340px) {
+    .row {
+      flex-direction: column;
+      margin-left: 0px;
+      margin-right: 20px;
+    }
   }
 </style>
 
