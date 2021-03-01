@@ -5541,7 +5541,7 @@ var app = (function () {
     }
 
     // (32:4) <Quarter date="march 2021">
-    function create_default_slot(ctx) {
+    function create_default_slot_1(ctx) {
     	let day0;
     	let t0;
     	let day1;
@@ -5595,15 +5595,81 @@ var app = (function () {
     	};
     }
 
+    // (39:4) <Quarter date="march 2021">
+    function create_default_slot(ctx) {
+    	let day0;
+    	let t0;
+    	let day1;
+    	let t1;
+    	let day2;
+    	let current;
+    	day0 = new Day({ props: { date: "jan 21th 2021" } });
+    	day1 = new Day({ props: { date: "feb 2th 2021" } });
+
+    	day2 = new Day({
+    			props: { date: "march 8th 2021", color: "red" }
+    		});
+
+    	return {
+    		c() {
+    			create_component(day0.$$.fragment);
+    			t0 = space();
+    			create_component(day1.$$.fragment);
+    			t1 = space();
+    			create_component(day2.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(day0, target, anchor);
+    			insert(target, t0, anchor);
+    			mount_component(day1, target, anchor);
+    			insert(target, t1, anchor);
+    			mount_component(day2, target, anchor);
+    			current = true;
+    		},
+    		p: noop,
+    		i(local) {
+    			if (current) return;
+    			transition_in(day0.$$.fragment, local);
+    			transition_in(day1.$$.fragment, local);
+    			transition_in(day2.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(day0.$$.fragment, local);
+    			transition_out(day1.$$.fragment, local);
+    			transition_out(day2.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(day0, detaching);
+    			if (detaching) detach(t0);
+    			destroy_component(day1, detaching);
+    			if (detaching) detach(t1);
+    			destroy_component(day2, detaching);
+    		}
+    	};
+    }
+
     function create_fragment(ctx) {
-    	let div2;
+    	let div3;
     	let div0;
     	let t3;
     	let div1;
-    	let quarter;
+    	let quarter0;
+    	let t4;
+    	let div2;
+    	let quarter1;
     	let current;
 
-    	quarter = new Quarter({
+    	quarter0 = new Quarter({
+    			props: {
+    				date: "march 2021",
+    				$$slots: { default: [create_default_slot_1] },
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	quarter1 = new Quarter({
     			props: {
     				date: "march 2021",
     				$$slots: { default: [create_default_slot] },
@@ -5613,7 +5679,7 @@ var app = (function () {
 
     	return {
     		c() {
-    			div2 = element("div");
+    			div3 = element("div");
     			div0 = element("div");
 
     			div0.innerHTML = `<a href="https://github.com/spencermountain/somehow-calendar">somehow-calendar</a> 
@@ -5621,40 +5687,57 @@ var app = (function () {
 
     			t3 = space();
     			div1 = element("div");
-    			create_component(quarter.$$.fragment);
+    			create_component(quarter0.$$.fragment);
+    			t4 = space();
+    			div2 = element("div");
+    			create_component(quarter1.$$.fragment);
     			attr(div0, "class", "m4 svelte-qxs30b");
     			attr(div1, "class", "container m4 svelte-qxs30b");
-    			attr(div2, "class", "row svelte-qxs30b");
+    			attr(div2, "class", "container m4 svelte-qxs30b");
+    			attr(div3, "class", "row svelte-qxs30b");
     		},
     		m(target, anchor) {
-    			insert(target, div2, anchor);
-    			append(div2, div0);
-    			append(div2, t3);
-    			append(div2, div1);
-    			mount_component(quarter, div1, null);
+    			insert(target, div3, anchor);
+    			append(div3, div0);
+    			append(div3, t3);
+    			append(div3, div1);
+    			mount_component(quarter0, div1, null);
+    			append(div3, t4);
+    			append(div3, div2);
+    			mount_component(quarter1, div2, null);
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			const quarter_changes = {};
+    			const quarter0_changes = {};
 
     			if (dirty & /*$$scope*/ 1) {
-    				quarter_changes.$$scope = { dirty, ctx };
+    				quarter0_changes.$$scope = { dirty, ctx };
     			}
 
-    			quarter.$set(quarter_changes);
+    			quarter0.$set(quarter0_changes);
+    			const quarter1_changes = {};
+
+    			if (dirty & /*$$scope*/ 1) {
+    				quarter1_changes.$$scope = { dirty, ctx };
+    			}
+
+    			quarter1.$set(quarter1_changes);
     		},
     		i(local) {
     			if (current) return;
-    			transition_in(quarter.$$.fragment, local);
+    			transition_in(quarter0.$$.fragment, local);
+    			transition_in(quarter1.$$.fragment, local);
     			current = true;
     		},
     		o(local) {
-    			transition_out(quarter.$$.fragment, local);
+    			transition_out(quarter0.$$.fragment, local);
+    			transition_out(quarter1.$$.fragment, local);
     			current = false;
     		},
     		d(detaching) {
-    			if (detaching) detach(div2);
-    			destroy_component(quarter);
+    			if (detaching) detach(div3);
+    			destroy_component(quarter0);
+    			destroy_component(quarter1);
     		}
     	};
     }

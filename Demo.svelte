@@ -35,4 +35,11 @@
       <Day date="march 28th 2021" color="orange" />
     </Quarter>
   </div>
+  <div class="container m4">
+    <Quarter date="march 2021">
+      <Day date="jan 21th 2021" />
+      <Day date="feb 2th 2021" />
+      <Day date="march 8th 2021" color="red" />
+    </Quarter>
+  </div>
 </div>
