@@ -12,16 +12,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    align-items: center;
-    text-align: center;
-    flex-wrap: nowrap;
-    align-self: stretch;
-  }
-  .col {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
+    align-items: flex-start;
     text-align: center;
     flex-wrap: nowrap;
     align-self: stretch;

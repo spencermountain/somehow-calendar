@@ -30,10 +30,7 @@ export default {
     file: 'build/bundle.js',
   },
   plugins: [
-    svelte({
-      dev: !production,
-      css: true,
-    }),
+    svelte({}),
     resolve({
       browser: true,
       dedupe: ['svelte'],

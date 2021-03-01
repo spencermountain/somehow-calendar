@@ -1,12 +1,16 @@
 <script>
   import spacetime from 'spacetime'
-  import { onMount } from 'svelte'
+  import { onMount, afterUpdate } from 'svelte'
   import { days } from './stores'
-
+  afterUpdate(() => {
+    $days = {}
+  })
   export let date = ''
+  export let onClick = () => {}
+  export let showToday = true
   let today = spacetime.now()
   const isToday = function(d) {
-    return d.isSame(today, 'day')
+    return showToday && d.isSame(today, 'day')
   }
   const isWeekend = function(d) {
     let day = d.day()
@@ -38,12 +42,13 @@
         day.num = day.format('{date}')
         let iso = day.format('iso-short')
         if ($days[iso]) {
+          // console.log(iso + 'found')
           day.color = $days[iso].color
         }
       })
     })
-    console.log('mount')
-    console.log($days)
+    // console.log('mount')
+    // console.log($days)
   })
   // console.log('weeks', weeks.length)
 </script>
@@ -71,7 +76,7 @@
     flex: 1;
     margin: 0.5%;
     border-radius: 3px;
-    box-shadow: 2px 1px 2px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 1px 6px 0px rgba(0, 0, 0, 0.2);
     min-width: 12px;
     min-height: 12px;
     box-sizing: border-box;
@@ -80,6 +85,8 @@
     overflow: hidden;
     transition: box-shadow 0.2s;
     z-index: 1;
+    cursor: pointer;
+    /* border: 0.5px solid rgba(0, 0, 0, 0.1); */
   }
   .day:hover {
     box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.2);
@@ -94,6 +101,7 @@
   .noday {
     /* border: 1px solid rgba(222, 219, 215, 0); */
     box-shadow: none;
+    /* border: none; */
   }
   .today {
     background-color: lightsteelblue;
@@ -109,11 +117,13 @@
     width: 100%;
     height: 100%;
     top: 0px;
-    text-align: left;
-    padding-top: 75%;
-    margin-left: 5%;
+    text-align: center;
+    margin: auto;
+    /* padding-top: 40%; */
+    /* margin-left: 5%; */
     opacity: 0;
     transition: opacity 0.1s;
+    cursor: pointer;
   }
   .num:hover {
     opacity: 0.8;
@@ -146,8 +156,9 @@
             class:today={isToday(d)}
             class:weekend={isWeekend(d)}
             class:highlight={d.color !== 'none'}
+            on:click={() => onClick(d)}
             style="background-color:{d.color};"
-            title={d.num}>
+            title={d.format('iso-short')}>
             <div class="num">{d.num}</div>
           </div>
         {:else}
