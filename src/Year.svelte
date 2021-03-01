@@ -2,21 +2,25 @@
   import spacetime from 'spacetime'
   import Month from './Month.svelte'
   export let date = ''
-  date = spacetime(date)
-  let start = date.startOf('year').minus(1, 'second')
-  let months = start.every('month', date.endOf('year'))
-  let quarters = [
-    months.slice(0, 3),
-    months.slice(3, 6),
-    months.slice(6, 9),
-    months.slice(9, 12)
-  ]
+  let quarters = []
 
   // set default days object
   import { writable } from 'svelte/store'
-  import { setContext } from 'svelte'
+  import { setContext, beforeUpdate } from 'svelte'
   export let days = writable({})
   setContext('days', days)
+
+  beforeUpdate(() => {
+    date = spacetime(date)
+    let start = date.startOf('year').minus(1, 'second')
+    let months = start.every('month', date.endOf('year'))
+    quarters = [
+      months.slice(0, 3),
+      months.slice(3, 6),
+      months.slice(6, 9),
+      months.slice(9, 12)
+    ]
+  })
 </script>
 
 <style>

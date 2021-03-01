@@ -3,15 +3,20 @@
   import Month from './Month.svelte'
   import './getDates.js'
   export let date = ''
-  date = spacetime(date)
-  let start = date.startOf('quarter').minus(1, 'second')
-  let months = start.every('month', date.endOf('quarter'))
+  let start = null //date.startOf('quarter').minus(1, 'second')
+  let months = null //start.every('month', date.endOf('quarter'))
 
   // set default days object
   import { writable } from 'svelte/store'
-  import { setContext } from 'svelte'
+  import { setContext, beforeUpdate } from 'svelte'
   export let days = writable({})
   setContext('days', days)
+
+  beforeUpdate(() => {
+    date = spacetime(date)
+    start = date.startOf('quarter').minus(1, 'second')
+    months = start.every('month', date.endOf('quarter'))
+  })
 </script>
 
 <style>

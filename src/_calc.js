@@ -1,12 +1,21 @@
 // create all day objects
 const calculate = function (date) {
-  let start = date.startOf('month').startOf('week').minus(1, 'second')
-  let end = date.endOf('month').endOf('week')
-  let weeks = start.every('week', end)
-  weeks = weeks.map((d) => {
-    let end = d.endOf('week').add(1, 'second')
-    return d.every('day', end)
-  })
+  let start = date.startOf('month')
+  let monday = start.startOf('week') //.minus(1, 'second')
+  let weeks = []
+  let d = monday
+  for (let w = 0; w < 6; w += 1) {
+    let week = []
+    for (let i = 0; i < 7; i += 1) {
+      week.push(d)
+      d = d.add(1, 'day')
+    }
+    weeks.push(week)
+    let sunday = week[week.length - 1]
+    if (sunday.isSame(start, 'month') === false) {
+      return weeks
+    }
+  }
   return weeks
 }
 export default calculate

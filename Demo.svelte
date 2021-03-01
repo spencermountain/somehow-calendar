@@ -2,10 +2,12 @@
   import { Year, Day, Month, Quarter } from './src'
   let arr = ['march 28', 'march 23', 'march 22']
   let color = 'blue'
-  setTimeout(() => {
-    color = 'orange'
-    arr = ['feb 2', 'march 20', 'march 23']
-  }, 2000)
+  let month = 'feb 2021'
+  // setTimeout(() => {
+  //   color = 'orange'
+  //   month = 'july 2021'
+  //   arr = ['feb 2', 'march 20', 'march 23', 'july 2']
+  // }, 2000)
 </script>
 
 <style>
@@ -35,7 +37,7 @@
     <span class="f08 grey">- a svelte html calendar.</span>
   </div>
   <div class="container m4">
-    <Quarter date="march 2021">
+    <Quarter date={month}>
       {#each arr as d}
         <Day date={d} {color} />
       {/each}

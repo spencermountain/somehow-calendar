@@ -1,6 +1,6 @@
 <script>
   import spacetime from 'spacetime'
-  import { onMount, afterUpdate, onDestroy } from 'svelte'
+  import { onMount, beforeUpdate, onDestroy } from 'svelte'
   import calcMonth from './_calc'
   import { getContext, setContext } from 'svelte'
 
@@ -14,7 +14,6 @@
   export let date = ''
   export let onClick = () => {}
   export let showToday = true
-  date = spacetime(date)
   let today = spacetime.now()
 
   // render methods
@@ -40,6 +39,9 @@
       })
     })
   }
+  beforeUpdate(() => {
+    date = spacetime(date)
+  })
 </script>
 
 <style>

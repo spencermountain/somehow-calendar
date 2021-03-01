@@ -140,6 +140,9 @@ var app = (function () {
             throw new Error('Function called outside component initialization');
         return current_component;
     }
+    function beforeUpdate(fn) {
+        get_current_component().$$.before_update.push(fn);
+    }
     function afterUpdate(fn) {
         get_current_component().$$.after_update.push(fn);
     }
@@ -4873,13 +4876,22 @@ var app = (function () {
 
     // create all day objects
     const calculate = function (date) {
-      let start = date.startOf('month').startOf('week').minus(1, 'second');
-      let end = date.endOf('month').endOf('week');
-      let weeks = start.every('week', end);
-      weeks = weeks.map((d) => {
-        let end = d.endOf('week').add(1, 'second');
-        return d.every('day', end)
-      });
+      let start = date.startOf('month');
+      let monday = start.startOf('week'); //.minus(1, 'second')
+      let weeks = [];
+      let d = monday;
+      for (let w = 0; w < 6; w += 1) {
+        let week = [];
+        for (let i = 0; i < 7; i += 1) {
+          week.push(d);
+          d = d.add(1, 'day');
+        }
+        weeks.push(week);
+        let sunday = week[week.length - 1];
+        if (sunday.isSame(start, 'month') === false) {
+          return weeks
+        }
+      }
       return weeks
     };
 
@@ -4956,7 +4968,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (150:8) {:else}
+    // (152:8) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -4976,7 +4988,7 @@ var app = (function () {
     	};
     }
 
-    // (139:8) {#if d.isSame(date, 'month')}
+    // (141:8) {#if d.isSame(date, 'month')}
     function create_if_block(ctx) {
     	let div1;
     	let div0;
@@ -5046,7 +5058,7 @@ var app = (function () {
     	};
     }
 
-    // (138:6) {#each w as d}
+    // (140:6) {#each w as d}
     function create_each_block_1(ctx) {
     	let show_if;
     	let if_block_anchor;
@@ -5089,7 +5101,7 @@ var app = (function () {
     	};
     }
 
-    // (136:2) {#each getWeeks() as w}
+    // (138:2) {#each getWeeks() as w}
     function create_each_block$2(ctx) {
     	let div;
     	let t;
@@ -5278,7 +5290,6 @@ var app = (function () {
     	} } = $$props;
 
     	let { showToday = true } = $$props;
-    	date = src(date);
     	let today = src.now();
 
     	// render methods
@@ -5290,6 +5301,10 @@ var app = (function () {
     		let day = d.day();
     		return day === 0 || day === 1;
     	};
+
+    	beforeUpdate(() => {
+    		$$invalidate(0, date = src(date));
+    	});
 
     	const click_handler = d => onClick(d);
 
@@ -5360,7 +5375,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (44:6) <Month date={m}>
+    // (49:6) <Month date={m}>
     function create_default_slot$1(ctx) {
     	let current;
     	const default_slot_template = /*#slots*/ ctx[3].default;
@@ -5399,7 +5414,7 @@ var app = (function () {
     	};
     }
 
-    // (42:2) {#each months as m}
+    // (47:2) {#each months as m}
     function create_each_block$1(ctx) {
     	let div;
     	let month;
@@ -5429,6 +5444,7 @@ var app = (function () {
     		},
     		p(ctx, dirty) {
     			const month_changes = {};
+    			if (dirty & /*months*/ 1) month_changes.date = /*m*/ ctx[6];
 
     			if (dirty & /*$$scope*/ 16) {
     				month_changes.$$scope = { dirty, ctx };
@@ -5541,11 +5557,16 @@ var app = (function () {
     function instance$1($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	let { date = "" } = $$props;
-    	date = src(date);
-    	let start = date.startOf("quarter").minus(1, "second");
-    	let months = start.every("month", date.endOf("quarter"));
+    	let start = null; //date.startOf('quarter').minus(1, 'second')
+    	let months = null; //start.every('month', date.endOf('quarter'))
     	let { days = writable({}) } = $$props;
     	setContext("days", days);
+
+    	beforeUpdate(() => {
+    		$$invalidate(1, date = src(date));
+    		start = date.startOf("quarter").minus(1, "second");
+    		$$invalidate(0, months = start.every("month", date.endOf("quarter")));
+    	});
 
     	$$self.$$set = $$props => {
     		if ("date" in $$props) $$invalidate(1, date = $$props.date);
@@ -5575,21 +5596,15 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[2] = list[i];
+    	child_ctx[1] = list[i];
     	return child_ctx;
     }
 
-    // (39:6) {#each arr as d}
+    // (41:6) {#each arr as d}
     function create_each_block(ctx) {
     	let day;
     	let current;
-
-    	day = new Day({
-    			props: {
-    				date: /*d*/ ctx[2],
-    				color: /*color*/ ctx[1]
-    			}
-    		});
+    	day = new Day({ props: { date: /*d*/ ctx[1], color } });
 
     	return {
     		c() {
@@ -5599,12 +5614,7 @@ var app = (function () {
     			mount_component(day, target, anchor);
     			current = true;
     		},
-    		p(ctx, dirty) {
-    			const day_changes = {};
-    			if (dirty & /*arr*/ 1) day_changes.date = /*d*/ ctx[2];
-    			if (dirty & /*color*/ 2) day_changes.color = /*color*/ ctx[1];
-    			day.$set(day_changes);
-    		},
+    		p: noop,
     		i(local) {
     			if (current) return;
     			transition_in(day.$$.fragment, local);
@@ -5620,7 +5630,7 @@ var app = (function () {
     	};
     }
 
-    // (38:4) <Quarter date="march 2021">
+    // (40:4) <Quarter date={month}>
     function create_default_slot(ctx) {
     	let each_1_anchor;
     	let current;
@@ -5652,7 +5662,7 @@ var app = (function () {
     			current = true;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*arr, color*/ 3) {
+    			if (dirty & /*arr, color*/ 1) {
     				each_value = /*arr*/ ctx[0];
     				let i;
 
@@ -5714,7 +5724,7 @@ var app = (function () {
 
     	quarter = new Quarter({
     			props: {
-    				date: "march 2021",
+    				date: month,
     				$$slots: { default: [create_default_slot] },
     				$$scope: { ctx }
     			}
@@ -5746,7 +5756,7 @@ var app = (function () {
     		p(ctx, [dirty]) {
     			const quarter_changes = {};
 
-    			if (dirty & /*$$scope, arr, color*/ 35) {
+    			if (dirty & /*$$scope*/ 16) {
     				quarter_changes.$$scope = { dirty, ctx };
     			}
 
@@ -5768,19 +5778,12 @@ var app = (function () {
     	};
     }
 
-    function instance($$self, $$props, $$invalidate) {
+    let color = "blue";
+    let month = "feb 2021";
+
+    function instance($$self) {
     	let arr = ["march 28", "march 23", "march 22"];
-    	let color = "blue";
-
-    	setTimeout(
-    		() => {
-    			$$invalidate(1, color = "orange");
-    			$$invalidate(0, arr = ["feb 2", "march 20", "march 23"]);
-    		},
-    		2000
-    	);
-
-    	return [arr, color];
+    	return [arr];
     }
 
     class Demo extends SvelteComponent {
