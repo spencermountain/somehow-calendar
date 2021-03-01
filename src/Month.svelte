@@ -1,6 +1,6 @@
 <script>
   import spacetime from 'spacetime'
-  import { onMount, afterUpdate } from 'svelte'
+  import { onMount, afterUpdate, onDestroy } from 'svelte'
   import calcMonth from './_calc'
   import { getContext, setContext } from 'svelte'
 
@@ -11,7 +11,6 @@
     setContext('days', days)
   }
 
-  let weeks = []
   export let date = ''
   export let onClick = () => {}
   export let showToday = true
@@ -27,19 +26,20 @@
     return day === 0 || day === 1
   }
 
-  onMount(() => {
-    weeks = calcMonth(date)
-    weeks.forEach(w => {
-      w.forEach(day => {
+  $: getWeeks = () => {
+    let weeks = calcMonth(date) || []
+    return weeks.map(w => {
+      return w.map(day => {
+        day.iso = day.format('iso-short')
         day.color = 'none'
-        day.num = day.format('{date}')
-        let iso = day.format('iso-short')
-        if ($days[iso]) {
-          day.color = $days[iso].color
+        if ($days[day.iso]) {
+          day.color = $days[day.iso].color || 'none'
         }
+        day.num = day.format('{date}')
+        return day
       })
     })
-  })
+  }
 </script>
 
 <style>
@@ -72,10 +72,8 @@
     font-size: 9px;
     color: #a3a5a5;
     overflow: hidden;
-    /* transition: box-shadow 0.2s; */
     z-index: 1;
     cursor: pointer;
-    /* border: 0.5px solid rgba(0, 0, 0, 0.1); */
   }
   .day:hover {
     box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.2);
@@ -88,9 +86,7 @@
     position: relative; /* If you want text inside of it */
   }
   .noday {
-    /* border: 1px solid rgba(222, 219, 215, 0); */
     box-shadow: none !important;
-    /* border: none; */
   }
   .today {
     background-color: lightsteelblue;
@@ -128,10 +124,8 @@
       border-radius: 2px;
       margin: 0.5%;
       box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.2);
-      /* background-color: red; */
     }
     .num {
-      /* font-size: 10px; */
       display: none;
     }
   }
@@ -139,7 +133,7 @@
 
 <div class="month" style="width:100%;">
   <div class="monthName">{date.format('month')}</div>
-  {#each weeks as w}
+  {#each getWeeks() as w}
     <div class="week">
       {#each w as d}
         {#if d.isSame(date, 'month')}
@@ -149,8 +143,8 @@
             class:weekend={isWeekend(d)}
             class:highlight={d.color !== 'none'}
             on:click={() => onClick(d)}
-            style="background-color:{d.color};"
-            title={d.format('iso-short')}>
+            style={'background-color:' + d.color}
+            title={d.iso}>
             <div class="num">{d.num}</div>
           </div>
         {:else}

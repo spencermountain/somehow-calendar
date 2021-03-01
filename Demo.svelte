@@ -1,5 +1,11 @@
 <script>
   import { Year, Day, Month, Quarter } from './src'
+  let arr = ['march 28', 'march 23', 'march 22']
+  let color = 'blue'
+  setTimeout(() => {
+    color = 'orange'
+    arr = ['feb 2', 'march 20', 'march 23']
+  }, 2000)
 </script>
 
 <style>
@@ -30,16 +36,9 @@
   </div>
   <div class="container m4">
     <Quarter date="march 2021">
-      <Day date="jan 28th 2021" />
-      <Day date="feb 20th 2021" />
-      <Day date="march 28th 2021" color="orange" />
-    </Quarter>
-  </div>
-  <div class="container m4">
-    <Quarter date="march 2021">
-      <Day date="jan 21th 2021" />
-      <Day date="feb 2th 2021" />
-      <Day date="march 8th 2021" color="red" />
+      {#each arr as d}
+        <Day date={d} {color} />
+      {/each}
     </Quarter>
   </div>
 </div>
