@@ -1,11 +1,9 @@
 <script>
   import spacetime from 'spacetime'
   import Month from './Month.svelte'
-  import fmtDays from './_fmtDays'
   export let date = ''
   export let days = {}
   date = spacetime(date)
-  days = fmtDays(days)
 
   let start = date.startOf('year').minus(1, 'second')
   let months = start.every('month', date.endOf('year'))

@@ -12,15 +12,14 @@
     'march 22': 'blue'
   }
   setTimeout(() => {
+    // month = 'june 2021'
     days = {
       'feb 2': 'orange',
       'feb 18': 'blue',
       'feb 28': 'green',
       'march 28': 'blue',
-      'march 23': 'red',
       'march 22': 'blue'
     }
-    console.log('change')
   }, 2000)
 </script>
 
@@ -51,6 +50,6 @@
     <span class="f08 grey">- a svelte html calendar.</span>
   </div>
   <div class="container m4">
-    <Quarter date={month} {days} />
+    <Year date={month} {days} />
   </div>
 </div>

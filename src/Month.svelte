@@ -1,13 +1,13 @@
 <script>
   import spacetime from 'spacetime'
   import calcMonth from './_calc'
+  import fmtDays from './_fmtDays'
   export let days = {}
   export let date = ''
   export let onClick = () => {}
   export let showToday = true
   let today = spacetime.now()
   date = spacetime(date)
-
   // render methods
   const isToday = function(d) {
     return showToday && d.isSame(today, 'day')
@@ -17,13 +17,14 @@
     return day === 0 || day === 1
   }
 
-  let weeks = calcMonth(date) || []
-  weeks = weeks.map(w => {
+  let setup = calcMonth(date) || []
+  $: colors = fmtDays(days)
+  $: weeks = setup.map(w => {
     return w.map(day => {
       let iso = day.format('iso-short')
       let obj = {
         iso: iso,
-        color: days[iso] || 'none',
+        color: colors[iso] || 'none',
         num: day.format('{date}'),
         isToday: isToday(day),
         isWeekend: isWeekend(day),
