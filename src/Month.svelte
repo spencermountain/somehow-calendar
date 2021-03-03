@@ -1,20 +1,12 @@
 <script>
   import spacetime from 'spacetime'
-  import { onMount, beforeUpdate, onDestroy } from 'svelte'
   import calcMonth from './_calc'
-  import { getContext, setContext } from 'svelte'
-
-  import { writable } from 'svelte/store'
-  let days = getContext('days')
-  if (!days) {
-    days = writable({})
-    setContext('days', days)
-  }
-
+  export let days = {}
   export let date = ''
   export let onClick = () => {}
   export let showToday = true
   let today = spacetime.now()
+  date = spacetime(date)
 
   // render methods
   const isToday = function(d) {
@@ -25,22 +17,20 @@
     return day === 0 || day === 1
   }
 
-  $: getWeeks = () => {
-    let weeks = calcMonth(date) || []
-    return weeks.map(w => {
-      return w.map(day => {
-        day.iso = day.format('iso-short')
-        day.color = 'none'
-        if ($days[day.iso]) {
-          day.color = $days[day.iso].color || 'none'
-        }
-        day.num = day.format('{date}')
-        return day
-      })
+  let weeks = calcMonth(date) || []
+  weeks = weeks.map(w => {
+    return w.map(day => {
+      let iso = day.format('iso-short')
+      let obj = {
+        iso: iso,
+        color: days[iso] || 'none',
+        num: day.format('{date}'),
+        isToday: isToday(day),
+        isWeekend: isWeekend(day),
+        inMonth: day.isSame(date, 'month')
+      }
+      return obj
     })
-  }
-  beforeUpdate(() => {
-    date = spacetime(date)
   })
 </script>
 
@@ -135,14 +125,14 @@
 
 <div class="month" style="width:100%;">
   <div class="monthName">{date.format('month')}</div>
-  {#each getWeeks() as w}
+  {#each weeks as w}
     <div class="week">
       {#each w as d}
-        {#if d.isSame(date, 'month')}
+        {#if d.inMonth}
           <div
             class="day square"
-            class:today={isToday(d)}
-            class:weekend={isWeekend(d)}
+            class:today={d.isToday}
+            class:weekend={d.isWeekend}
             class:highlight={d.color !== 'none'}
             on:click={() => onClick(d)}
             style={'background-color:' + d.color}

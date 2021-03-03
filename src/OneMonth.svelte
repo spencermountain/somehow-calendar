@@ -7,8 +7,8 @@
 
   date = spacetime(date)
   days = fmtDays(days)
-  let start = date.startOf('quarter').minus(1, 'second')
-  let months = start.every('month', date.endOf('quarter'))
+  let start = date.startOf('month') //.minus(1, 'second')
+  // let months = start.every('month', date.endOf('quarter'))
 </script>
 
 <style>
@@ -36,11 +36,9 @@
 </style>
 
 <div class="row">
-  {#each months as m}
-    <div class="gap">
-      <Month date={m} {days}>
-        <slot />
-      </Month>
-    </div>
-  {/each}
+  <div class="gap">
+    <Month date={start} {days}>
+      <slot />
+    </Month>
+  </div>
 </div>

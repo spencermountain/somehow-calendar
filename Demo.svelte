@@ -1,13 +1,27 @@
 <script>
-  import { Year, Day, Month, Quarter } from './src'
+  import { Year, Month, Quarter } from './src'
   let arr = ['march 28', 'march 23', 'march 22']
   let color = 'blue'
   let month = 'feb 2021'
-  // setTimeout(() => {
-  //   color = 'orange'
-  //   month = 'july 2021'
-  //   arr = ['feb 2', 'march 20', 'march 23', 'july 2']
-  // }, 2000)
+
+  let days = {
+    'feb 1': 'blue',
+    'feb 28': 'blue',
+    'march 28': 'blue',
+    'march 23': 'red',
+    'march 22': 'blue'
+  }
+  setTimeout(() => {
+    days = {
+      'feb 2': 'orange',
+      'feb 18': 'blue',
+      'feb 28': 'green',
+      'march 28': 'blue',
+      'march 23': 'red',
+      'march 22': 'blue'
+    }
+    console.log('change')
+  }, 2000)
 </script>
 
 <style>
@@ -37,10 +51,6 @@
     <span class="f08 grey">- a svelte html calendar.</span>
   </div>
   <div class="container m4">
-    <Quarter date={month}>
-      {#each arr as d}
-        <Day date={d} {color} />
-      {/each}
-    </Quarter>
+    <Quarter date={month} {days} />
   </div>
 </div>

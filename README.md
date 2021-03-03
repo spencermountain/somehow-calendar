@@ -29,11 +29,11 @@ month-centered calendars from start to end dates, inclusive
 
 ```html
 <script>
-  import { Month, Day } from './src'
+  import { Month } from './src'
+  let days={'march 28th':'blue'}
 </script>
 
-<Month date="march 2012">
-  <Day date="march 28th" color="blue" />
+<Month date="march 2012" days={days}>
 </Month>
 ```
 
@@ -44,7 +44,6 @@ month-centered calendars from start to end dates, inclusive
 - `<Year date=""/>`
 - `<Quarter date=""/>`
 - `<Month date=""/>`
-- `<Day date="" color=""/>`
 
 ### See also:
 
