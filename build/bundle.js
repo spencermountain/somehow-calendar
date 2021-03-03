@@ -349,7 +349,23 @@ var app = (function () {
         }
     }
 
-    /* spencermountain/spacetime 6.12.5 Apache 2.0 */
+    /* spencermountain/spacetime 6.13.0 Apache 2.0 */
+    function _typeof(obj) {
+      "@babel/helpers - typeof";
+
+      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+        _typeof = function (obj) {
+          return typeof obj;
+        };
+      } else {
+        _typeof = function (obj) {
+          return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+        };
+      }
+
+      return _typeof(obj);
+    }
+
     function _slicedToArray(arr, i) {
       return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
     }
@@ -694,7 +710,7 @@ var app = (function () {
       return null;
     };
 
-    var parseOffset = function parseOffset(tz) {
+    var parseOffset$1 = function parseOffset(tz) {
       // '+5hrs'
       var m = tz.match(isOffset);
 
@@ -727,7 +743,7 @@ var app = (function () {
       return null;
     };
 
-    var parseOffset_1 = parseOffset;
+    var parseOffset_1$1 = parseOffset$1;
 
     var local = guessTz_1(); //add all the city names by themselves
 
@@ -785,7 +801,7 @@ var app = (function () {
 
 
       if (/[0-9]/.test(tz) === true) {
-        var id = parseOffset_1(tz);
+        var id = parseOffset_1$1(tz);
 
         if (id) {
           return id;
@@ -866,7 +882,7 @@ var app = (function () {
     }; //find the desired date by a increment/check while loop
 
 
-    var units = {
+    var units$3 = {
       year: {
         valid: function valid(n) {
           return n > -4000 && n < 4000;
@@ -953,7 +969,7 @@ var app = (function () {
     };
 
     var walkTo = function walkTo(s, wants) {
-      var keys = Object.keys(units);
+      var keys = Object.keys(units$3);
       var old = s.clone();
 
       for (var i = 0; i < keys.length; i++) {
@@ -969,7 +985,7 @@ var app = (function () {
         } //make-sure it's valid
 
 
-        if (!units[k].valid(n)) {
+        if (!units$3[k].valid(n)) {
           s.epoch = null;
 
           if (s.silent === false) {
@@ -979,7 +995,7 @@ var app = (function () {
           return;
         }
 
-        units[k].walkTo(s, n);
+        units$3[k].walkTo(s, n);
       }
 
       return;
@@ -1007,7 +1023,7 @@ var app = (function () {
       return obj;
     }
 
-    var months = {
+    var months$1 = {
       "short": function short() {
         return shortMonths;
       },
@@ -1024,7 +1040,7 @@ var app = (function () {
     };
 
     //pull-apart ISO offsets, like "+0100"
-    var parseOffset$1 = function parseOffset(s, offset) {
+    var parseOffset = function parseOffset(s, offset) {
       if (!offset) {
         return s;
       } //this is a fancy-move
@@ -1082,7 +1098,7 @@ var app = (function () {
       return s;
     };
 
-    var parseOffset_1$1 = parseOffset$1;
+    var parseOffset_1 = parseOffset;
 
     var parseTime = function parseTime(s) {
       var str = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -1297,7 +1313,7 @@ var app = (function () {
     fns.beADate;
     fns.formatTimezone;
 
-    var isLeapYear = fns.isLeapYear; //given a month, return whether day number exists in it
+    var isLeapYear$2 = fns.isLeapYear; //given a month, return whether day number exists in it
 
     var hasDate = function hasDate(obj) {
       //invalid values
@@ -1307,7 +1323,7 @@ var app = (function () {
 
 
       if (obj.month === 1) {
-        if (isLeapYear(obj.year) && obj.date <= 29) {
+        if (isLeapYear$2(obj.year) && obj.date <= 29) {
           return true;
         } else {
           return obj.date <= 28;
@@ -1326,7 +1342,7 @@ var app = (function () {
 
     var hasDate_1 = hasDate;
 
-    var months$1 = months.mapping();
+    var months = months$1.mapping();
 
     var parseYear = function parseYear() {
       var str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
@@ -1358,7 +1374,7 @@ var app = (function () {
           return s;
         }
 
-        parseOffset_1$1(s, arr[5]);
+        parseOffset_1(s, arr[5]);
         walk_1(s, obj);
         s = parseTime_1(s, arr[4]);
         return s;
@@ -1432,7 +1448,7 @@ var app = (function () {
           return s;
         }
 
-        parseOffset_1$1(s, arr[5]);
+        parseOffset_1(s, arr[5]);
         walk_1(s, obj);
         s = parseTime_1(s, arr[4]);
         return s;
@@ -1441,7 +1457,7 @@ var app = (function () {
     {
       reg: /^([0-9]{1,2})[\-\/]([a-z]+)[\-\/]?([0-9]{4})?$/i,
       parse: function parse(s, arr) {
-        var month = months$1[arr[2].toLowerCase()];
+        var month = months[arr[2].toLowerCase()];
         var year = parseYear(arr[3], s._today);
         var obj = {
           year: year,
@@ -1462,7 +1478,7 @@ var app = (function () {
     {
       reg: /^([a-z]+)[\-\/]([0-9]{1,2})[\-\/]?([0-9]{4})?$/i,
       parse: function parse(s, arr) {
-        var month = months$1[arr[1].toLowerCase()];
+        var month = months[arr[1].toLowerCase()];
         var year = parseYear(arr[3], s._today);
         var obj = {
           year: year,
@@ -1484,7 +1500,7 @@ var app = (function () {
     {
       reg: /^([a-z]+) ([0-9]{1,2}(?:st|nd|rd|th)?),?( [0-9]{4})?( ([0-9:]+( ?am| ?pm| ?gmt)?))?$/i,
       parse: function parse(s, arr) {
-        var month = months$1[arr[1].toLowerCase()];
+        var month = months[arr[1].toLowerCase()];
         var year = parseYear(arr[3], s._today);
         var obj = {
           year: year,
@@ -1505,7 +1521,7 @@ var app = (function () {
     {
       reg: /^([a-z]+) ([0-9]{4})$/i,
       parse: function parse(s, arr) {
-        var month = months$1[arr[1].toLowerCase()];
+        var month = months[arr[1].toLowerCase()];
         var year = parseYear(arr[2], s._today);
         var obj = {
           year: year,
@@ -1526,7 +1542,7 @@ var app = (function () {
     {
       reg: /^([0-9]{1,2}(?:st|nd|rd|th)?) ([a-z]+),?( [0-9]{4})?,? ?([0-9]{1,2}:[0-9]{2}:?[0-9]{0,2}? ?(am|pm|gmt))?$/i,
       parse: function parse(s, arr) {
-        var month = months$1[arr[2].toLowerCase()];
+        var month = months[arr[2].toLowerCase()];
 
         if (!month) {
           return null;
@@ -1882,7 +1898,16 @@ var app = (function () {
         longDays = i18n["long"] || longDays;
       },
       aliases: {
+        mo: 1,
+        tu: 2,
+        we: 3,
+        th: 4,
+        fr: 5,
+        sa: 6,
+        su: 7,
         tues: 2,
+        weds: 3,
+        wedn: 3,
         thur: 4,
         thurs: 4
       }
@@ -1945,7 +1970,7 @@ var app = (function () {
         return applyCaseFormat(s.monthName());
       },
       'month-short': function monthShort(s) {
-        return applyCaseFormat(months["short"]()[s.month()]);
+        return applyCaseFormat(months$1["short"]()[s.month()]);
       },
       'month-number': function monthNumber(s) {
         return s.month();
@@ -2084,16 +2109,16 @@ var app = (function () {
       },
       //i made these up
       nice: function nice(s) {
-        return "".concat(months["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.time());
+        return "".concat(months$1["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.time());
       },
       'nice-24': function nice24(s) {
-        return "".concat(months["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.hour24(), ":").concat(fns.zeroPad(s.minute()));
+        return "".concat(months$1["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.hour24(), ":").concat(fns.zeroPad(s.minute()));
       },
       'nice-year': function niceYear(s) {
-        return "".concat(months["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.year());
+        return "".concat(months$1["short"]()[s.month()], " ").concat(fns.ordinal(s.date()), ", ").concat(s.year());
       },
       'nice-day': function niceDay(s) {
-        return "".concat(days["short"]()[s.day()], " ").concat(applyCaseFormat(months["short"]()[s.month()]), " ").concat(fns.ordinal(s.date()));
+        return "".concat(days["short"]()[s.day()], " ").concat(applyCaseFormat(months$1["short"]()[s.month()]), " ").concat(fns.ordinal(s.date()));
       },
       'nice-full': function niceFull(s) {
         return "".concat(s.dayName(), " ").concat(applyCaseFormat(s.monthName()), " ").concat(fns.ordinal(s.date()), ", ").concat(s.time());
@@ -2469,7 +2494,7 @@ var app = (function () {
 
     var unixFmt_1 = unixFmt;
 
-    var units$1 = ['year', 'season', 'quarter', 'month', 'week', 'day', 'quarterHour', 'hour', 'minute'];
+    var units$2 = ['year', 'season', 'quarter', 'month', 'week', 'day', 'quarterHour', 'hour', 'minute'];
 
     var doUnit = function doUnit(s, k) {
       var start = s.clone().startOf(k);
@@ -2487,7 +2512,7 @@ var app = (function () {
       }
 
       var obj = {};
-      units$1.forEach(function (k) {
+      units$2.forEach(function (k) {
         obj[k] = doUnit(s, k);
       });
       return obj;
@@ -2570,7 +2595,7 @@ var app = (function () {
     // ... then ms-math for any very-small units
 
 
-    var diff = function diff(a, b) {
+    var diff$1 = function diff(a, b) {
       // an hour is always the same # of milliseconds
       // so these units can be 'pre-calculated'
       var msDiff = b.epoch - a.epoch;
@@ -2600,7 +2625,7 @@ var app = (function () {
       return obj;
     };
 
-    var waterfall = diff;
+    var waterfall = diff$1;
 
     var reverseDiff = function reverseDiff(obj) {
       Object.keys(obj).forEach(function (k) {
@@ -2612,7 +2637,7 @@ var app = (function () {
     // '1 year' means 366 days in a leap year
 
 
-    var main = function main(a, b, unit) {
+    var main$1 = function main(a, b, unit) {
       b = fns.beADate(b, a); //reverse values, if necessary
 
       var reversed = false;
@@ -2650,7 +2675,7 @@ var app = (function () {
       return obj;
     };
 
-    var diff$1 = main;
+    var diff = main$1;
 
     //our conceptual 'break-points' for each unit
 
@@ -2818,7 +2843,7 @@ var app = (function () {
     [9, 1] //oct 1
     ];
 
-    var units$2 = {
+    var units$1 = {
       minute: function minute(s) {
         walk_1(s, {
           second: 0,
@@ -2963,19 +2988,19 @@ var app = (function () {
         return s;
       }
     };
-    units$2.date = units$2.day;
+    units$1.date = units$1.day;
 
     var startOf = function startOf(a, unit) {
       var s = a.clone();
       unit = fns.normalize(unit);
 
-      if (units$2[unit]) {
-        return units$2[unit](s);
+      if (units$1[unit]) {
+        return units$1[unit](s);
       }
 
       if (unit === 'summer' || unit === 'winter') {
         s = s.season(unit);
-        return units$2.season(s);
+        return units$1.season(s);
       }
 
       return s;
@@ -2986,9 +3011,9 @@ var app = (function () {
       var s = a.clone();
       unit = fns.normalize(unit);
 
-      if (units$2[unit]) {
+      if (units$1[unit]) {
         // go to beginning, go to next one, step back 1ms
-        s = units$2[unit](s); // startof
+        s = units$1[unit](s); // startof
 
         s = s.add(1, unit);
         s = s.subtract(1, 'millisecond');
@@ -3153,9 +3178,9 @@ var app = (function () {
 
     var timezone_1 = timezone;
 
-    var units$3 = ['century', 'decade', 'year', 'month', 'date', 'day', 'hour', 'minute', 'second', 'millisecond']; //the spacetime instance methods (also, the API)
+    var units = ['century', 'decade', 'year', 'month', 'date', 'day', 'hour', 'minute', 'second', 'millisecond']; //the spacetime instance methods (also, the API)
 
-    var methods = {
+    var methods$4 = {
       set: function set(input$1, tz) {
         var s = this.clone();
         s = input(s, input$1, null);
@@ -3203,8 +3228,8 @@ var app = (function () {
       nearest: function nearest(unit) {
         return nearest_1(this, unit);
       },
-      diff: function diff(d, unit) {
-        return diff$1(this, d, unit);
+      diff: function diff$1(d, unit) {
+        return diff(this, d, unit);
       },
       since: function since(d) {
         if (!d) {
@@ -3239,6 +3264,13 @@ var app = (function () {
       },
       //get each week/month/day between a -> b
       every: function every(unit, to) {
+        // allow swapping these params:
+        if (_typeof(unit) === 'object' && typeof to === 'string') {
+          var tmp = to;
+          to = unit;
+          unit = tmp;
+        }
+
         return every_1(this, unit, to);
       },
       isAwake: function isAwake() {
@@ -3267,7 +3299,7 @@ var app = (function () {
       json: function json() {
         var _this = this;
 
-        return units$3.reduce(function (h, unit) {
+        return units.reduce(function (h, unit) {
           h[unit] = _this[unit]();
           return h;
         }, {});
@@ -3317,10 +3349,10 @@ var app = (function () {
       }
     }; // aliases
 
-    methods.inDST = methods.isDST;
-    methods.round = methods.nearest;
-    methods.each = methods.every;
-    var methods_1 = methods;
+    methods$4.inDST = methods$4.isDST;
+    methods$4.round = methods$4.nearest;
+    methods$4.each = methods$4.every;
+    var methods_1 = methods$4;
 
     //these methods wrap around them.
 
@@ -3335,11 +3367,11 @@ var app = (function () {
       return n;
     };
 
-    var order = ['year', 'month', 'date', 'hour', 'minute', 'second', 'millisecond']; //reduce hostile micro-changes when moving dates by millisecond
+    var order$1 = ['year', 'month', 'date', 'hour', 'minute', 'second', 'millisecond']; //reduce hostile micro-changes when moving dates by millisecond
 
     var confirm = function confirm(s, tmp, unit) {
-      var n = order.indexOf(unit);
-      var arr = order.slice(n, order.length);
+      var n = order$1.indexOf(unit);
+      var arr = order$1.slice(n, order$1.length);
 
       for (var i = 0; i < arr.length; i++) {
         var want = tmp[arr[i]]();
@@ -3491,7 +3523,7 @@ var app = (function () {
       //this one's tricky
       month: function month(s, n) {
         if (typeof n === 'string') {
-          n = months.mapping()[n.toLowerCase()];
+          n = months$1.mapping()[n.toLowerCase()];
         }
 
         n = validate(n); //don't go past december
@@ -3556,7 +3588,7 @@ var app = (function () {
       }
     };
 
-    var methods$1 = {
+    var methods$3 = {
       millisecond: function millisecond(num) {
         if (num !== undefined) {
           var s = this.clone();
@@ -3751,7 +3783,7 @@ var app = (function () {
         return this.format('iso');
       }
     };
-    var _01Time = methods$1;
+    var _01Time = methods$3;
 
     var methods$2 = {
       // # day in the month
@@ -3829,7 +3861,7 @@ var app = (function () {
       return s;
     };
 
-    var methods$3 = {
+    var methods$1 = {
       // day 0-366
       dayOfYear: function dayOfYear(num) {
         if (num !== undefined) {
@@ -3911,7 +3943,7 @@ var app = (function () {
         tmp.epoch += milliseconds.week * skipWeeks;
         i += skipWeeks;
 
-        for (; i < 52; i++) {
+        for (; i <= 52; i++) {
           if (tmp.epoch > thisOne) {
             return i + toAdd;
           }
@@ -3924,7 +3956,7 @@ var app = (function () {
       //'january'
       monthName: function monthName(input) {
         if (input === undefined) {
-          return months["long"]()[this.month()];
+          return months$1["long"]()[this.month()];
         }
 
         var s = this.clone();
@@ -4142,32 +4174,32 @@ var app = (function () {
         return num;
       }
     };
-    var _03Year = methods$3;
+    var _03Year = methods$1;
 
-    var methods$4 = Object.assign({}, _01Time, _02Date, _03Year); //aliases
+    var methods = Object.assign({}, _01Time, _02Date, _03Year); //aliases
 
-    methods$4.milliseconds = methods$4.millisecond;
-    methods$4.seconds = methods$4.second;
-    methods$4.minutes = methods$4.minute;
-    methods$4.hours = methods$4.hour;
-    methods$4.hour24 = methods$4.hour;
-    methods$4.h12 = methods$4.hour12;
-    methods$4.h24 = methods$4.hour24;
-    methods$4.days = methods$4.day;
+    methods.milliseconds = methods.millisecond;
+    methods.seconds = methods.second;
+    methods.minutes = methods.minute;
+    methods.hours = methods.hour;
+    methods.hour24 = methods.hour;
+    methods.h12 = methods.hour12;
+    methods.h24 = methods.hour24;
+    methods.days = methods.day;
 
-    var addMethods = function addMethods(Space) {
+    var addMethods$4 = function addMethods(Space) {
       //hook the methods into prototype
-      Object.keys(methods$4).forEach(function (k) {
-        Space.prototype[k] = methods$4[k];
+      Object.keys(methods).forEach(function (k) {
+        Space.prototype[k] = methods[k];
       });
     };
 
-    var query = addMethods;
+    var query = addMethods$4;
 
-    var isLeapYear$2 = fns.isLeapYear;
+    var isLeapYear = fns.isLeapYear;
 
     var getMonthLength = function getMonthLength(month, year) {
-      if (month === 1 && isLeapYear$2(year)) {
+      if (month === 1 && isLeapYear(year)) {
         return 29;
       }
 
@@ -4256,19 +4288,19 @@ var app = (function () {
     // we 'model' the calendar here only a little bit
     // and that usually works-out...
 
-    var order$1 = ['millisecond', 'second', 'minute', 'hour', 'date', 'month'];
+    var order = ['millisecond', 'second', 'minute', 'hour', 'date', 'month'];
     var keep = {
-      second: order$1.slice(0, 1),
-      minute: order$1.slice(0, 2),
-      quarterhour: order$1.slice(0, 2),
-      hour: order$1.slice(0, 3),
-      date: order$1.slice(0, 4),
-      month: order$1.slice(0, 4),
-      quarter: order$1.slice(0, 4),
-      season: order$1.slice(0, 4),
-      year: order$1,
-      decade: order$1,
-      century: order$1
+      second: order.slice(0, 1),
+      minute: order.slice(0, 2),
+      quarterhour: order.slice(0, 2),
+      hour: order.slice(0, 3),
+      date: order.slice(0, 4),
+      month: order.slice(0, 4),
+      quarter: order.slice(0, 4),
+      season: order.slice(0, 4),
+      year: order,
+      decade: order,
+      century: order
     };
     keep.week = keep.hour;
     keep.season = keep.date;
@@ -4289,7 +4321,7 @@ var app = (function () {
       year: true
     };
 
-    var addMethods$1 = function addMethods(SpaceTime) {
+    var addMethods$3 = function addMethods(SpaceTime) {
       SpaceTime.prototype.add = function (num, unit) {
         var s = this.clone();
 
@@ -4429,7 +4461,7 @@ var app = (function () {
       SpaceTime.prototype.plus = SpaceTime.prototype.add;
     };
 
-    var add = addMethods$1;
+    var add = addMethods$3;
 
     //make a string, for easy comparison between dates
     var print = {
@@ -4470,6 +4502,13 @@ var app = (function () {
 
         if (!unit) {
           return null;
+        } // support swapped params
+
+
+        if (typeof b === 'string' && _typeof(unit) === 'object') {
+          var tmp = b;
+          b = unit;
+          unit = tmp;
         }
 
         if (typeof b === 'string' || typeof b === 'number') {
@@ -4494,7 +4533,7 @@ var app = (function () {
 
     var same = addMethods$2;
 
-    var addMethods$3 = function addMethods(SpaceTime) {
+    var addMethods$1 = function addMethods(SpaceTime) {
       var methods = {
         isAfter: function isAfter(d) {
           d = fns.beADate(d, this);
@@ -4555,9 +4594,9 @@ var app = (function () {
       });
     };
 
-    var compare = addMethods$3;
+    var compare = addMethods$1;
 
-    var addMethods$4 = function addMethods(SpaceTime) {
+    var addMethods = function addMethods(SpaceTime) {
       var methods = {
         i18n: function i18n(data) {
           //change the day names
@@ -4567,7 +4606,7 @@ var app = (function () {
 
 
           if (fns.isObject(data.months)) {
-            months.set(data.months);
+            months$1.set(data.months);
           } // change the the display style of the month / day names
 
 
@@ -4582,7 +4621,7 @@ var app = (function () {
       });
     };
 
-    var i18n = addMethods$4;
+    var i18n = addMethods;
 
     var timezones = unpack; //fake timezone-support, for fakers (es5 class)
 
@@ -4710,9 +4749,9 @@ var app = (function () {
 
     var whereIts_1 = whereIts;
 
-    var _version = '6.12.5';
+    var _version = '6.13.0';
 
-    var main$1 = function main(input, tz, options) {
+    var main = function main(input, tz, options) {
       return new spacetime(input, tz, options);
     }; // set all properties of a given 'today' object
 
@@ -4726,48 +4765,48 @@ var app = (function () {
     }; //some helper functions on the main method
 
 
-    main$1.now = function (tz, options) {
+    main.now = function (tz, options) {
       var s = new spacetime(new Date().getTime(), tz, options);
       s = setToday(s);
       return s;
     };
 
-    main$1.today = function (tz, options) {
+    main.today = function (tz, options) {
       var s = new spacetime(new Date().getTime(), tz, options);
       s = setToday(s);
       return s.startOf('day');
     };
 
-    main$1.tomorrow = function (tz, options) {
+    main.tomorrow = function (tz, options) {
       var s = new spacetime(new Date().getTime(), tz, options);
       s = setToday(s);
       return s.add(1, 'day').startOf('day');
     };
 
-    main$1.yesterday = function (tz, options) {
+    main.yesterday = function (tz, options) {
       var s = new spacetime(new Date().getTime(), tz, options);
       s = setToday(s);
       return s.subtract(1, 'day').startOf('day');
     };
 
-    main$1.extend = function (obj) {
+    main.extend = function (obj) {
       Object.keys(obj).forEach(function (k) {
         spacetime.prototype[k] = obj[k];
       });
       return this;
     };
 
-    main$1.timezones = function () {
+    main.timezones = function () {
       var s = new spacetime();
       return s.timezones;
     }; //find tz by time
 
 
-    main$1.whereIts = whereIts_1;
-    main$1.version = _version; //aliases:
+    main.whereIts = whereIts_1;
+    main.version = _version; //aliases:
 
-    main$1.plugin = main$1.extend;
-    var src = main$1;
+    main.plugin = main.extend;
+    var src = main;
 
     // create all day objects
     const calculate = function (date) {
@@ -4820,7 +4859,7 @@ var app = (function () {
       return res
     };
 
-    /* src/Month.svelte generated by Svelte v3.34.0 */
+    /* src/Month.svelte generated by Svelte v3.35.0 */
 
     function add_css$2() {
     	var style = element("style");
@@ -4873,7 +4912,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[8](/*d*/ ctx[16]);
+    		return /*click_handler*/ ctx[9](/*d*/ ctx[16]);
     	}
 
     	return {
@@ -5049,8 +5088,8 @@ var app = (function () {
     		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
-    	const default_slot_template = /*#slots*/ ctx[7].default;
-    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[6], null);
+    	const default_slot_template = /*#slots*/ ctx[8].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[7], null);
 
     	return {
     		c() {
@@ -5114,8 +5153,8 @@ var app = (function () {
     			}
 
     			if (default_slot) {
-    				if (default_slot.p && dirty & /*$$scope*/ 64) {
-    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[6], dirty, null, null);
+    				if (default_slot.p && dirty & /*$$scope*/ 128) {
+    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[7], dirty, null, null);
     				}
     			}
     		},
@@ -5138,6 +5177,7 @@ var app = (function () {
     }
 
     function instance$2($$self, $$props, $$invalidate) {
+    	let setup;
     	let colors;
     	let weeks;
     	let { $$slots: slots = {}, $$scope } = $$props;
@@ -5150,7 +5190,6 @@ var app = (function () {
 
     	let { showToday = true } = $$props;
     	let today = src.now();
-    	date = src(date);
 
     	// render methods
     	const isToday = function (d) {
@@ -5158,11 +5197,10 @@ var app = (function () {
     	};
 
     	const isWeekend = function (d) {
-    		let day = d.day();
-    		return day === 0 || day === 1;
+    		let day = d.dayName();
+    		return day === "saturday" || day === "sunday";
     	};
 
-    	let setup = calculate(date) || [];
     	const click_handler = d => onClick(d);
 
     	$$self.$$set = $$props => {
@@ -5170,15 +5208,19 @@ var app = (function () {
     		if ("date" in $$props) $$invalidate(0, date = $$props.date);
     		if ("onClick" in $$props) $$invalidate(1, onClick = $$props.onClick);
     		if ("showToday" in $$props) $$invalidate(4, showToday = $$props.showToday);
-    		if ("$$scope" in $$props) $$invalidate(6, $$scope = $$props.$$scope);
+    		if ("$$scope" in $$props) $$invalidate(7, $$scope = $$props.$$scope);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*days*/ 8) {
-    			$$invalidate(5, colors = fmtDays(days));
+    		if ($$self.$$.dirty & /*date*/ 1) {
+    			$$invalidate(5, setup = calculate(date) || []);
     		}
 
-    		if ($$self.$$.dirty & /*colors, date*/ 33) {
+    		if ($$self.$$.dirty & /*days*/ 8) {
+    			$$invalidate(6, colors = fmtDays(days));
+    		}
+
+    		if ($$self.$$.dirty & /*setup, colors, date*/ 97) {
     			$$invalidate(2, weeks = setup.map(w => {
     				return w.map(day => {
     					let iso = day.format("iso-short");
@@ -5198,7 +5240,18 @@ var app = (function () {
     		}
     	};
 
-    	return [date, onClick, weeks, days, showToday, colors, $$scope, slots, click_handler];
+    	return [
+    		date,
+    		onClick,
+    		weeks,
+    		days,
+    		showToday,
+    		setup,
+    		colors,
+    		$$scope,
+    		slots,
+    		click_handler
+    	];
     }
 
     class Month extends SvelteComponent {
@@ -5215,7 +5268,7 @@ var app = (function () {
     	}
     }
 
-    /* src/Year.svelte generated by Svelte v3.34.0 */
+    /* src/Resize.svelte generated by Svelte v3.35.0 */
 
     function add_css$1() {
     	var style = element("style");
@@ -5226,17 +5279,17 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[5] = list[i];
+    	child_ctx[10] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[8] = list[i];
+    	child_ctx[13] = list[i];
     	return child_ctx;
     }
 
-    // (54:6) {#each quarter as m}
+    // (78:6) {#each quarter as m}
     function create_each_block_1(ctx) {
     	let div;
     	let month;
@@ -5244,8 +5297,9 @@ var app = (function () {
 
     	month = new Month({
     			props: {
-    				date: /*m*/ ctx[8],
-    				days: /*days*/ ctx[0]
+    				date: /*m*/ ctx[13],
+    				days: /*days*/ ctx[0],
+    				showToday: /*showToday*/ ctx[1]
     			}
     		});
 
@@ -5262,7 +5316,9 @@ var app = (function () {
     		},
     		p(ctx, dirty) {
     			const month_changes = {};
+    			if (dirty & /*quarters*/ 4) month_changes.date = /*m*/ ctx[13];
     			if (dirty & /*days*/ 1) month_changes.days = /*days*/ ctx[0];
+    			if (dirty & /*showToday*/ 2) month_changes.showToday = /*showToday*/ ctx[1];
     			month.$set(month_changes);
     		},
     		i(local) {
@@ -5281,12 +5337,12 @@ var app = (function () {
     	};
     }
 
-    // (52:2) {#each quarters as quarter}
+    // (76:2) {#each quarters() as quarter}
     function create_each_block(ctx) {
     	let div;
     	let t;
     	let current;
-    	let each_value_1 = /*quarter*/ ctx[5];
+    	let each_value_1 = /*quarter*/ ctx[10];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -5319,8 +5375,8 @@ var app = (function () {
     			current = true;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*quarters, days*/ 3) {
-    				each_value_1 = /*quarter*/ ctx[5];
+    			if (dirty & /*quarters, days, showToday*/ 7) {
+    				each_value_1 = /*quarter*/ ctx[10];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
@@ -5374,7 +5430,7 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let div;
     	let current;
-    	let each_value = /*quarters*/ ctx[1];
+    	let each_value = /*quarters*/ ctx[2]();
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -5405,8 +5461,8 @@ var app = (function () {
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*quarters, days*/ 3) {
-    				each_value = /*quarters*/ ctx[1];
+    			if (dirty & /*quarters, days, showToday*/ 7) {
+    				each_value = /*quarters*/ ctx[2]();
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -5458,36 +5514,87 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
+    	let theEnd;
+    	let theStart;
+    	let quarters;
     	let { date = "" } = $$props;
+    	let { start = "" } = $$props;
+    	let { end = "" } = $$props;
     	let { days = {} } = $$props;
-    	date = src(date);
-    	let start = date.startOf("year").minus(1, "second");
-    	let months = start.every("month", date.endOf("year"));
+    	let { showToday = true } = $$props;
+    	start = start || date;
 
-    	let quarters = [
-    		months.slice(0, 3),
-    		months.slice(3, 6),
-    		months.slice(6, 9),
-    		months.slice(9, 12)
-    	];
+    	const inGroupsOf = function (arr, size) {
+    		let slices = [];
+    		let current = [];
 
-    	$$self.$$set = $$props => {
-    		if ("date" in $$props) $$invalidate(2, date = $$props.date);
-    		if ("days" in $$props) $$invalidate(0, days = $$props.days);
+    		arr.forEach(function (e) {
+    			if (current.length < size) {
+    				current.push(e);
+    			} else {
+    				slices.push(current);
+    				current = [e];
+    			}
+    		});
+
+    		slices.push(current);
+    		return slices;
     	};
 
-    	return [days, quarters, date];
+    	$$self.$$set = $$props => {
+    		if ("date" in $$props) $$invalidate(4, date = $$props.date);
+    		if ("start" in $$props) $$invalidate(3, start = $$props.start);
+    		if ("end" in $$props) $$invalidate(5, end = $$props.end);
+    		if ("days" in $$props) $$invalidate(0, days = $$props.days);
+    		if ("showToday" in $$props) $$invalidate(1, showToday = $$props.showToday);
+    	};
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*end*/ 32) {
+    			$$invalidate(6, theEnd = src(end));
+    		}
+
+    		if ($$self.$$.dirty & /*start*/ 8) {
+    			$$invalidate(7, theStart = src(start));
+    		}
+
+    		if ($$self.$$.dirty & /*theStart, theEnd*/ 192) {
+    			theStart.diff(theEnd);
+    		}
+
+    		if ($$self.$$.dirty & /*theStart, theEnd*/ 192) {
+    			$$invalidate(2, quarters = () => {
+    				if (theStart.isSame("month", theEnd)) {
+    					return [[theStart]];
+    				} else {
+    					let s = theStart.startOf("quarter").minus(1, "second");
+    					let e = theEnd.endOf("quarter");
+    					let months = s.every("month", e);
+    					return inGroupsOf(months, 3);
+    				}
+    			});
+    		}
+    	};
+
+    	return [days, showToday, quarters, start, date, end, theEnd, theStart];
     }
 
-    class Year extends SvelteComponent {
+    class Resize extends SvelteComponent {
     	constructor(options) {
     		super();
     		if (!document.getElementById("svelte-t5e0rj-style")) add_css$1();
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { date: 2, days: 0 });
+
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+    			date: 4,
+    			start: 3,
+    			end: 5,
+    			days: 0,
+    			showToday: 1
+    		});
     	}
     }
 
-    /* Demo.svelte generated by Svelte v3.34.0 */
+    /* Demo.svelte generated by Svelte v3.35.0 */
 
     function add_css() {
     	var style = element("style");
@@ -5501,11 +5608,15 @@ var app = (function () {
     	let div0;
     	let t3;
     	let div1;
-    	let year;
+    	let resize;
     	let current;
 
-    	year = new Year({
-    			props: { date: month, days: /*days*/ ctx[0] }
+    	resize = new Resize({
+    			props: {
+    				start,
+    				end: /*end*/ ctx[0],
+    				days: /*days*/ ctx[1]
+    			}
     		});
 
     	return {
@@ -5518,7 +5629,7 @@ var app = (function () {
 
     			t3 = space();
     			div1 = element("div");
-    			create_component(year.$$.fragment);
+    			create_component(resize.$$.fragment);
     			attr(div0, "class", "m4 svelte-qxs30b");
     			attr(div1, "class", "container m4 svelte-qxs30b");
     			attr(div2, "class", "row svelte-qxs30b");
@@ -5528,32 +5639,34 @@ var app = (function () {
     			append(div2, div0);
     			append(div2, t3);
     			append(div2, div1);
-    			mount_component(year, div1, null);
+    			mount_component(resize, div1, null);
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			const year_changes = {};
-    			if (dirty & /*days*/ 1) year_changes.days = /*days*/ ctx[0];
-    			year.$set(year_changes);
+    			const resize_changes = {};
+    			if (dirty & /*end*/ 1) resize_changes.end = /*end*/ ctx[0];
+    			if (dirty & /*days*/ 2) resize_changes.days = /*days*/ ctx[1];
+    			resize.$set(resize_changes);
     		},
     		i(local) {
     			if (current) return;
-    			transition_in(year.$$.fragment, local);
+    			transition_in(resize.$$.fragment, local);
     			current = true;
     		},
     		o(local) {
-    			transition_out(year.$$.fragment, local);
+    			transition_out(resize.$$.fragment, local);
     			current = false;
     		},
     		d(detaching) {
     			if (detaching) detach(div2);
-    			destroy_component(year);
+    			destroy_component(resize);
     		}
     	};
     }
-    let month = "feb 2021";
+    let start = "feb 8 2021";
 
     function instance($$self, $$props, $$invalidate) {
+    	let end = "mar 28 2021";
 
     	let days = {
     		"feb 1": "blue",
@@ -5565,19 +5678,21 @@ var app = (function () {
 
     	setTimeout(
     		() => {
-    			// month = 'june 2021'
-    			$$invalidate(0, days = {
+    			$$invalidate(0, end = "june 28 2021");
+
+    			$$invalidate(1, days = {
     				"feb 2": "orange",
     				"feb 18": "blue",
     				"feb 28": "green",
     				"march 28": "blue",
-    				"march 22": "blue"
+    				"march 22": "blue",
+    				"march 22 2022": "blue"
     			});
     		},
     		2000
     	);
 
-    	return [days];
+    	return [end, days];
     }
 
     class Demo extends SvelteComponent {

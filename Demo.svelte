@@ -1,8 +1,9 @@
 <script>
-  import { Year, Month, Quarter } from './src'
+  import { Year, Month, Quarter, Resize } from './src'
   let arr = ['march 28', 'march 23', 'march 22']
   let color = 'blue'
-  let month = 'feb 2021'
+  let start = 'feb 8 2021'
+  let end = 'mar 28 2021'
 
   let days = {
     'feb 1': 'blue',
@@ -12,13 +13,14 @@
     'march 22': 'blue'
   }
   setTimeout(() => {
-    // month = 'june 2021'
+    end = 'june 28 2021'
     days = {
       'feb 2': 'orange',
       'feb 18': 'blue',
       'feb 28': 'green',
       'march 28': 'blue',
-      'march 22': 'blue'
+      'march 22': 'blue',
+      'march 22 2022': 'blue'
     }
   }, 2000)
 </script>
@@ -50,6 +52,7 @@
     <span class="f08 grey">- a svelte html calendar.</span>
   </div>
   <div class="container m4">
-    <Year date={month} {days} />
+    <Resize {start} {end} {days} />
+    <!-- <Resize date={month} {days} /> -->
   </div>
 </div>

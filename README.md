@@ -29,21 +29,29 @@ month-centered calendars from start to end dates, inclusive
 
 ```html
 <script>
-  import { Month } from './src'
-  let days={'march 28th':'blue'}
+  import { Quarter } from './src'
+  let days= {
+    'feb 2': 'orange',
+    'feb 18': 'blue',
+    'feb 28': 'green',
+    'march 28': 'blue',
+    'march 22': 'blue'
+  }
 </script>
 
-<Month date="march 2012" days={days}>
-</Month>
+<Quarter date="march 2012" days={days}>
+</Quarter>
 ```
 
-![image](https://user-images.githubusercontent.com/399657/93616238-7b7c8e00-f9a2-11ea-8fa3-c385a1a8f735.png)
+![image](https://user-images.githubusercontent.com/399657/109879024-101e3400-7c43-11eb-8e58-96b17596e2b4.png)
+
 
 ### API
 
-- `<Year date=""/>`
-- `<Quarter date=""/>`
-- `<Month date=""/>`
+- `<Year date="" days={}/>`
+- `<Quarter date="" days={}/>`
+- `<Month date="" days={}/>`
+- `<Resize start="" end="" days={}/>`
 
 ### See also:
 

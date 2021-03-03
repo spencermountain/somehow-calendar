@@ -3,7 +3,7 @@
   import Month from './Month.svelte'
   export let date = ''
   export let days = {}
-
+  export let showToday = true
   date = spacetime(date)
   let start = date.startOf('quarter').minus(1, 'second')
   let months = start.every('month', date.endOf('quarter'))
@@ -36,7 +36,7 @@
 <div class="row">
   {#each months as m}
     <div class="gap">
-      <Month date={m} {days}>
+      <Month date={m} {days} {showToday}>
         <slot />
       </Month>
     </div>

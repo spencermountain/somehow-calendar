@@ -7,17 +7,17 @@
   export let onClick = () => {}
   export let showToday = true
   let today = spacetime.now()
-  date = spacetime(date)
+
   // render methods
   const isToday = function(d) {
     return showToday && d.isSame(today, 'day')
   }
   const isWeekend = function(d) {
-    let day = d.day()
-    return day === 0 || day === 1
+    let day = d.dayName()
+    return day === 'saturday' || day === 'sunday'
   }
 
-  let setup = calcMonth(date) || []
+  $: setup = calcMonth(date) || []
   $: colors = fmtDays(days)
   $: weeks = setup.map(w => {
     return w.map(day => {

@@ -2,18 +2,41 @@
   import spacetime from 'spacetime'
   import Month from './Month.svelte'
   export let date = ''
+  export let start = ''
+  export let end = ''
   export let days = {}
   export let showToday = true
-  date = spacetime(date)
+  start = start || date
+  $: theEnd = spacetime(end)
+  $: theStart = spacetime(start)
+  $: diff = theStart.diff(theEnd)
 
-  let start = date.startOf('year').minus(1, 'second')
-  let months = start.every('month', date.endOf('year'))
-  let quarters = [
-    months.slice(0, 3),
-    months.slice(3, 6),
-    months.slice(6, 9),
-    months.slice(9, 12)
-  ]
+  const inGroupsOf = function(arr, size) {
+    let slices = []
+    let current = []
+    arr.forEach(function(e) {
+      if (current.length < size) {
+        current.push(e)
+      } else {
+        slices.push(current)
+        current = [e]
+      }
+    })
+    slices.push(current)
+    return slices
+  }
+
+  $: quarters = () => {
+    if (theStart.isSame('month', theEnd)) {
+      return [[theStart]]
+    } else {
+      let s = theStart.startOf('quarter').minus(1, 'second')
+      let e = theEnd.endOf('quarter')
+      let months = s.every('month', e)
+      return inGroupsOf(months, 3)
+    }
+    return [[theStart]]
+  }
 </script>
 
 <style>
@@ -50,7 +73,7 @@
 </style>
 
 <div class="col">
-  {#each quarters as quarter}
+  {#each quarters() as quarter}
     <div class="row">
       {#each quarter as m}
         <div class="gap">
