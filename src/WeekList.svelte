@@ -22,9 +22,7 @@
         weeks.push([])
       }
       weeks[weeks.length - 1].push(d)
-      console.log(d.dayName())
     })
-    console.log(weeks)
     return weeks
   }
 
