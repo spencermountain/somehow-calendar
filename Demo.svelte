@@ -1,8 +1,8 @@
 <script>
-  import { Year, Month, Quarter, Resize, WeekList } from './src'
+  import { Year, Month, Quarter, Resize } from './src'
   let arr = ['march 28', 'march 23', 'march 22']
   let color = 'blue'
-  let start = 'jan 8 2021'
+  let start = 'feb 8 2021'
   let end = 'mar 28 2021'
 
   let days = {
@@ -30,8 +30,8 @@
     <a href="https://github.com/spencermountain/somehow-calendar"> somehow-calendar </a>
     <span class="f08 grey">- a svelte html calendar.</span>
   </div>
-  <div class="container m4" style="width:400px;">
-    <WeekList {start} {end} {days} />
+  <div class="container m4">
+    <Resize {start} {end} {days} />
     <!-- <Resize date={month} {days} /> -->
   </div>
 </div>
