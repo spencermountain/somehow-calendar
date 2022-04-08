@@ -3,37 +3,71 @@
   import calcMonth from './_calc'
   import fmtDays from './_fmtDays'
   export let days = {}
+  export let tops = {}
+  export let bottoms = {}
   export let date = ''
   export let onClick = () => {}
   export let showToday = true
   let today = spacetime.now()
 
   // render methods
-  const isToday = function(d) {
+  const isToday = function (d) {
     return showToday && d.isSame(today, 'day')
   }
-  const isWeekend = function(d) {
+  const isWeekend = function (d) {
     let day = d.dayName()
     return day === 'saturday' || day === 'sunday'
   }
 
   $: setup = calcMonth(date) || []
   $: colors = fmtDays(days)
+  tops = fmtDays(tops)
+  bottoms = fmtDays(bottoms)
   $: weeks = setup.map(w => {
     return w.map(day => {
       let iso = day.format('iso-short')
       let obj = {
         iso: iso,
-        color: colors[iso] || 'none',
+        color: colors[iso] || tops[iso] || 'none',
         num: day.format('{date}'),
+        isTop: tops.hasOwnProperty(iso),
+        isBottom: bottoms.hasOwnProperty(iso),
         isToday: isToday(day),
         isWeekend: isWeekend(day),
-        inMonth: day.isSame(date, 'month')
+        inMonth: day.isSame(date, 'month'),
       }
       return obj
     })
   })
 </script>
+
+<div class="month" style="width:100%;">
+  <div class="monthName">{date.format('month')}</div>
+  {#each weeks as w}
+    <div class="week">
+      {#each w as d}
+        {#if d.inMonth}
+          <div
+            class="day square"
+            class:today={d.isToday}
+            class:weekend={d.isWeekend}
+            class:top={d.isTop}
+            class:bottom={d.isBottom}
+            class:highlight={d.color !== 'none'}
+            on:click={() => onClick(d)}
+            style={'background-color:' + d.color}
+            title={d.iso}
+          >
+            <div class="num">{d.num}</div>
+          </div>
+        {:else}
+          <div class="day noday square">{' '}</div>
+        {/if}
+      {/each}
+    </div>
+  {/each}
+</div>
+<slot />
 
 <style>
   .monthName {
@@ -86,6 +120,12 @@
     border: 1px solid lightsteelblue !important;
     color: white;
   }
+  .top {
+    background: linear-gradient(0deg, #f0f0f0 50%, lightsteelblue 50%);
+  }
+  .bottom {
+    background: linear-gradient(0deg, steelblue 50%, #f0f0f0 50%);
+  }
   .num {
     position: absolute;
     z-index: 4;
@@ -123,28 +163,3 @@
     }
   }
 </style>
-
-<div class="month" style="width:100%;">
-  <div class="monthName">{date.format('month')}</div>
-  {#each weeks as w}
-    <div class="week">
-      {#each w as d}
-        {#if d.inMonth}
-          <div
-            class="day square"
-            class:today={d.isToday}
-            class:weekend={d.isWeekend}
-            class:highlight={d.color !== 'none'}
-            on:click={() => onClick(d)}
-            style={'background-color:' + d.color}
-            title={d.iso}>
-            <div class="num">{d.num}</div>
-          </div>
-        {:else}
-          <div class="day noday square">{' '}</div>
-        {/if}
-      {/each}
-    </div>
-  {/each}
-</div>
-<slot />

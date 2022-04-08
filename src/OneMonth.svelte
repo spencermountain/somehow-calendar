@@ -3,10 +3,18 @@
   import Month from './Month.svelte'
   export let date = ''
   export let days = {}
+  export let tops = {}
+  export let bottoms = {}
   export let showToday = true
   date = spacetime(date)
   let start = date.startOf('month')
 </script>
+
+<div class="row">
+  <div class="gap">
+    <Month date={start} {days} {tops} {bottoms} {showToday} />
+  </div>
+</div>
 
 <style>
   .row {
@@ -31,9 +39,3 @@
     }
   }
 </style>
-
-<div class="row">
-  <div class="gap">
-    <Month date={start} {days} {showToday} />
-  </div>
-</div>
