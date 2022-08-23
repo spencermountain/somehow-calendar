@@ -9,8 +9,8 @@
   export let showToday = true
   date = spacetime(date)
   $: quarters = () => {
-    let start = spacetime.now().year(year).startOf('year') //.minus(1, 'second')
-    let months = start.every('month', start.endOf('year'))
+    let start = spacetime.now().year(year).startOf('year')
+    let months = start.minus(1, 'second').every('month', start.endOf('year'))
     return [months.slice(0, 3), months.slice(3, 6), months.slice(6, 9), months.slice(9, 12)]
   }
 </script>

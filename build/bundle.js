@@ -1,5 +1,5 @@
 
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 var app = (function () {
     'use strict';
 
@@ -5577,8 +5577,8 @@ var app = (function () {
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*year*/ 64) {
     			$$invalidate(4, quarters = () => {
-    				let start = src.now().year(year).startOf("year"); //.minus(1, 'second')
-    				let months = start.every("month", start.endOf("year"));
+    				let start = src.now().year(year).startOf("year");
+    				let months = start.minus(1, "second").every("month", start.endOf("year"));
 
     				return [
     					months.slice(0, 3),
