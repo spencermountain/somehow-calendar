@@ -122,9 +122,6 @@
     padding-top: 15%; /* 1:1 Aspect Ratio */
     position: relative; /* If you want text inside of it */
   }
-  .noday {
-    box-shadow: none !important;
-  }
   .today {
     background-color: lightsteelblue;
     border: 1px solid lightsteelblue !important;

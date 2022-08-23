@@ -1,5 +1,5 @@
 
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 var app = (function () {
     'use strict';
 
@@ -4863,24 +4863,24 @@ var app = (function () {
 
     function add_css$2() {
     	var style = element("style");
-    	style.id = "svelte-1akvj8n-style";
-    	style.textContent = ".monthName.svelte-1akvj8n{font-size:1rem;color:#838b91;text-align:right;margin-bottom:0.2rem;margin-top:0.2rem;margin-right:0.7rem}.week.svelte-1akvj8n{display:flex;flex-direction:row;justify-content:space-around;align-items:center;text-align:center;flex-wrap:nowrap;align-self:stretch}.day.svelte-1akvj8n{position:relative;flex:1;margin:0.5%;border-radius:3px;box-shadow:2px 1px 6px 0px rgba(0, 0, 0, 0.2);min-width:13px;min-height:12px;box-sizing:border-box;font-size:9px;color:#a3a5a5;overflow:hidden;z-index:1;cursor:pointer}.day.svelte-1akvj8n:hover{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.2)}.highlight.svelte-1akvj8n{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.4)}.square.svelte-1akvj8n{padding-top:15%;position:relative}.noday.svelte-1akvj8n{box-shadow:none !important}.today.svelte-1akvj8n{background-color:lightsteelblue;border:1px solid lightsteelblue !important;color:white}.num.svelte-1akvj8n{position:absolute;z-index:4;font-size:14px;color:#949a9e;opacity:0.8;width:100%;height:100%;top:0px;text-align:center;margin:auto;opacity:0;cursor:pointer}.num.svelte-1akvj8n:hover{opacity:0.8}.weekend.svelte-1akvj8n{background-color:#f0f0f0}@media only screen and (max-width: 400px){.monthName.svelte-1akvj8n{font-size:0.7rem}.day.svelte-1akvj8n{border-radius:2px;margin:0.5%;box-shadow:1px 1px 1px 0px rgba(0, 0, 0, 0.2)}.num.svelte-1akvj8n{display:none}}";
+    	style.id = "svelte-1dblamv-style";
+    	style.textContent = ".monthName.svelte-1dblamv{font-size:1rem;color:#838b91;text-align:right;margin-bottom:0.2rem;margin-top:0.2rem;margin-right:0.7rem}.week.svelte-1dblamv{display:flex;flex-direction:row;justify-content:space-around;align-items:center;text-align:center;flex-wrap:nowrap;align-self:stretch}.day.svelte-1dblamv{position:relative;flex:1;margin:0.5%;border-radius:3px;box-shadow:2px 1px 6px 0px rgba(0, 0, 0, 0.2);min-width:13px;min-height:12px;box-sizing:border-box;font-size:9px;color:#a3a5a5;overflow:hidden;z-index:1;cursor:pointer}.day.svelte-1dblamv:hover{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.2)}.highlight.svelte-1dblamv{box-shadow:1px 4px 10px 1px rgba(0, 0, 0, 0.4)}.square.svelte-1dblamv{padding-top:15%;position:relative}.noday.svelte-1dblamv{box-shadow:none !important}.today.svelte-1dblamv{background-color:lightsteelblue;border:1px solid lightsteelblue !important;color:white}.topHome.svelte-1dblamv{background:linear-gradient(0deg, #f0f0f0 50%, rgba(81, 115, 166, 0.7) 50%)}.bottomHome.svelte-1dblamv{background:linear-gradient(0deg, rgba(81, 115, 166, 0.9) 50%, #f0f0f0 50%)}.topAway.svelte-1dblamv{background:linear-gradient(0deg, #f0f0f0 50%, rgba(151, 139, 163, 0.7) 50%)}.bottomAway.svelte-1dblamv{background:linear-gradient(0deg, rgba(151, 139, 163, 0.9) 50%, #f0f0f0 50%)}.num.svelte-1dblamv{position:absolute;z-index:4;font-size:14px;color:#949a9e;opacity:0.8;width:100%;height:100%;top:0px;text-align:center;margin:auto;opacity:0;cursor:pointer}.num.svelte-1dblamv:hover{opacity:0.8}.weekend.svelte-1dblamv{background-color:#f0f0f0}@media only screen and (max-width: 400px){.monthName.svelte-1dblamv{font-size:0.7rem}.day.svelte-1dblamv{border-radius:2px;margin:0.5%;box-shadow:1px 1px 1px 0px rgba(0, 0, 0, 0.2)}.num.svelte-1dblamv{display:none}}";
     	append(document.head, style);
     }
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[16] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[16] = list[i];
+    	child_ctx[19] = list[i];
     	return child_ctx;
     }
 
-    // (143:8) {:else}
+    // (68:8) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -4888,7 +4888,7 @@ var app = (function () {
     		c() {
     			div = element("div");
     			div.textContent = `${" "}`;
-    			attr(div, "class", "day noday square svelte-1akvj8n");
+    			attr(div, "class", "day noday square svelte-1dblamv");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -4900,11 +4900,11 @@ var app = (function () {
     	};
     }
 
-    // (132:8) {#if d.inMonth}
+    // (52:8) {#if d.inMonth}
     function create_if_block(ctx) {
     	let div1;
     	let div0;
-    	let t_value = /*d*/ ctx[16].num + "";
+    	let t_value = /*d*/ ctx[19].num + "";
     	let t;
     	let div1_style_value;
     	let div1_title_value;
@@ -4912,7 +4912,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[9](/*d*/ ctx[16]);
+    		return /*click_handler*/ ctx[12](/*d*/ ctx[19]);
     	}
 
     	return {
@@ -4920,13 +4920,17 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			attr(div0, "class", "num svelte-1akvj8n");
-    			attr(div1, "class", "day square svelte-1akvj8n");
-    			attr(div1, "style", div1_style_value = "background-color:" + /*d*/ ctx[16].color);
-    			attr(div1, "title", div1_title_value = /*d*/ ctx[16].iso);
-    			toggle_class(div1, "today", /*d*/ ctx[16].isToday);
-    			toggle_class(div1, "weekend", /*d*/ ctx[16].isWeekend);
-    			toggle_class(div1, "highlight", /*d*/ ctx[16].color !== "none");
+    			attr(div0, "class", "num svelte-1dblamv");
+    			attr(div1, "class", "day square svelte-1dblamv");
+    			attr(div1, "style", div1_style_value = "background-color:" + /*d*/ ctx[19].color);
+    			attr(div1, "title", div1_title_value = /*d*/ ctx[19].iso);
+    			toggle_class(div1, "today", /*d*/ ctx[19].isToday);
+    			toggle_class(div1, "weekend", /*d*/ ctx[19].isWeekend);
+    			toggle_class(div1, "topHome", /*d*/ ctx[19].isTop && /*d*/ ctx[19].isHome);
+    			toggle_class(div1, "bottomHome", /*d*/ ctx[19].isBottom && /*d*/ ctx[19].isHome);
+    			toggle_class(div1, "topAway", /*d*/ ctx[19].isTop && !/*d*/ ctx[19].isHome);
+    			toggle_class(div1, "bottomAway", /*d*/ ctx[19].isBottom && !/*d*/ ctx[19].isHome);
+    			toggle_class(div1, "highlight", /*d*/ ctx[19].color !== "none");
     		},
     		m(target, anchor) {
     			insert(target, div1, anchor);
@@ -4940,26 +4944,42 @@ var app = (function () {
     		},
     		p(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*weeks*/ 4 && t_value !== (t_value = /*d*/ ctx[16].num + "")) set_data(t, t_value);
+    			if (dirty & /*weeks*/ 4 && t_value !== (t_value = /*d*/ ctx[19].num + "")) set_data(t, t_value);
 
-    			if (dirty & /*weeks*/ 4 && div1_style_value !== (div1_style_value = "background-color:" + /*d*/ ctx[16].color)) {
+    			if (dirty & /*weeks*/ 4 && div1_style_value !== (div1_style_value = "background-color:" + /*d*/ ctx[19].color)) {
     				attr(div1, "style", div1_style_value);
     			}
 
-    			if (dirty & /*weeks*/ 4 && div1_title_value !== (div1_title_value = /*d*/ ctx[16].iso)) {
+    			if (dirty & /*weeks*/ 4 && div1_title_value !== (div1_title_value = /*d*/ ctx[19].iso)) {
     				attr(div1, "title", div1_title_value);
     			}
 
     			if (dirty & /*weeks*/ 4) {
-    				toggle_class(div1, "today", /*d*/ ctx[16].isToday);
+    				toggle_class(div1, "today", /*d*/ ctx[19].isToday);
     			}
 
     			if (dirty & /*weeks*/ 4) {
-    				toggle_class(div1, "weekend", /*d*/ ctx[16].isWeekend);
+    				toggle_class(div1, "weekend", /*d*/ ctx[19].isWeekend);
     			}
 
     			if (dirty & /*weeks*/ 4) {
-    				toggle_class(div1, "highlight", /*d*/ ctx[16].color !== "none");
+    				toggle_class(div1, "topHome", /*d*/ ctx[19].isTop && /*d*/ ctx[19].isHome);
+    			}
+
+    			if (dirty & /*weeks*/ 4) {
+    				toggle_class(div1, "bottomHome", /*d*/ ctx[19].isBottom && /*d*/ ctx[19].isHome);
+    			}
+
+    			if (dirty & /*weeks*/ 4) {
+    				toggle_class(div1, "topAway", /*d*/ ctx[19].isTop && !/*d*/ ctx[19].isHome);
+    			}
+
+    			if (dirty & /*weeks*/ 4) {
+    				toggle_class(div1, "bottomAway", /*d*/ ctx[19].isBottom && !/*d*/ ctx[19].isHome);
+    			}
+
+    			if (dirty & /*weeks*/ 4) {
+    				toggle_class(div1, "highlight", /*d*/ ctx[19].color !== "none");
     			}
     		},
     		d(detaching) {
@@ -4970,12 +4990,12 @@ var app = (function () {
     	};
     }
 
-    // (131:6) {#each w as d}
+    // (51:6) {#each w as d}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*d*/ ctx[16].inMonth) return create_if_block;
+    		if (/*d*/ ctx[19].inMonth) return create_if_block;
     		return create_else_block;
     	}
 
@@ -5011,11 +5031,11 @@ var app = (function () {
     	};
     }
 
-    // (129:2) {#each weeks as w}
+    // (49:2) {#each weeks as w}
     function create_each_block$1(ctx) {
     	let div;
     	let t;
-    	let each_value_1 = /*w*/ ctx[13];
+    	let each_value_1 = /*w*/ ctx[16];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -5031,7 +5051,7 @@ var app = (function () {
     			}
 
     			t = space();
-    			attr(div, "class", "week svelte-1akvj8n");
+    			attr(div, "class", "week svelte-1dblamv");
     		},
     		m(target, anchor) {
     			insert(target, div, anchor);
@@ -5044,7 +5064,7 @@ var app = (function () {
     		},
     		p(ctx, dirty) {
     			if (dirty & /*weeks, onClick*/ 6) {
-    				each_value_1 = /*w*/ ctx[13];
+    				each_value_1 = /*w*/ ctx[16];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
@@ -5088,8 +5108,8 @@ var app = (function () {
     		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
-    	const default_slot_template = /*#slots*/ ctx[8].default;
-    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[7], null);
+    	const default_slot_template = /*#slots*/ ctx[11].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[10], null);
 
     	return {
     		c() {
@@ -5104,7 +5124,7 @@ var app = (function () {
 
     			t2 = space();
     			if (default_slot) default_slot.c();
-    			attr(div0, "class", "monthName svelte-1akvj8n");
+    			attr(div0, "class", "monthName svelte-1dblamv");
     			attr(div1, "class", "month");
     			set_style(div1, "width", "100%");
     		},
@@ -5153,8 +5173,8 @@ var app = (function () {
     			}
 
     			if (default_slot) {
-    				if (default_slot.p && dirty & /*$$scope*/ 128) {
-    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[7], dirty, null, null);
+    				if (default_slot.p && dirty & /*$$scope*/ 1024) {
+    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[10], dirty, null, null);
     				}
     			}
     		},
@@ -5182,6 +5202,9 @@ var app = (function () {
     	let weeks;
     	let { $$slots: slots = {}, $$scope } = $$props;
     	let { days = {} } = $$props;
+    	let { tops = {} } = $$props;
+    	let { bottoms = {} } = $$props;
+    	let { isHome = {} } = $$props;
     	let { date = "" } = $$props;
 
     	let { onClick = () => {
@@ -5201,34 +5224,43 @@ var app = (function () {
     		return day === "saturday" || day === "sunday";
     	};
 
+    	tops = fmtDays(tops);
+    	bottoms = fmtDays(bottoms);
+    	isHome = fmtDays(isHome);
     	const click_handler = d => onClick(d);
 
     	$$self.$$set = $$props => {
-    		if ("days" in $$props) $$invalidate(3, days = $$props.days);
+    		if ("days" in $$props) $$invalidate(6, days = $$props.days);
+    		if ("tops" in $$props) $$invalidate(3, tops = $$props.tops);
+    		if ("bottoms" in $$props) $$invalidate(4, bottoms = $$props.bottoms);
+    		if ("isHome" in $$props) $$invalidate(5, isHome = $$props.isHome);
     		if ("date" in $$props) $$invalidate(0, date = $$props.date);
     		if ("onClick" in $$props) $$invalidate(1, onClick = $$props.onClick);
-    		if ("showToday" in $$props) $$invalidate(4, showToday = $$props.showToday);
-    		if ("$$scope" in $$props) $$invalidate(7, $$scope = $$props.$$scope);
+    		if ("showToday" in $$props) $$invalidate(7, showToday = $$props.showToday);
+    		if ("$$scope" in $$props) $$invalidate(10, $$scope = $$props.$$scope);
     	};
 
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*date*/ 1) {
-    			$$invalidate(5, setup = calculate(date) || []);
+    			$$invalidate(8, setup = calculate(date) || []);
     		}
 
-    		if ($$self.$$.dirty & /*days*/ 8) {
-    			$$invalidate(6, colors = fmtDays(days));
+    		if ($$self.$$.dirty & /*days*/ 64) {
+    			$$invalidate(9, colors = fmtDays(days));
     		}
 
-    		if ($$self.$$.dirty & /*setup, colors, date*/ 97) {
+    		if ($$self.$$.dirty & /*setup, colors, tops, isHome, bottoms, date*/ 825) {
     			$$invalidate(2, weeks = setup.map(w => {
     				return w.map(day => {
     					let iso = day.format("iso-short");
 
     					let obj = {
     						iso,
-    						color: colors[iso] || "none",
+    						color: colors[iso] || tops[iso] || "none",
     						num: day.format("{date}"),
+    						isTop: tops.hasOwnProperty(iso),
+    						isHome: isHome.hasOwnProperty(iso),
+    						isBottom: bottoms.hasOwnProperty(iso),
     						isToday: isToday(day),
     						isWeekend: isWeekend(day),
     						inMonth: day.isSame(date, "month")
@@ -5244,6 +5276,9 @@ var app = (function () {
     		date,
     		onClick,
     		weeks,
+    		tops,
+    		bottoms,
+    		isHome,
     		days,
     		showToday,
     		setup,
@@ -5257,18 +5292,21 @@ var app = (function () {
     class Month extends SvelteComponent {
     	constructor(options) {
     		super();
-    		if (!document.getElementById("svelte-1akvj8n-style")) add_css$2();
+    		if (!document.getElementById("svelte-1dblamv-style")) add_css$2();
 
     		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-    			days: 3,
+    			days: 6,
+    			tops: 3,
+    			bottoms: 4,
+    			isHome: 5,
     			date: 0,
     			onClick: 1,
-    			showToday: 4
+    			showToday: 7
     		});
     	}
     }
 
-    /* src/Resize.svelte generated by Svelte v3.35.0 */
+    /* src/Year.svelte generated by Svelte v3.35.0 */
 
     function add_css$1() {
     	var style = element("style");
@@ -5279,17 +5317,17 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
+    	child_ctx[7] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[10] = list[i];
     	return child_ctx;
     }
 
-    // (78:6) {#each quarter as m}
+    // (21:6) {#each quarter as m}
     function create_each_block_1(ctx) {
     	let div;
     	let month;
@@ -5297,9 +5335,11 @@ var app = (function () {
 
     	month = new Month({
     			props: {
-    				date: /*m*/ ctx[13],
+    				date: /*m*/ ctx[10],
     				days: /*days*/ ctx[0],
-    				showToday: /*showToday*/ ctx[1]
+    				showToday: /*showToday*/ ctx[3],
+    				tops: /*tops*/ ctx[1],
+    				bottoms: /*bottoms*/ ctx[2]
     			}
     		});
 
@@ -5316,9 +5356,11 @@ var app = (function () {
     		},
     		p(ctx, dirty) {
     			const month_changes = {};
-    			if (dirty & /*quarters*/ 4) month_changes.date = /*m*/ ctx[13];
+    			if (dirty & /*quarters*/ 16) month_changes.date = /*m*/ ctx[10];
     			if (dirty & /*days*/ 1) month_changes.days = /*days*/ ctx[0];
-    			if (dirty & /*showToday*/ 2) month_changes.showToday = /*showToday*/ ctx[1];
+    			if (dirty & /*showToday*/ 8) month_changes.showToday = /*showToday*/ ctx[3];
+    			if (dirty & /*tops*/ 2) month_changes.tops = /*tops*/ ctx[1];
+    			if (dirty & /*bottoms*/ 4) month_changes.bottoms = /*bottoms*/ ctx[2];
     			month.$set(month_changes);
     		},
     		i(local) {
@@ -5337,12 +5379,12 @@ var app = (function () {
     	};
     }
 
-    // (76:2) {#each quarters() as quarter}
+    // (19:2) {#each quarters() as quarter}
     function create_each_block(ctx) {
     	let div;
     	let t;
     	let current;
-    	let each_value_1 = /*quarter*/ ctx[10];
+    	let each_value_1 = /*quarter*/ ctx[7];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -5375,8 +5417,8 @@ var app = (function () {
     			current = true;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*quarters, days, showToday*/ 7) {
-    				each_value_1 = /*quarter*/ ctx[10];
+    			if (dirty & /*quarters, days, showToday, tops, bottoms*/ 31) {
+    				each_value_1 = /*quarter*/ ctx[7];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
@@ -5430,7 +5472,7 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let div;
     	let current;
-    	let each_value = /*quarters*/ ctx[2]();
+    	let each_value = /*quarters*/ ctx[4]();
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -5461,8 +5503,8 @@ var app = (function () {
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*quarters, days, showToday*/ 7) {
-    				each_value = /*quarters*/ ctx[2]();
+    			if (dirty & /*quarters, days, showToday, tops, bottoms*/ 31) {
+    				each_value = /*quarters*/ ctx[4]();
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -5514,82 +5556,55 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let theEnd;
-    	let theStart;
     	let quarters;
     	let { date = "" } = $$props;
-    	let { start = "" } = $$props;
-    	let { end = "" } = $$props;
+    	let { year = src.now().year() } = $$props;
     	let { days = {} } = $$props;
+    	let { tops = {} } = $$props;
+    	let { bottoms = {} } = $$props;
     	let { showToday = true } = $$props;
-    	start = start || date;
-
-    	const inGroupsOf = function (arr, size) {
-    		let slices = [];
-    		let current = [];
-
-    		arr.forEach(function (e) {
-    			if (current.length < size) {
-    				current.push(e);
-    			} else {
-    				slices.push(current);
-    				current = [e];
-    			}
-    		});
-
-    		slices.push(current);
-    		return slices;
-    	};
+    	date = src(date);
 
     	$$self.$$set = $$props => {
-    		if ("date" in $$props) $$invalidate(4, date = $$props.date);
-    		if ("start" in $$props) $$invalidate(3, start = $$props.start);
-    		if ("end" in $$props) $$invalidate(5, end = $$props.end);
+    		if ("date" in $$props) $$invalidate(5, date = $$props.date);
+    		if ("year" in $$props) $$invalidate(6, year = $$props.year);
     		if ("days" in $$props) $$invalidate(0, days = $$props.days);
-    		if ("showToday" in $$props) $$invalidate(1, showToday = $$props.showToday);
+    		if ("tops" in $$props) $$invalidate(1, tops = $$props.tops);
+    		if ("bottoms" in $$props) $$invalidate(2, bottoms = $$props.bottoms);
+    		if ("showToday" in $$props) $$invalidate(3, showToday = $$props.showToday);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*end*/ 32) {
-    			$$invalidate(6, theEnd = src(end));
-    		}
+    		if ($$self.$$.dirty & /*year*/ 64) {
+    			$$invalidate(4, quarters = () => {
+    				let start = src.now().year(year).startOf("year"); //.minus(1, 'second')
+    				let months = start.every("month", start.endOf("year"));
 
-    		if ($$self.$$.dirty & /*start*/ 8) {
-    			$$invalidate(7, theStart = src(start));
-    		}
-
-    		if ($$self.$$.dirty & /*theStart, theEnd*/ 192) {
-    			theStart.diff(theEnd);
-    		}
-
-    		if ($$self.$$.dirty & /*theStart, theEnd*/ 192) {
-    			$$invalidate(2, quarters = () => {
-    				if (theStart.isSame("month", theEnd)) {
-    					return [[theStart]];
-    				} else {
-    					let s = theStart.startOf("quarter").minus(1, "second");
-    					let e = theEnd.endOf("quarter");
-    					let months = s.every("month", e);
-    					return inGroupsOf(months, 3);
-    				}
+    				return [
+    					months.slice(0, 3),
+    					months.slice(3, 6),
+    					months.slice(6, 9),
+    					months.slice(9, 12)
+    				];
     			});
     		}
     	};
 
-    	return [days, showToday, quarters, start, date, end, theEnd, theStart];
+    	return [days, tops, bottoms, showToday, quarters, date, year];
     }
 
-    class Resize extends SvelteComponent {
+    class Year extends SvelteComponent {
     	constructor(options) {
     		super();
     		if (!document.getElementById("svelte-t5e0rj-style")) add_css$1();
 
     		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
-    			date: 4,
-    			start: 3,
-    			end: 5,
+    			date: 5,
+    			year: 6,
     			days: 0,
-    			showToday: 1
+    			tops: 1,
+    			bottoms: 2,
+    			showToday: 3
     		});
     	}
     }
@@ -5608,14 +5623,15 @@ var app = (function () {
     	let div0;
     	let t3;
     	let div1;
-    	let resize;
+    	let year_1;
     	let current;
 
-    	resize = new Resize({
+    	year_1 = new Year({
     			props: {
-    				start,
-    				end: /*end*/ ctx[0],
-    				days: /*days*/ ctx[1]
+    				year: /*year*/ ctx[0],
+    				start: /*start*/ ctx[1],
+    				end: /*end*/ ctx[2],
+    				days: /*days*/ ctx[3]
     			}
     		});
 
@@ -5629,7 +5645,7 @@ var app = (function () {
 
     			t3 = space();
     			div1 = element("div");
-    			create_component(resize.$$.fragment);
+    			create_component(year_1.$$.fragment);
     			attr(div0, "class", "m4 svelte-qxs30b");
     			attr(div1, "class", "container m4 svelte-qxs30b");
     			attr(div2, "class", "row svelte-qxs30b");
@@ -5639,33 +5655,36 @@ var app = (function () {
     			append(div2, div0);
     			append(div2, t3);
     			append(div2, div1);
-    			mount_component(resize, div1, null);
+    			mount_component(year_1, div1, null);
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			const resize_changes = {};
-    			if (dirty & /*end*/ 1) resize_changes.end = /*end*/ ctx[0];
-    			if (dirty & /*days*/ 2) resize_changes.days = /*days*/ ctx[1];
-    			resize.$set(resize_changes);
+    			const year_1_changes = {};
+    			if (dirty & /*year*/ 1) year_1_changes.year = /*year*/ ctx[0];
+    			if (dirty & /*start*/ 2) year_1_changes.start = /*start*/ ctx[1];
+    			if (dirty & /*end*/ 4) year_1_changes.end = /*end*/ ctx[2];
+    			if (dirty & /*days*/ 8) year_1_changes.days = /*days*/ ctx[3];
+    			year_1.$set(year_1_changes);
     		},
     		i(local) {
     			if (current) return;
-    			transition_in(resize.$$.fragment, local);
+    			transition_in(year_1.$$.fragment, local);
     			current = true;
     		},
     		o(local) {
-    			transition_out(resize.$$.fragment, local);
+    			transition_out(year_1.$$.fragment, local);
     			current = false;
     		},
     		d(detaching) {
     			if (detaching) detach(div2);
-    			destroy_component(resize);
+    			destroy_component(year_1);
     		}
     	};
     }
-    let start = "feb 8 2021";
 
     function instance($$self, $$props, $$invalidate) {
+    	let year = 2022;
+    	let start = "feb 8 2021";
     	let end = "mar 28 2021";
 
     	let days = {
@@ -5678,9 +5697,9 @@ var app = (function () {
 
     	setTimeout(
     		() => {
-    			$$invalidate(0, end = "june 28 2021");
+    			$$invalidate(2, end = "june 28 2021");
 
-    			$$invalidate(1, days = {
+    			$$invalidate(3, days = {
     				"feb 2": "orange",
     				"feb 18": "blue",
     				"feb 28": "green",
@@ -5688,11 +5707,14 @@ var app = (function () {
     				"march 22": "blue",
     				"march 22 2022": "blue"
     			});
+
+    			$$invalidate(1, start = "feb 8 2022");
+    			$$invalidate(0, year = 2023);
     		},
     		2000
     	);
 
-    	return [end, days];
+    	return [year, start, end, days];
     }
 
     class Demo extends SvelteComponent {

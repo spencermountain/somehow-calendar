@@ -4,6 +4,7 @@
   export let date = ''
   export let days = {}
   export let tops = {}
+  export let isHome = {}
   export let bottoms = {}
   export let showToday = true
   date = spacetime(date)
@@ -14,7 +15,7 @@
 <div class="row">
   {#each months as m}
     <div class="gap">
-      <Month date={m} {days} {showToday} {tops} {bottoms}>
+      <Month date={m} {days} {showToday} {tops} {bottoms} {isHome}>
         <slot />
       </Month>
     </div>

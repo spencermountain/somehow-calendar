@@ -5,6 +5,7 @@
   export let days = {}
   export let tops = {}
   export let bottoms = {}
+  export let isHome = {}
   export let date = ''
   export let onClick = () => {}
   export let showToday = true
@@ -23,6 +24,7 @@
   $: colors = fmtDays(days)
   tops = fmtDays(tops)
   bottoms = fmtDays(bottoms)
+  isHome = fmtDays(isHome)
   $: weeks = setup.map(w => {
     return w.map(day => {
       let iso = day.format('iso-short')
@@ -31,6 +33,7 @@
         color: colors[iso] || tops[iso] || 'none',
         num: day.format('{date}'),
         isTop: tops.hasOwnProperty(iso),
+        isHome: isHome.hasOwnProperty(iso),
         isBottom: bottoms.hasOwnProperty(iso),
         isToday: isToday(day),
         isWeekend: isWeekend(day),
@@ -51,8 +54,10 @@
             class="day square"
             class:today={d.isToday}
             class:weekend={d.isWeekend}
-            class:top={d.isTop}
-            class:bottom={d.isBottom}
+            class:topHome={d.isTop && d.isHome}
+            class:bottomHome={d.isBottom && d.isHome}
+            class:topAway={d.isTop && !d.isHome}
+            class:bottomAway={d.isBottom && !d.isHome}
             class:highlight={d.color !== 'none'}
             on:click={() => onClick(d)}
             style={'background-color:' + d.color}
@@ -120,11 +125,17 @@
     border: 1px solid lightsteelblue !important;
     color: white;
   }
-  .top {
-    background: linear-gradient(0deg, #f0f0f0 50%, lightsteelblue 50%);
+  .topHome {
+    background: linear-gradient(0deg, #f0f0f0 50%, rgba(81, 115, 166, 0.7) 50%);
   }
-  .bottom {
-    background: linear-gradient(0deg, steelblue 50%, #f0f0f0 50%);
+  .bottomHome {
+    background: linear-gradient(0deg, rgba(81, 115, 166, 0.9) 50%, #f0f0f0 50%);
+  }
+  .topAway {
+    background: linear-gradient(0deg, #f0f0f0 50%, rgba(151, 139, 163, 0.7) 50%);
+  }
+  .bottomAway {
+    background: linear-gradient(0deg, rgba(151, 139, 163, 0.9) 50%, #f0f0f0 50%);
   }
   .num {
     position: absolute;

@@ -2,19 +2,21 @@
   import spacetime from 'spacetime'
   import Month from './Month.svelte'
   export let date = ''
+  export let year = spacetime.now().year()
   export let days = {}
   export let tops = {}
   export let bottoms = {}
   export let showToday = true
   date = spacetime(date)
-
-  let start = date.startOf('year').minus(1, 'second')
-  let months = start.every('month', date.endOf('year'))
-  let quarters = [months.slice(0, 3), months.slice(3, 6), months.slice(6, 9), months.slice(9, 12)]
+  $: quarters = () => {
+    let start = spacetime.now().year(year).startOf('year') //.minus(1, 'second')
+    let months = start.every('month', start.endOf('year'))
+    return [months.slice(0, 3), months.slice(3, 6), months.slice(6, 9), months.slice(9, 12)]
+  }
 </script>
 
 <div class="col">
-  {#each quarters as quarter}
+  {#each quarters() as quarter}
     <div class="row">
       {#each quarter as m}
         <div class="gap">
